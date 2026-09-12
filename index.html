@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#0f172a" />
+<title>準2級 Writing Trainer</title>
+<style>
+:root{--bg:#0b1220;--panel:#111827;--panel2:#182234;--text:#f8fafc;--muted:#94a3b8;--line:#2b3a52;--good:#22c55e;--warn:#f59e0b;--bad:#ef4444;--accent:#38bdf8;--card:#1e293b}
+*{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+button,input,textarea{font:inherit}
+.screen{display:none;height:100dvh;width:100%;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.screen.active{display:flex;flex-direction:column}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--line);background:rgba(15,23,42,.94);backdrop-filter:blur(8px)}
+.brand{font-weight:800;letter-spacing:.4px}.small{font-size:12px;color:var(--muted)}
+.home{align-items:center;justify-content:center;gap:18px;padding:20px}.hero{width:min(900px,96vw);display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+.box{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 16px 40px rgba(0,0,0,.22)}
+.title{font-size:clamp(26px,4vw,46px);font-weight:900;line-height:1.05;margin:0 0 10px}.sub{color:var(--muted);line-height:1.6}
+.target{font-size:54px;font-weight:900;margin:8px 0}.target span{color:var(--accent)}
+.statsgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}.stat{background:#0f172a;border:1px solid var(--line);border-radius:16px;padding:14px}.stat b{font-size:26px;display:block}
+.actions{display:grid;gap:10px}.btn{border:0;border-radius:14px;padding:14px 18px;font-weight:800;cursor:pointer}.primary{background:var(--accent);color:#062238}.secondary{background:#243244;color:var(--text)}.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.notice{background:#0f172a;border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--muted);font-size:13px;line-height:1.5}
+.studyWrap{display:grid;grid-template-columns:38% 62%;min-height:0;flex:1}.leftPane,.rightPane{min-height:0;overflow:auto;padding:16px}.leftPane{border-right:1px solid var(--line)}
+.qbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}.q{font-size:20px;font-weight:800;line-height:1.4}.jp{margin-top:8px;color:var(--muted);font-size:13px}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.reason{background:var(--card);border:2px solid transparent;border-radius:16px;padding:14px;cursor:pointer;min-height:110px}.reason.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(56,189,248,.15)}.reason .emoji{font-size:28px}.reason h3{margin:6px 0 4px;font-size:16px}.reason p{margin:0;color:#cbd5e1;font-size:13px;line-height:1.45}
+.answerBox{background:#fff;color:#111827;border-radius:18px;padding:18px;min-height:260px}.answerBox textarea{width:100%;height:230px;border:0;outline:0;resize:none;font-size:18px;line-height:1.6;background:transparent;color:#111827}.meter{display:flex;align-items:center;gap:12px;margin:12px 0}.bar{height:12px;flex:1;background:#253247;border-radius:99px;overflow:hidden}.fill{height:100%;width:0;background:var(--accent);transition:.2s}.count{font-weight:900;min-width:95px;text-align:right}.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.check{background:#111827;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px}.check.ok{border-color:#14532d;background:#102419}.check.ng{border-color:#7f1d1d;background:#2a1212}
+.bottomActions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.chip{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:8px 10px;background:#132033;cursor:pointer}
+.results{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:18px;overflow:auto}.chartCard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}.bigPct{font-size:54px;font-weight:900}.row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}
+.levelBadge{display:inline-block;padding:6px 10px;border-radius:99px;background:#132033;border:1px solid var(--line);font-weight:800}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.68);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal.show{display:flex}.modalCard{width:min(560px,94vw);background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px}.modalCard h2{margin-top:0}
+.rotate{display:none}
+@media (orientation:portrait) and (max-width:900px){.rotate{display:flex;position:fixed;inset:0;z-index:50;background:#07101f;color:white;align-items:center;justify-content:center;text-align:center;padding:30px}.hero{grid-template-columns:1fr}.studyWrap{grid-template-columns:1fr}.leftPane{border-right:0}.cards{grid-template-columns:1fr 1fr}}
+@media (max-width:800px){.checks{grid-template-columns:1fr 1fr}.results{grid-template-columns:1fr}.q{font-size:17px}.answerBox textarea{font-size:16px}}
+</style>
+</head>
+<body>
+<div class="rotate"><div><div style="font-size:52px">↻</div><h2>横向きにしてください</h2><p>このアプリは横画面で最も見やすく使えます。</p></div></div>
+
+<section id="home" class="screen active home">
+  <div class="hero">
+    <div class="box">
+      <div class="small">EIKEN PRE-2 WRITING</div>
+      <h1 class="title">合格特化<br>Writing Trainer</h1>
+      <p class="sub">YES固定＋4カードで、まず「崩れない答案」を作る。成績が安定したら13点・14点チャレンジを自動解放します。</p>
+      <div class="target">TARGET <span id="targetScore">12/16</span></div>
+      <span id="levelBadge" class="levelBadge">合格モード</span>
+      <div class="statsgrid">
+        <div class="stat"><span class="small">直近正解率</span><b id="homeAcc">0%</b></div>
+        <div class="stat"><span class="small">連続クリア</span><b id="homeStreak">0</b></div>
+        <div class="stat"><span class="small">学習済み</span><b id="homeDone">0問</b></div>
+        <div class="stat"><span class="small">語数成功率</span><b id="homeWords">0%</b></div>
+      </div>
+    </div>
+    <div class="box actions">
+      <button class="btn primary" id="continueBtn">▶ 続きから</button>
+      <button class="btn secondary" id="startBtn">新しく練習する</button>
+      <button class="btn secondary" id="weakBtn">⚡ 苦手だけ</button>
+      <button class="btn ghost" id="resultsBtn">📊 成績・設定</button>
+      <div class="notice">回答は自動保存されます。同じSafari・同じ端末なら、途中で閉じても続きから再開できます。</div>
+    </div>
+  </div>
+</section>
+
+<section id="study" class="screen">
+  <div class="topbar"><div><b>WRITING TRAINER</b><div class="small" id="progressLabel">1 / 30</div></div><div><span class="levelBadge" id="studyLevel">合格モード</span> <button class="btn ghost" id="homeBtn" style="padding:8px 12px">ホーム</button></div></div>
+  <div class="studyWrap">
+    <div class="leftPane">
+      <div class="qbox"><div class="small">QUESTION</div><div id="question" class="q"></div><div id="questionJp" class="jp"></div></div>
+      <div class="small" style="margin-bottom:8px">理由を2つ選ぶ</div>
+      <div id="cards" class="cards"></div>
+      <div class="notice" style="margin-top:12px">迷ったら「学び・時間・人・健康」から2つ。自分の本当の意見ではなく、YESで書きやすい2つを選びます。</div>
+    </div>
+    <div class="rightPane">
+      <div class="answerBox"><textarea id="answer" spellcheck="false" placeholder="ここに答案が表示・入力されます"></textarea></div>
+      <div class="meter"><div class="bar"><div id="fill" class="fill"></div></div><div id="wordCount" class="count">0 / 50–60</div></div>
+      <div id="checks" class="checks"></div>
+      <div class="bottomActions">
+        <button class="btn secondary" id="buildBtn">4カードから答案を作る</button>
+        <button class="btn primary" id="gradeBtn">判定する</button>
+        <button class="btn secondary" id="nextBtn">次の問題 ▶</button>
+      </div>
+      <div class="small" style="margin-top:12px">語数ブースター：</div>
+      <div id="boosters" class="bottomActions"></div>
+    </div>
+  </div>
+</section>
+
+<section id="results" class="screen">
+  <div class="topbar"><div><b>成績・設定</b><div class="small">自動保存された学習履歴</div></div><button class="btn ghost" id="resultsHome">ホーム</button></div>
+  <div class="results">
+    <div class="chartCard"><div class="small">直近20問 正解率</div><div id="rAcc" class="bigPct">0%</div><div class="row"><span>現在の目標</span><b id="rTarget">12/16</b></div><div class="row"><span>現在のモード</span><b id="rLevel">合格モード</b></div><div class="row"><span>学習済み</span><b id="rDone">0</b></div><div class="row"><span>連続クリア</span><b id="rStreak">0</b></div></div>
+    <div class="chartCard"><h3 style="margin-top:0">4カード別</h3><div id="cardStats"></div></div>
+    <div class="chartCard"><h3 style="margin-top:0">判定項目</h3><div id="metricStats"></div></div>
+    <div class="chartCard"><h3 style="margin-top:0">設定</h3><div class="row"><span>自動レベルアップ</span><input id="autoLevel" type="checkbox" checked></div><div class="row"><span>横向き案内</span><span>ON</span></div><button class="btn secondary" id="resetProgress" style="margin-top:14px">成績をリセット</button></div>
+  </div>
+</section>
+
+<div id="unlockModal" class="modal"><div class="modalCard"><h2 id="unlockTitle">新しいチャレンジ解放！</h2><p id="unlockText"></p><div class="actions"><button id="unlockYes" class="btn primary">新しい目標で続ける</button><button id="unlockNo" class="btn secondary">今のまま続ける</button></div></div></div>
+
+<script>
+const QUESTIONS=[
+{q:'Do you think students should use smartphones when they study?',jp:'生徒は勉強するときにスマートフォンを使うべきだと思いますか？',tags:['learn','time'],kw:'smartphones',ex:{learn:'they can find useful information on their smartphones',time:'they can find information quickly'}},
+{q:'Do you think families should play sports together?',jp:'家族は一緒にスポーツをするべきだと思いますか？',tags:['people','health'],kw:'sports',ex:{people:'families can enjoy sports together',health:'they can stay healthy by playing sports'}},
+{q:'Do you think students should make a study plan for summer vacation?',jp:'生徒は夏休みの学習計画を立てるべきだと思いますか？',tags:['time','learn'],kw:'study plan',ex:{time:'they can use their time well during summer vacation',learn:'they can study a little every day'}},
+{q:'Do you think children should read books every day?',jp:'子どもは毎日本を読むべきだと思いますか？',tags:['learn','people'],kw:'books',ex:{learn:'they can learn new things from books',people:'they can talk about books with their friends'}},
+{q:'Do you think students should join team sports?',jp:'生徒はチームスポーツに参加するべきだと思いますか？',tags:['people','health'],kw:'team sports',ex:{people:'they can make new friends through team sports',health:'they can exercise and stay healthy'}},
+{q:'Do you think people should use the Internet to learn how to cook?',jp:'料理の仕方を学ぶためにインターネットを使うべきだと思いますか？',tags:['learn','time'],kw:'Internet',ex:{learn:'they can learn how to cook many dishes online',time:'they can learn at home without going to a class'}},
+{q:'Do you think students should get up early to study?',jp:'生徒は勉強するために早起きするべきだと思いますか？',tags:['learn','time'],kw:'study',ex:{learn:'they can study before going to school',time:'they can use the morning time well'}},
+{q:'Do you think libraries should have more events for children?',jp:'図書館は子ども向けイベントをもっと行うべきだと思いますか？',tags:['learn','people'],kw:'library events',ex:{learn:'children can learn new things at library events',people:'they can meet other children there'}},
+{q:'Do you think hospitals should be open on weekends?',jp:'病院は週末も開いているべきだと思いますか？',tags:['time','health'],kw:'hospitals',ex:{time:'people can go to the hospital when they have time',health:'people can get help when they are sick'}},
+{q:'Do you think people should take notes on their smartphones?',jp:'人々はスマートフォンでメモを取るべきだと思いますか？',tags:['time','learn'],kw:'notes',ex:{time:'they can take notes quickly',learn:'they can check important information later'}},
+{q:'Do you think students should share their opinions about books with friends?',jp:'生徒は本についての意見を友達と共有するべきだと思いますか？',tags:['learn','people'],kw:'books',ex:{learn:'they can learn new ideas from their friends',people:'they can enjoy talking about books together'}},
+{q:'Do you think children should eat breakfast every day?',jp:'子どもは毎朝朝食を食べるべきだと思いますか？',tags:['health','learn'],kw:'breakfast',ex:{health:'breakfast helps them stay healthy',learn:'they can study better in the morning'}},
+{q:'Do you think students should use tablets in class?',jp:'生徒は授業でタブレットを使うべきだと思いますか？',tags:['learn','time'],kw:'tablets',ex:{learn:'they can find useful information with tablets',time:'they can finish some schoolwork more quickly'}},
+{q:'Do you think children should spend time with their families every day?',jp:'子どもは毎日家族と過ごす時間を作るべきだと思いますか？',tags:['people','health'],kw:'families',ex:{people:'they can talk with their families every day',health:'they can relax and feel better at home'}},
+{q:'Do you think schools should have more sports events?',jp:'学校はスポーツ行事をもっと行うべきだと思いますか？',tags:['people','health'],kw:'sports events',ex:{people:'students can enjoy sports with their classmates',health:'students can exercise more at school'}}
+];
+const REASONS={
+learn:{emoji:'📚',name:'LEARN',jp:'学び',base:'they can learn many things'},
+time:{emoji:'⏰',name:'TIME',jp:'時間',base:'they can save time'},
+people:{emoji:'👥',name:'PEOPLE',jp:'人・楽しさ',base:'they can enjoy it with other people'},
+health:{emoji:'❤️',name:'HEALTH',jp:'健康',base:'it is good for their health'}
+};
+const BOOSTERS=['at school','every day','after school','with their friends','with their families','in the future','at home or at school'];
+const KEY='eikenP2Writing_v1';
+let state=JSON.parse(localStorage.getItem(KEY)||'null')||{idx:0,selected:[],history:[],streak:0,level:1,autoLevel:true,currentAnswer:'',weakOnly:false};
+function save(){state.currentAnswer=document.getElementById('answer')?.value||state.currentAnswer;localStorage.setItem(KEY,JSON.stringify(state));}
+function words(s){return (s.trim().match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]).length}
+function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
+function levelInfo(){return state.level===1?['合格モード','12/16']:state.level===2?['12点安定','12〜13/16']:state.level===3?['13点チャレンジ','13/16']:['14点チャレンジ','14/16前後']}
+function updateHome(){const h=state.history.slice(-20);const acc=h.length?Math.round(h.filter(x=>x.pass).length/h.length*100):0;const wr=h.length?Math.round(h.filter(x=>x.wordOK).length/h.length*100):0;const [l,t]=levelInfo();document.getElementById('homeAcc').textContent=acc+'%';document.getElementById('homeStreak').textContent=state.streak;document.getElementById('homeDone').textContent=state.history.length+'問';document.getElementById('homeWords').textContent=wr+'%';document.getElementById('levelBadge').textContent=l;document.getElementById('targetScore').textContent=t;document.getElementById('continueBtn').textContent=state.currentAnswer?'▶ 続きから':'▶ 練習を始める'}
+function currentQ(){return QUESTIONS[state.idx%QUESTIONS.length]}
+function renderStudy(){const q=currentQ();const [l]=levelInfo();document.getElementById('studyLevel').textContent=l;document.getElementById('progressLabel').textContent=((state.idx%QUESTIONS.length)+1)+' / '+QUESTIONS.length;document.getElementById('question').textContent=q.q;document.getElementById('questionJp').textContent=q.jp;const c=document.getElementById('cards');c.innerHTML='';Object.entries(REASONS).forEach(([k,r])=>{const d=document.createElement('button');d.className='reason'+(state.selected.includes(k)?' selected':'');d.innerHTML=`<div class="emoji">${r.emoji}</div><h3>${r.jp} / ${r.name}</h3><p>${cap(r.base)}.</p>`;d.onclick=()=>{if(state.selected.includes(k))state.selected=state.selected.filter(x=>x!==k);else if(state.selected.length<2)state.selected.push(k);renderStudy();save()};c.appendChild(d)});document.getElementById('answer').value=state.currentAnswer||'';renderBoosters();updateMeter();}
+function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
+function toStatement(q){let x=q.trim().replace(/\?$/,'');if(/^Do you think /i.test(x))x=x.replace(/^Do you think /i,'');if(/^Should /i.test(x)){const rest=x.replace(/^Should /i,'');const parts=rest.split(' ');return 'I think '+parts[0]+' should '+parts.slice(1).join(' ')+'.'}return 'I think that '+x.charAt(0).toLowerCase()+x.slice(1)+'.'}
+function buildAnswer(){if(state.selected.length!==2){alert('理由カードを2つ選んでください');return}const q=currentQ();const [a,b]=state.selected;let s=toStatement(q)+'\nI have two reasons.\nFirst, '+REASONS[a].base+'.\nFor example, '+(q.ex[a]||fallbackEx(a,q.kw))+'.\nSecond, '+REASONS[b].base+'.\nFor example, '+(q.ex[b]||fallbackEx(b,q.kw))+'.\nFor these reasons, I think so.';if(state.level>=2)s=s.replace('learn many things','learn many useful things');if(state.level>=3)s=s.replace(/For example, ([^.]+)\.\nSecond,/, 'This is because $1.\nSecond,');document.getElementById('answer').value=s;state.currentAnswer=s;save();updateMeter()}
+function fallbackEx(k,kw){if(k==='learn')return 'they can learn more about '+kw;if(k==='time')return 'they can do it more quickly';if(k==='people')return 'they can enjoy '+kw+' with their friends';return 'they can stay healthy by doing it'}
+function updateMeter(){const t=document.getElementById('answer').value;const n=words(t);document.getElementById('wordCount').textContent=n+' / 50–60';document.getElementById('fill').style.width=Math.min(100,n/60*100)+'%';document.getElementById('fill').style.background=n>=50&&n<=60?'var(--good)':n>60?'var(--bad)':'var(--accent)';renderChecks(false)}
+function renderChecks(final){const t=document.getElementById('answer').value;const q=currentQ();const n=words(t);const checks=[['50〜60語',n>=50&&n<=60],['YESで回答',/^I think/i.test(t.trim())],['理由2つ',/First,/i.test(t)&&/Second,/i.test(t)],['具体例・説明',((t.match(/For example|This is because/gi)||[]).length>=2)],['問題との関連',t.toLowerCase().includes(q.kw.toLowerCase().split(' ')[0])],['大事故なし',!/\bBecause\b[^.]*\./i.test(t)||!/^(Because)/im.test(t)]];const e=document.getElementById('checks');e.innerHTML='';checks.forEach(([name,ok])=>{const d=document.createElement('div');d.className='check '+(ok?'ok':'ng');d.textContent=(ok?'✓ ':'△ ')+name;e.appendChild(d)});return checks}
+function grade(){const checks=renderChecks(true);const pass=checks.filter(x=>x[1]).length>=5&&checks[0][1]&&checks[2][1];const rec={q:currentQ().q,idx:state.idx,pass,wordOK:checks[0][1],related:checks[4][1],structure:checks[2][1]&&checks[3][1],cards:[...state.selected],time:Date.now()};state.history.push(rec);state.streak=pass?state.streak+1:0;state.currentAnswer=document.getElementById('answer').value;save();maybeUnlock();alert(pass?'クリア！ 合格答案の形になっています。':'あと少し。赤い項目を直してもう一度判定してください。')}
+function maybeUnlock(){if(!state.autoLevel||state.level>=4)return;const h=state.history.slice(-20);if(h.length<10)return;const acc=h.filter(x=>x.pass).length/h.length;const wr=h.filter(x=>x.wordOK).length/h.length;let ok=false;if(state.level===1)ok=acc>=.85&&wr>=.9;if(state.level===2)ok=acc>=.9&&wr>=.9;if(state.level===3)ok=acc>=.95&&wr>=.95;if(ok){document.getElementById('unlockTitle').textContent='新しいチャレンジ解放！';document.getElementById('unlockText').textContent=`直近の成績が安定しています。${state.level+1}段階目へ上げて、より高い得点を狙えます。`;document.getElementById('unlockModal').classList.add('show')}}
+function nextQ(){state.idx=(state.idx+1)%QUESTIONS.length;state.selected=[];state.currentAnswer='';save();renderStudy()}
+function renderBoosters(){const b=document.getElementById('boosters');b.innerHTML='';BOOSTERS.forEach(x=>{const s=document.createElement('button');s.className='chip';s.textContent='+ '+x;s.onclick=()=>{const ta=document.getElementById('answer');ta.value=ta.value.trim()+ ' '+x+'.';state.currentAnswer=ta.value;save();updateMeter()};b.appendChild(s)})}
+function renderResults(){const h=state.history.slice(-20);const acc=h.length?Math.round(h.filter(x=>x.pass).length/h.length*100):0;const [l,t]=levelInfo();rAcc.textContent=acc+'%';rTarget.textContent=t;rLevel.textContent=l;rDone.textContent=state.history.length;rStreak.textContent=state.streak;autoLevel.checked=state.autoLevel;cardStats.innerHTML='';Object.entries(REASONS).forEach(([k,r])=>{const use=state.history.filter(x=>x.cards.includes(k));const a=use.length?Math.round(use.filter(x=>x.pass).length/use.length*100):0;cardStats.innerHTML+=`<div class="row"><span>${r.emoji} ${r.jp}</span><b>${a}%</b></div>`});const metrics=[['語数成功率','wordOK'],['問題との関連','related'],['構成成功率','structure']];metricStats.innerHTML='';metrics.forEach(([n,k])=>{const a=state.history.length?Math.round(state.history.filter(x=>x[k]).length/state.history.length*100):0;metricStats.innerHTML+=`<div class="row"><span>${n}</span><b>${a}%</b></div>`})}
+function start(newStart=false){if(newStart){state.idx=0;state.selected=[];state.currentAnswer=''}show('study');renderStudy();save()}
+answer.addEventListener('input',()=>{state.currentAnswer=answer.value;save();updateMeter()});
+continueBtn.onclick=()=>start(false);startBtn.onclick=()=>start(true);weakBtn.onclick=()=>{state.weakOnly=true;start(false)};resultsBtn.onclick=()=>{renderResults();show('results')};homeBtn.onclick=()=>{save();updateHome();show('home')};resultsHome.onclick=()=>{updateHome();show('home')};buildBtn.onclick=buildAnswer;gradeBtn.onclick=grade;nextBtn.onclick=nextQ;autoLevel.onchange=()=>{state.autoLevel=autoLevel.checked;save()};resetProgress.onclick=()=>{if(confirm('成績と途中データをすべてリセットしますか？')){localStorage.removeItem(KEY);location.reload()}};
+unlockYes.onclick=()=>{state.level=Math.min(4,state.level+1);save();unlockModal.classList.remove('show');renderStudy();updateHome()};unlockNo.onclick=()=>unlockModal.classList.remove('show');
+updateHome();
+</script>
+</body>
+</html>
