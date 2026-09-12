@@ -6,7 +6,9 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 <meta name="theme-color" content="#0f172a" />
-<title>準2級 Writing Trainer</title>
+<title>英検準2級 Writing</title>
+<meta name="apple-mobile-web-app-title" content="英検準2級 Writing">
+<link rel="apple-touch-icon" href="icon-180.png">
 <style>
 :root{--bg:#0b1220;--panel:#111827;--panel2:#182234;--text:#f8fafc;--muted:#94a3b8;--line:#2b3a52;--good:#22c55e;--warn:#f59e0b;--bad:#ef4444;--accent:#38bdf8;--card:#1e293b}
 *{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
@@ -33,6 +35,10 @@ button,input,textarea{font:inherit}
 .rotate{display:none}
 @media (orientation:portrait) and (max-width:900px){.rotate{display:flex;position:fixed;inset:0;z-index:50;background:#07101f;color:white;align-items:center;justify-content:center;text-align:center;padding:30px}.hero{grid-template-columns:1fr}.studyWrap{grid-template-columns:1fr}.leftPane{border-right:0}.cards{grid-template-columns:1fr 1fr}}
 @media (max-width:800px){.checks{grid-template-columns:1fr 1fr}.results{grid-template-columns:1fr}.q{font-size:17px}.answerBox textarea{font-size:16px}}
+
+@keyframes guidePulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(56,189,248,.0)}50%{transform:scale(1.035);box-shadow:0 0 0 7px rgba(56,189,248,.18)}}
+.guidePulse{animation:guidePulse 1.15s infinite}
+.modeChoice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
 </style>
 </head>
 <body>
@@ -42,7 +48,8 @@ button,input,textarea{font:inherit}
   <div class="hero">
     <div class="box">
       <div class="small">EIKEN PRE-2 WRITING</div>
-      <h1 class="title">合格特化<br>Writing Trainer</h1>
+      <h1 class="title">英検準2級<br>Writing Trainer</h1>
+<p class="sub"><b>練習する内容を選ぶ</b></p>
       <p class="sub">YES固定＋4カードで、まず「崩れない答案」を作る。成績が安定したら13点・14点チャレンジを自動解放します。</p>
       <div class="target">TARGET <span id="targetScore">12/16</span></div>
       <span id="levelBadge" class="levelBadge">合格モード</span>
@@ -54,8 +61,10 @@ button,input,textarea{font:inherit}
       </div>
     </div>
     <div class="box actions">
-      <button class="btn primary" id="continueBtn">▶ 続きから</button>
-      <button class="btn secondary" id="startBtn">新しく練習する</button>
+       <button class="btn primary" id="emailModeBtn">✉️ Eメール（40〜50語）</button>
+       <button class="btn secondary" id="opinionModeBtn">✍️ 意見論述（50〜60語）</button>
+      <button class="btn primary" id="continueBtn">▶ 今日のおすすめ・続きから</button>
+      <button class="btn secondary" id="startBtn">意見論述を最初から</button>
       <button class="btn secondary" id="weakBtn">⚡ 苦手だけ</button>
       <button class="btn ghost" id="resultsBtn">📊 成績・設定</button>
       <div class="notice">回答は自動保存されます。同じSafari・同じ端末なら、途中で閉じても続きから再開できます。</div>
@@ -64,11 +73,14 @@ button,input,textarea{font:inherit}
 </section>
 
 <section id="study" class="screen">
-  <div class="topbar"><div><b>WRITING TRAINER</b><div class="small" id="progressLabel">1 / 30</div></div><div><span class="levelBadge" id="studyLevel">合格モード</span> <button class="btn ghost" id="homeBtn" style="padding:8px 12px">ホーム</button></div></div>
+  <div class="topbar"><div><b>WRITING TRAINER</b>
+<div id="stepLabel" style="font-weight:900;color:#38bdf8">STEP 1 / 3　理由を2つ選ぶ</div>
+<div class="small" id="progressLabel">1 / 30</div></div><div><span class="levelBadge" id="studyLevel">合格モード</span> <button class="btn ghost" id="homeBtn" style="padding:8px 12px">ホーム</button></div></div>
   <div class="studyWrap">
     <div class="leftPane">
       <div class="qbox"><div class="small">QUESTION</div><div id="question" class="q"></div><div id="questionJp" class="jp"></div></div>
-      <div class="small" style="margin-bottom:8px">理由を2つ選ぶ</div>
+      <div id="nextGuide" class="notice" style="margin-bottom:10px;color:#fff;border-color:#38bdf8">👇 STEP 1：理由カードを2つ選んでください</div>
+<div class="small" style="margin-bottom:8px">理由を2つ選ぶ</div>
       <div id="cards" class="cards"></div>
       <div class="notice" style="margin-top:12px">迷ったら「学び・時間・人・健康」から2つ。自分の本当の意見ではなく、YESで書きやすい2つを選びます。</div>
     </div>
@@ -83,6 +95,36 @@ button,input,textarea{font:inherit}
       </div>
       <div class="small" style="margin-top:12px">語数ブースター：</div>
       <div id="boosters" class="bottomActions"></div>
+    </div>
+  </div>
+</section>
+
+
+<section id="emailStudy" class="screen">
+  <div class="topbar"><div><b>✉️ Eメール TRAINER</b><div id="emailStep" style="font-weight:900;color:#a78bfa">STEP 1 / 5　メールを読む</div></div><button class="btn ghost" id="emailHome">ホーム</button></div>
+  <div class="studyWrap">
+    <div class="leftPane">
+      <div class="qbox"><div class="small">EMAIL</div>
+        <div class="q" style="font-size:16px">My city started a new <u>weekend bus service for older people</u>. It is free, and my grandmother used it last Sunday. She said it was very helpful. Do you think more cities will have services like this in the future?</div>
+        <div class="jp">下線部について、本文にまだ書かれていないことを2つ質問します。</div>
+      </div>
+      <div id="emailGuide" class="notice" style="color:#fff;border-color:#a78bfa">👇 STEP 2：下の質問から2つ選んでください</div>
+      <div class="cards" style="margin-top:10px">
+        <button class="reason emailQ" data-q="How often do the buses run?"><h3>HOW OFTEN</h3><p>How often do the buses run?</p></button>
+        <button class="reason emailQ" data-q="How many stops does the bus have?"><h3>HOW MANY</h3><p>How many stops does the bus have?</p></button>
+        <button class="reason emailQ" data-q="How many people can ride the bus?"><h3>HOW MANY</h3><p>How many people can ride the bus?</p></button>
+        <button class="reason emailQ" data-q="What time does the service start?"><h3>WHAT</h3><p>What time does the service start?</p></button>
+      </div>
+    </div>
+    <div class="rightPane">
+      <div class="answerBox"><textarea id="emailAnswer" spellcheck="false" placeholder="質問を2つ選ぶと答案を作れます"></textarea></div>
+      <div class="meter"><div class="bar"><div id="emailFill" class="fill"></div></div><div id="emailCount" class="count">0 / 40–50</div></div>
+      <div class="bottomActions">
+        <button class="btn primary" id="emailBuild">STEP 3　答案を作る</button>
+        <button class="btn secondary" id="emailCheck">STEP 4　判定する</button>
+        <button class="btn secondary" id="emailNext">STEP 5　もう一度</button>
+      </div>
+      <div id="emailCheckMsg" class="notice" style="margin-top:12px">質問を2つ選ぶところから始めます。</div>
     </div>
   </div>
 </section>
@@ -130,7 +172,7 @@ function save(){state.currentAnswer=document.getElementById('answer')?.value||st
 function words(s){return (s.trim().match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]).length}
 function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
 function levelInfo(){return state.level===1?['合格モード','12/16']:state.level===2?['12点安定','12〜13/16']:state.level===3?['13点チャレンジ','13/16']:['14点チャレンジ','14/16前後']}
-function updateHome(){const h=state.history.slice(-20);const acc=h.length?Math.round(h.filter(x=>x.pass).length/h.length*100):0;const wr=h.length?Math.round(h.filter(x=>x.wordOK).length/h.length*100):0;const [l,t]=levelInfo();document.getElementById('homeAcc').textContent=acc+'%';document.getElementById('homeStreak').textContent=state.streak;document.getElementById('homeDone').textContent=state.history.length+'問';document.getElementById('homeWords').textContent=wr+'%';document.getElementById('levelBadge').textContent=l;document.getElementById('targetScore').textContent=t;document.getElementById('continueBtn').textContent=state.currentAnswer?'▶ 続きから':'▶ 練習を始める'}
+function updateHome(){const h=state.history.slice(-20);const acc=h.length?Math.round(h.filter(x=>x.pass).length/h.length*100):0;const wr=h.length?Math.round(h.filter(x=>x.wordOK).length/h.length*100):0;const [l,t]=levelInfo();document.getElementById('homeAcc').textContent=acc+'%';document.getElementById('homeStreak').textContent=state.streak;document.getElementById('homeDone').textContent=state.history.length+'問';document.getElementById('homeWords').textContent=wr+'%';document.getElementById('levelBadge').textContent=l;document.getElementById('targetScore').textContent=t;document.getElementById('continueBtn').textContent=state.currentAnswer?'▶ 今日のおすすめ・続きから':'▶ 練習を始める'}
 function currentQ(){return QUESTIONS[state.idx%QUESTIONS.length]}
 function renderStudy(){const q=currentQ();const [l]=levelInfo();document.getElementById('studyLevel').textContent=l;document.getElementById('progressLabel').textContent=((state.idx%QUESTIONS.length)+1)+' / '+QUESTIONS.length;document.getElementById('question').textContent=q.q;document.getElementById('questionJp').textContent=q.jp;const c=document.getElementById('cards');c.innerHTML='';Object.entries(REASONS).forEach(([k,r])=>{const d=document.createElement('button');d.className='reason'+(state.selected.includes(k)?' selected':'');d.innerHTML=`<div class="emoji">${r.emoji}</div><h3>${r.jp} / ${r.name}</h3><p>${cap(r.base)}.</p>`;d.onclick=()=>{if(state.selected.includes(k))state.selected=state.selected.filter(x=>x!==k);else if(state.selected.length<2)state.selected.push(k);renderStudy();save()};c.appendChild(d)});document.getElementById('answer').value=state.currentAnswer||'';renderBoosters();updateMeter();}
 function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
@@ -148,6 +190,84 @@ function start(newStart=false){if(newStart){state.idx=0;state.selected=[];state.
 answer.addEventListener('input',()=>{state.currentAnswer=answer.value;save();updateMeter()});
 continueBtn.onclick=()=>start(false);startBtn.onclick=()=>start(true);weakBtn.onclick=()=>{state.weakOnly=true;start(false)};resultsBtn.onclick=()=>{renderResults();show('results')};homeBtn.onclick=()=>{save();updateHome();show('home')};resultsHome.onclick=()=>{updateHome();show('home')};buildBtn.onclick=buildAnswer;gradeBtn.onclick=grade;nextBtn.onclick=nextQ;autoLevel.onchange=()=>{state.autoLevel=autoLevel.checked;save()};resetProgress.onclick=()=>{if(confirm('成績と途中データをすべてリセットしますか？')){localStorage.removeItem(KEY);location.reload()}};
 unlockYes.onclick=()=>{state.level=Math.min(4,state.level+1);save();unlockModal.classList.remove('show');renderStudy();updateHome()};unlockNo.onclick=()=>unlockModal.classList.remove('show');
+
+// --- v2 navigation / STEP guidance / E-mail mode ---
+function updateStepGuide(){
+  const b=document.getElementById('buildBtn'), g=document.getElementById('gradeBtn'), n=document.getElementById('nextBtn');
+  [b,g,n].forEach(x=>x&&x.classList.remove('guidePulse'));
+  const sl=document.getElementById('stepLabel'), ng=document.getElementById('nextGuide');
+  if(state.selected.length<2){
+    sl.textContent='STEP 1 / 3　理由を2つ選ぶ';
+    ng.textContent='👇 次は、理由カードを2つ選んでください';
+  }else if(!state.currentAnswer){
+    sl.textContent='STEP 2 / 3　答案を作る';
+    ng.textContent='✓ 2つ選べました。右の「答案を作る」を押してください';
+    b.classList.add('guidePulse');
+  }else{
+    sl.textContent='STEP 3 / 3　語数を確認して判定';
+    ng.textContent='✓ 答案ができました。50〜60語を確認して「判定する」を押してください';
+    g.classList.add('guidePulse');
+  }
+}
+const _renderStudy=renderStudy;
+renderStudy=function(){_renderStudy();updateStepGuide()}
+const _buildAnswer=buildAnswer;
+buildAnswer=function(){_buildAnswer();updateStepGuide()}
+
+document.getElementById('opinionModeBtn').onclick=()=>start(false);
+document.getElementById('emailModeBtn').onclick=()=>{show('emailStudy');renderEmail()};
+document.getElementById('emailHome').onclick=()=>{updateHome();show('home')};
+
+let emailSelected=[];
+function emailWords(t){return (t.trim().match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]).length}
+function renderEmail(){
+  emailSelected=[];
+  document.querySelectorAll('.emailQ').forEach(x=>x.classList.remove('selected','guidePulse'));
+  document.getElementById('emailAnswer').value='';
+  document.getElementById('emailStep').textContent='STEP 1 / 5　メールを読む → 質問を2つ選ぶ';
+  document.getElementById('emailGuide').textContent='👇 STEP 2：本文にまだ答えがない質問を2つ選んでください';
+  document.getElementById('emailBuild').classList.remove('guidePulse');
+  document.getElementById('emailCheck').classList.remove('guidePulse');
+  updateEmailMeter();
+}
+document.querySelectorAll('.emailQ').forEach(btn=>btn.onclick=()=>{
+  const q=btn.dataset.q;
+  if(emailSelected.includes(q)){emailSelected=emailSelected.filter(x=>x!==q);btn.classList.remove('selected')}
+  else if(emailSelected.length<2){emailSelected.push(q);btn.classList.add('selected')}
+  if(emailSelected.length===2){
+    document.getElementById('emailStep').textContent='STEP 3 / 5　答案を作る';
+    document.getElementById('emailGuide').textContent='✓ 質問を2つ選べました。右の点滅ボタンを押してください';
+    document.getElementById('emailBuild').classList.add('guidePulse');
+  }
+});
+document.getElementById('emailBuild').onclick=()=>{
+ if(emailSelected.length!==2){alert('質問を2つ選んでください');return}
+ const t=`I would like to ask you two questions about the weekend bus service.
+First, ${emailSelected[0]}
+Second, ${emailSelected[1]}
+About your question, I think more cities will have services like this.
+This is because they can help many older people.`;
+ document.getElementById('emailAnswer').value=t;
+ document.getElementById('emailBuild').classList.remove('guidePulse');
+ document.getElementById('emailCheck').classList.add('guidePulse');
+ document.getElementById('emailStep').textContent='STEP 4 / 5　40〜50語を確認して判定';
+ document.getElementById('emailGuide').textContent='✓ 答案ができました。右の語数を見て「判定する」を押してください';
+ updateEmailMeter();
+};
+function updateEmailMeter(){
+ const n=emailWords(document.getElementById('emailAnswer').value);
+ document.getElementById('emailCount').textContent=n+' / 40–50';
+ document.getElementById('emailFill').style.width=Math.min(100,n/50*100)+'%';
+ document.getElementById('emailFill').style.background=n>=40&&n<=50?'var(--good)':n>50?'var(--bad)':'#a78bfa';
+}
+document.getElementById('emailAnswer').addEventListener('input',updateEmailMeter);
+document.getElementById('emailCheck').onclick=()=>{
+ const t=document.getElementById('emailAnswer').value,n=emailWords(t),qs=(t.match(/\?/g)||[]).length,ok=n>=40&&n<=50&&qs>=2;
+ document.getElementById('emailCheckMsg').textContent=ok?'✓ 40〜50語・質問2つを確認できました。STEP 5へ進めます。':'△ 40〜50語と、質問が2つ入っているか確認してください。';
+ if(ok){document.getElementById('emailStep').textContent='STEP 5 / 5　クリア！';document.getElementById('emailCheck').classList.remove('guidePulse');document.getElementById('emailNext').classList.add('guidePulse')}
+};
+document.getElementById('emailNext').onclick=()=>renderEmail();
+
 updateHome();
 </script>
 </body>
