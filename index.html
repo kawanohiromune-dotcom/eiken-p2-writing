@@ -170,6 +170,30 @@ h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}
   #guide{left:4%;right:4%;font-size:10px;padding:6px 38px}
   .sequenceGrid{gap:5px}.seq{min-height:40px;padding:6px 4px;font-size:10px}
 }
+
+/* ===== RESULT / PRINT ===== */
+.resultScreen{background:#07111f;padding:14px;overflow:auto}
+.resultWrap{width:min(1180px,96vw);min-height:calc(100dvh - 28px);margin:auto;background:#fff;color:#0f172a;border-radius:20px;padding:22px 26px;display:flex;flex-direction:column;gap:14px}
+.resultHead{display:flex;align-items:flex-end;justify-content:space-between;border-bottom:4px solid #38bdf8;padding-bottom:10px}
+.resultHead h2{font-size:30px;margin:2px 0 0}.resultKicker{font-size:12px;font-weight:900;color:#0284c7;letter-spacing:.08em}.resultWords{font-size:18px;font-weight:950;color:#0f766e}
+.resultQuestionBox{background:#f1f5f9;border-radius:14px;padding:12px 16px}.resultLabel{font-size:10px;font-weight:900;color:#64748b}.resultQuestion{font-size:20px;font-weight:950;line-height:1.35}.resultJp{font-size:13px;color:#64748b;margin-top:4px}
+.resultAnswer{display:grid;gap:8px;flex:1;align-content:start}.resultLine{border-left:5px solid #38bdf8;background:#f8fafc;border-radius:8px;padding:8px 12px}.resultEn{font-size:20px;font-weight:900;line-height:1.3}.resultLine .resultJp{font-size:13px;color:#475569}.resultActions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;border-top:1px solid #cbd5e1;padding-top:10px}
+@media(max-width:850px){.resultScreen{padding:6px}.resultWrap{width:100%;min-height:calc(100dvh - 12px);padding:10px 14px;gap:7px;border-radius:12px}.resultHead h2{font-size:20px}.resultWords{font-size:13px}.resultQuestionBox{padding:7px 10px}.resultQuestion{font-size:14px}.resultJp{font-size:9px}.resultAnswer{gap:4px}.resultLine{padding:5px 8px}.resultEn{font-size:13px}.resultLine .resultJp{font-size:9px}.resultActions{padding-top:6px}.resultActions .btn{padding:7px 10px;font-size:11px}}
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  body{background:#fff!important;overflow:visible!important}
+  body>*{display:none!important}
+  #result{display:block!important;position:static!important;width:auto!important;height:auto!important;padding:0!important;background:#fff!important}
+  #result .resultWrap{display:block!important;width:auto!important;min-height:0!important;margin:0!important;padding:0!important;border-radius:0!important}
+  #result .resultActions{display:none!important}
+  #result .resultHead{margin-bottom:10mm}
+  #result .resultQuestionBox{margin-bottom:8mm}
+  #result .resultAnswer{display:block!important}
+  #result .resultLine{break-inside:avoid;margin-bottom:4mm;background:#fff!important;border:1px solid #cbd5e1!important;border-left:5px solid #38bdf8!important}
+  #result .resultEn{font-size:16pt!important}
+  #result .resultJp{font-size:10pt!important;color:#475569!important}
+}
+
 </style>
 </head>
 <body>
@@ -218,12 +242,35 @@ h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}
     <div class="track"><div id="stepFill" class="fill"></div></div>
     <div class="langBox">
       <button class="langBtn" data-lang="show">訳あり</button>
-      <button class="langBtn" data-lang="tap">押して訳</button>
       <button class="langBtn" data-lang="hide">訳なし</button>
     </div>
     <button id="helpBtn" class="railBtn">？</button>
     <button id="homeBtn" class="railBtn">ホーム</button>
   </aside>
+</section>
+
+<section id="result" class="screen resultScreen">
+  <div class="resultWrap">
+    <div class="resultHead">
+      <div>
+        <div class="resultKicker">1問完成</div>
+        <h2>完成答案</h2>
+      </div>
+      <div id="resultWordCount" class="resultWords"></div>
+    </div>
+    <div class="resultQuestionBox">
+      <div class="resultLabel">QUESTION</div>
+      <div id="resultQuestion" class="resultQuestion"></div>
+      <div id="resultQuestionJp" class="resultJp"></div>
+    </div>
+    <div id="resultAnswer" class="resultAnswer"></div>
+    <div class="resultActions">
+      <button id="printResult" class="btn primary">🖨️ プリント</button>
+      <button id="nextResult" class="btn primary">次の問題 ▶</button>
+      <button id="retryResult" class="btn secondary">この問題をもう一度</button>
+      <button id="resultHome" class="btn ghost">ホーム</button>
+    </div>
+  </div>
 </section>
 
 <section id="email" class="screen">
@@ -242,6 +289,7 @@ const QUESTIONS=[
  q:"Do you think students should study before school in the morning?",
  jp:"生徒は朝、学校へ行く前に勉強するべきだと思いますか？",
  statement:"students should study before school in the morning",
+ openingJp:"私は、生徒は朝、学校へ行く前に勉強するべきだと思います。",
  reasons:[
   {cat:"📚 学び",en:"they can study more",jp:"より多く勉強できる",detail:"they can review important things before class",detailJp:"授業前に大事なことを復習できる"},
   {cat:"⏰ 時間",en:"they can use their time well",jp:"時間を上手に使える",detail:"they can finish some homework early",detailJp:"宿題の一部を早く終えられる"},
@@ -255,6 +303,7 @@ const QUESTIONS=[
  q:"Should families make time to play sports together?",
  jp:"家族は一緒にスポーツをする時間を作るべきですか？",
  subject:"families",predicate:"make time to play sports together",
+ openingJp:"私は、家族は一緒にスポーツをする時間を作るべきだと思います。",
  reasons:[
   {cat:"❤️ 健康",en:"they can stay healthy",jp:"健康でいられる",detail:"they can exercise more together",detailJp:"一緒にもっと運動できる"},
   {cat:"👥 家族",en:"they can spend more time together",jp:"一緒に過ごす時間が増える",detail:"they can talk and have fun while playing sports",detailJp:"スポーツをしながら話したり楽しんだりできる"},
@@ -268,6 +317,7 @@ const QUESTIONS=[
  q:"Do you think students should use tablet computers for studying?",
  jp:"生徒は勉強にタブレット端末を使うべきだと思いますか？",
  statement:"students should use tablet computers for studying",
+ openingJp:"私は、生徒は勉強にタブレット端末を使うべきだと思います。",
  reasons:[
   {cat:"🔎 便利",en:"they can find information quickly",jp:"情報をすぐ見つけられる",detail:"they can search for words and pictures easily",detailJp:"単語や画像を簡単に調べられる"},
   {cat:"📚 学び",en:"they can learn in many ways",jp:"いろいろな方法で学べる",detail:"they can watch videos and use learning apps",detailJp:"動画や学習アプリを使える"},
@@ -284,6 +334,7 @@ const defaultState=()=>({
 });
 let state;
 try{state=Object.assign(defaultState(),JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){state=defaultState()}
+if(state.lang==="tap") state.lang="show";
 const debugStep=Number(new URLSearchParams(location.search).get("testStep")||0);
 if(debugStep){
  state=defaultState(); state.step=debugStep;
@@ -309,17 +360,12 @@ function flash(t){$("flash").textContent=t;$("flash").classList.remove("show");v
 function opening(x){return x.type==="doThink" ? `I think that ${x.statement}.` : `I think that ${x.subject} should ${x.predicate}.`}
 function jpHTML(jp){
  if(state.lang==="hide")return "";
- if(state.lang==="show")return `<span class="jp">${jp}</span>`;
- return `<span class="jp">［タップで訳］</span>`;
+ return jp ? `<span class="jp">${jp}</span>` : "";
 }
 function choice(text,jp,onClick,cls=""){
  const b=document.createElement("button");b.className=`choice ${cls}`;b.innerHTML=`${text}${jpHTML(jp)}`;
- b.onclick=()=>{
-   if(state.lang==="tap"){
-     const j=b.querySelector(".jp"); if(j&&j.textContent.includes("タップで訳")){j.textContent=jp;return}
-   }
-   onClick();
- };return b;
+ b.onclick=onClick;
+ return b;
 }
 function addLine(text,role){state.lines.push({text,role});save()}
 function setStep(n){state.step=n;state.stage=null;state.fixedTapped=false;save();render()}
@@ -489,6 +535,39 @@ function wordStep(){
  setDock("STEP 8｜語数確認",`${n} WORDS`,"60語を超えています。",false);
  const b=document.createElement("button");b.className="fixedButton";b.textContent="この問題をやり直す";b.onclick=resetCurrent;$("controls").append(b);
 }
+function resultTranslations(){
+ const x=q();
+ const r1=x.reasons[state.selected1]||null;
+ const r2=x.reasons[state.selected2]||null;
+ const rows=[];
+ rows.push({en:opening(x),jp:x.openingJp||"私は、そう思います。"});
+ rows.push({en:"I have two reasons.",jp:"理由は2つあります。"});
+ if(r1){
+   rows.push({en:state.lines.find(v=>v.role==="reason")?.text||`First, ${r1.en}.`,jp:`第一に、${r1.jp}。`});
+   rows.push({en:state.lines.find(v=>v.role==="example")?.text||`For example, ${r1.detail}.`,jp:`例えば、${r1.detailJp}。`});
+ }
+ if(r2){
+   const reasons=state.lines.filter(v=>v.role==="reason");
+   const examples=state.lines.filter(v=>v.role==="example");
+   rows.push({en:reasons[1]?.text||`Second, ${r2.en}.`,jp:`第二に、${r2.jp}。`});
+   rows.push({en:examples[1]?.text||`For example, ${r2.detail}.`,jp:`例えば、${r2.detailJp}。`});
+ }
+ rows.push({en:"For these reasons, I think so.",jp:"これらの理由から、私はそう思います。"});
+ return rows;
+}
+function showResult(){
+ const x=q();
+ $("resultQuestion").textContent=x.q;
+ $("resultQuestionJp").textContent=x.jp;
+ $("resultWordCount").textContent=`${words(allText())} words`;
+ const wrap=$("resultAnswer");wrap.innerHTML="";
+ resultTranslations().forEach(row=>{
+   const d=document.createElement("div");d.className="resultLine";
+   d.innerHTML=`<div class="resultEn">${row.en}</div><div class="resultJp">${row.jp}</div>`;
+   wrap.append(d);
+ });
+ showScreen("result");
+}
 function sequenceStep(){
  setDock("STEP 9｜型を再現","I think that → I have two reasons → First, they can → For example, they can → Second, they can → For example, they can → 結論","全文ではなく順番を思い出す",false);
  guide("答案の定型文を、正しい順番にタップしてください。");
@@ -501,33 +580,26 @@ function sequenceStep(){
    {id:"example2",text:"For example, they can ～."},
    {id:"close",text:"For these reasons, I think so."}
  ];
- if(state.sequence.some(x=>typeof x==="string")){ state.sequence=[]; save(); }
+ if(state.sequence.some(x=>typeof x==="string")){state.sequence=[];save()}
  const made=document.createElement("div");made.className="sequenceMade";
- state.sequence.forEach(id=>{
-   const item=target.find(x=>x.id===id); if(!item)return;
-   const s=document.createElement("span");s.className="token";s.textContent=item.text;made.append(s);
- });
- const pool=[
-   {id:"second",text:"Second, they can ～."},
-   {id:"reasons",text:"I have two reasons."},
-   {id:"example1",text:"For example, they can ～."},
-   {id:"first",text:"First, they can ～."},
-   {id:"close",text:"For these reasons, I think so."},
-   {id:"open",text:"I think that ～."},
-   {id:"example2",text:"For example, they can ～."}
- ];
  const grid=document.createElement("div");grid.className="sequenceGrid";
+ const pool=[target[4],target[1],target[3],target[2],target[6],target[0],target[5]];
+ function redrawMade(){
+   made.innerHTML="";
+   state.sequence.forEach(id=>{const it=target.find(v=>v.id===id);if(!it)return;const s=document.createElement("span");s.className="token";s.textContent=it.text;made.append(s)});
+ }
+ redrawMade();
  pool.forEach(item=>{
-   const b=document.createElement("button");b.className="seq";b.textContent=item.text;
-   if(state.sequence.includes(item.id)) b.classList.add("used");
+   const b=document.createElement("button");b.className="seq";b.dataset.id=item.id;b.textContent=item.text;
+   if(state.sequence.includes(item.id))b.style.visibility="hidden";
    b.onclick=()=>{
      const pos=state.sequence.length;
-     if(item.id!==target[pos].id){toast("順番が違うよ");return}
-     state.sequence.push(item.id); b.classList.add("used"); save();
+     if(!target[pos]||item.id!==target[pos].id){toast("順番が違うよ");return}
+     state.sequence.push(item.id);save();b.style.visibility="hidden";redrawMade();
      if(state.sequence.length===target.length){
-       state.history.push({id:q().id,time:Date.now()}); state.streak++; save(); toast("1問クリア！"); setTimeout(nextQuestion,650); return;
+       state.history.push({id:q().id,time:Date.now(),words:words(allText())});state.streak++;save();
+       setTimeout(showResult,220);
      }
-     render();
    };
    grid.append(b);
  });
@@ -544,6 +616,11 @@ $("resumeOpinion").onclick=()=>{showScreen("opinion");render()};
 $("resetBtn").onclick=()=>{state=defaultState();save();showScreen("opinion");render()};
 $("startEmail").onclick=()=>showScreen("email");
 $("emailHome").onclick=()=>showScreen("home");
+$("printResult").onclick=()=>window.print();
+$("nextResult").onclick=()=>{nextQuestion();showScreen("opinion");render()};
+$("retryResult").onclick=()=>{resetCurrent();showScreen("opinion");render()};
+$("resultHome").onclick=()=>showScreen("home");
+
 
 render();
 </script>
