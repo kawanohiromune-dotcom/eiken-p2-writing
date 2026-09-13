@@ -194,6 +194,32 @@ h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}
   #result .resultJp{font-size:10pt!important;color:#475569!important}
 }
 
+
+/* ===== v5: STEP1 single-line stabilization ===== */
+.transform{
+  display:grid;
+  grid-template-columns:1fr !important;
+  gap:5px;
+}
+.transform > div:not(.arrow){
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:clip !important;
+  width:100%;
+  max-width:100%;
+  line-height:1.2 !important;
+  font-size:clamp(12px,1.45vw,18px) !important;
+}
+.transform .arrow{
+  white-space:nowrap !important;
+}
+
+/* Avoid Safari's first-landscape stale text sizing */
+#controls,.transform,.transform > div{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
+
 </style>
 </head>
 <body>
@@ -358,6 +384,31 @@ function showScreen(id){document.querySelectorAll(".screen").forEach(x=>x.classL
 function toast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),950)}
 function flash(t){$("flash").textContent=t;$("flash").classList.remove("show");void $("flash").offsetWidth;$("flash").classList.add("show")}
 function opening(x){return x.type==="doThink" ? `I think that ${x.statement}.` : `I think that ${x.subject} should ${x.predicate}.`}
+
+function fitTransformLines(){
+  document.querySelectorAll(".transform > div:not(.arrow)").forEach(el=>{
+    el.style.fontSize="";
+    let size=parseFloat(getComputedStyle(el).fontSize)||18;
+    const min=10.5;
+    let guard=0;
+    while(el.scrollWidth>el.clientWidth+1 && size>min && guard<30){
+      size-=0.5;
+      el.style.fontSize=size+"px";
+      guard++;
+    }
+  });
+}
+function scheduleFitTransform(){
+  requestAnimationFrame(()=>requestAnimationFrame(fitTransformLines));
+  setTimeout(fitTransformLines,80);
+  setTimeout(fitTransformLines,220);
+}
+window.addEventListener("resize",scheduleFitTransform);
+window.addEventListener("orientationchange",()=>{
+  setTimeout(scheduleFitTransform,120);
+  setTimeout(scheduleFitTransform,420);
+});
+
 function jpHTML(jp){
  if(state.lang==="hide")return "";
  return jp ? `<span class="jp">${jp}</span>` : "";
@@ -420,6 +471,7 @@ function render(){
  if(state.step===7)fixedStep("For these reasons, I think so.","これらの理由から、私はそう思います。","close",8,"最後の定型文を押してください。");
  if(state.step===8)wordStep();
  if(state.step===9)sequenceStep();
+ scheduleFitTransform();
 }
 function confirmDock(){
  $("dockSentence").classList.remove("ghostText");$("dockSentence").classList.remove("ink");void $("dockSentence").offsetWidth;$("dockSentence").classList.add("ink");
