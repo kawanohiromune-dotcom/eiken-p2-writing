@@ -134,7 +134,7 @@ h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}
 /* Step 9: seven items all visible */
 .sequenceGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .seq{border:1px solid var(--line);border-radius:14px;background:#182a43;color:#fff;padding:9px 7px;min-height:50px;font-size:12px;font-weight:900;cursor:pointer;text-align:center}
-.seq.used{opacity:.28;pointer-events:none}
+.seq.used{opacity:0;visibility:hidden;pointer-events:none}
 .sequenceMade{display:flex;gap:5px;flex-wrap:wrap;min-height:24px;justify-content:center}
 .token{background:#0f2e23;border:1px solid #1d7a50;border-radius:9px;padding:4px 7px;font-size:10px}
 
@@ -413,15 +413,16 @@ function fixedStep(en,jp,role,next,msg){
 function reasonStep(which){
  const x=q(),first=which===1,idx=first?state.selected1:state.selected2;
  const lead=first?"First,":"Second,";
+ const fixedChunk=`${lead} they can`;
  if(!state.stage){
-   setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,lead,first?"第一に、":"第二に、",true);
-   guide(`${first?"1つ目":"2つ目"}の理由を始める定型文を押してください。`);
-   const b=document.createElement("button");b.className="fixedButton";b.innerHTML=`${lead}<small>${first?"第一に、":"第二に、"}</small>`;
+   setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,`${fixedChunk} ______.`,first?"「第一に、彼らは〜できる」までを定型で覚える":"「第二に、彼らは〜できる」までを定型で覚える",true);
+   guide(`${first?"1つ目":"2つ目"}の理由は、「${fixedChunk}」までを定型文として押してください。`);
+   const b=document.createElement("button");b.className="fixedButton";b.innerHTML=`${fixedChunk}<small>${first?"第一に、彼らは〜できる":"第二に、彼らは〜できる"}</small>`;
    b.onclick=()=>{state.fixedTapped=true;confirmDock();setTimeout(()=>{state.stage="category";save();render()},260)};
    $("controls").append(b);return;
  }
  if(state.stage==="category"){
-   setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,`${lead} ______.`,"QUESTIONに合う理由の方向を選ぶ",false);
+   setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,`${fixedChunk} ______.`,"QUESTIONに合う理由の中身を選ぶ",false);
    guide("QUESTIONに合う理由の方向を選んでください。");
    const g=document.createElement("div");g.className="choiceGrid three";
    x.reasons.forEach((r,i)=>{
@@ -431,9 +432,9 @@ function reasonStep(which){
    $("controls").append(g);return;
  }
  const r=x.reasons[idx];
- setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,`${lead} they can ______.`,"中身を選ぶ",false);
- guide("理由として使える内容を選んでください。");
- const build=document.createElement("div");build.className="sentenceBuilder";build.innerHTML=`<span class="blue">${lead}</span> they can <span class="yellow">______</span>.`;
+ setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,`${fixedChunk} ______.`,"「they can」までは定型。後ろだけ選ぶ",false);
+ guide("「they can」の後ろに入る、理由の中身を選んでください。");
+ const build=document.createElement("div");build.className="sentenceBuilder";build.innerHTML=`<span class="blue">${fixedChunk}</span> <span class="yellow">______</span>.`;
  const g=document.createElement("div");g.className="choiceGrid three";
  const opts=[
    {en:r.en.replace(/^they can /,""),jp:r.jp,ok:true},
@@ -449,15 +450,15 @@ function reasonStep(which){
 function detailStep(which){
  const x=q(),idx=which===1?state.selected1:state.selected2,r=x.reasons[idx];
  if(!state.stage){
-   setDock(`STEP ${state.step}｜理由${which===1?"①":"②"}を詳しく`,"For example,","例えば、",true);
-   guide("具体例を始める定型文を押してください。");
-   const b=document.createElement("button");b.className="fixedButton";b.innerHTML=`For example,<small>例えば、</small>`;
+   setDock(`STEP ${state.step}｜理由${which===1?"①":"②"}を詳しく`,"For example, they can ______.","「例えば、彼らは〜できる」までを定型で覚える",true);
+   guide("具体例は、「For example, they can」までを定型文として押してください。");
+   const b=document.createElement("button");b.className="fixedButton";b.innerHTML=`For example, they can<small>例えば、彼らは〜できる</small>`;
    b.onclick=()=>{state.fixedTapped=true;confirmDock();setTimeout(()=>{state.stage="detail";save();render()},260)};
    $("controls").append(b);return;
  }
- setDock(`STEP ${state.step}｜具体化`,"For example, they can ______.","前の理由につながる内容を選ぶ",false);
- guide("前の理由につながる具体的な内容を選んでください。");
- const build=document.createElement("div");build.className="sentenceBuilder";build.innerHTML=`<span class="blue">For example,</span> they can <span class="yellow">______</span>.`;
+ setDock(`STEP ${state.step}｜具体化`,"For example, they can ______.","「For example, they can」までは定型。後ろだけ選ぶ",false);
+ guide("「they can」の後ろに入る、前の理由につながる具体的な内容を選んでください。");
+ const build=document.createElement("div");build.className="sentenceBuilder";build.innerHTML=`<span class="blue">For example, they can</span> <span class="yellow">______</span>.`;
  const other=x.reasons[(idx+1)%x.reasons.length].detail.replace(/^they can /,"");
  const opts=[
   {en:r.detail.replace(/^they can /,""),jp:r.detailJp,ok:true},
@@ -489,21 +490,43 @@ function wordStep(){
  const b=document.createElement("button");b.className="fixedButton";b.textContent="この問題をやり直す";b.onclick=resetCurrent;$("controls").append(b);
 }
 function sequenceStep(){
- setDock("STEP 9｜型を再現","I think that → I have two reasons → First → For example → Second → For example → 結論","全文ではなく順番を思い出す",false);
+ setDock("STEP 9｜型を再現","I think that → I have two reasons → First, they can → For example, they can → Second, they can → For example, they can → 結論","全文ではなく順番を思い出す",false);
  guide("答案の定型文を、正しい順番にタップしてください。");
- const target=["I think that ～.","I have two reasons.","First, ～.","For example, ～.","Second, ～.","For example, ～.","For these reasons, I think so."];
+ const target=[
+   {id:"open",text:"I think that ～."},
+   {id:"reasons",text:"I have two reasons."},
+   {id:"first",text:"First, they can ～."},
+   {id:"example1",text:"For example, they can ～."},
+   {id:"second",text:"Second, they can ～."},
+   {id:"example2",text:"For example, they can ～."},
+   {id:"close",text:"For these reasons, I think so."}
+ ];
+ if(state.sequence.some(x=>typeof x==="string")){ state.sequence=[]; save(); }
  const made=document.createElement("div");made.className="sequenceMade";
- state.sequence.forEach(t=>{const s=document.createElement("span");s.className="token";s.textContent=t;made.append(s)});
- const pool=["Second, ～.","I have two reasons.","For example, ～.","First, ～.","For these reasons, I think so.","I think that ～.","For example, ～."];
+ state.sequence.forEach(id=>{
+   const item=target.find(x=>x.id===id); if(!item)return;
+   const s=document.createElement("span");s.className="token";s.textContent=item.text;made.append(s);
+ });
+ const pool=[
+   {id:"second",text:"Second, they can ～."},
+   {id:"reasons",text:"I have two reasons."},
+   {id:"example1",text:"For example, they can ～."},
+   {id:"first",text:"First, they can ～."},
+   {id:"close",text:"For these reasons, I think so."},
+   {id:"open",text:"I think that ～."},
+   {id:"example2",text:"For example, they can ～."}
+ ];
  const grid=document.createElement("div");grid.className="sequenceGrid";
- pool.forEach(t=>{
-   const b=document.createElement("button");b.className="seq";b.textContent=t;
-   const used=state.sequence.filter(x=>x===t).length,poolCount=pool.filter(x=>x===t).length;if(used>=poolCount)b.classList.add("used");
+ pool.forEach(item=>{
+   const b=document.createElement("button");b.className="seq";b.textContent=item.text;
+   if(state.sequence.includes(item.id)) b.classList.add("used");
    b.onclick=()=>{
      const pos=state.sequence.length;
-     if(t!==target[pos]){toast("順番が違うよ");return}
-     state.sequence.push(t);save();
-     if(state.sequence.length===target.length){state.history.push({id:q().id,time:Date.now()});state.streak++;save();toast("1問クリア！");setTimeout(nextQuestion,650);return}
+     if(item.id!==target[pos].id){toast("順番が違うよ");return}
+     state.sequence.push(item.id); b.classList.add("used"); save();
+     if(state.sequence.length===target.length){
+       state.history.push({id:q().id,time:Date.now()}); state.streak++; save(); toast("1問クリア！"); setTimeout(nextQuestion,650); return;
+     }
      render();
    };
    grid.append(b);
