@@ -220,6 +220,76 @@ h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}
   text-size-adjust:100%;
 }
 
+
+/* ===== v7: lower dock restored; never reveal variable answer before selection ===== */
+#opinion .main{grid-template-rows:auto minmax(0,1fr) var(--dock)!important;}
+#opinion .dock{display:block!important;min-height:50px!important;max-height:58px!important;overflow:hidden!important;}
+
+/* ===== v6: result screen = one viewport, no scroll ===== */
+.resultScreen{background:#07111f!important;padding:8px!important;overflow:hidden!important;}
+.resultWrap{
+  width:100%!important;height:calc(100dvh - 16px)!important;min-height:0!important;
+  margin:0!important;border-radius:16px!important;padding:10px 14px!important;
+  display:grid!important;grid-template-rows:auto auto minmax(0,1fr) auto!important;
+  gap:7px!important;overflow:hidden!important;
+}
+.resultHead{padding-bottom:6px!important;border-bottom-width:3px!important;}
+.resultHead h2{font-size:clamp(20px,2.7vw,30px)!important;margin:0!important;}
+.resultKicker{font-size:9px!important;}.resultWords{font-size:clamp(13px,2vw,18px)!important;}
+.resultQuestionBox{padding:7px 10px!important;border-radius:10px!important;overflow:hidden!important;}
+.resultQuestion{font-size:clamp(13px,1.8vw,19px)!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+.resultQuestionBox .resultJp{font-size:9px!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;margin-top:2px!important;}
+.resultAnswer{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(0,1fr)!important;gap:6px!important;min-height:0!important;overflow:hidden!important;
+}
+.resultLine{min-width:0!important;min-height:0!important;border-left-width:4px!important;border-radius:8px!important;padding:6px 8px!important;overflow:hidden!important;}
+.resultEn{font-size:clamp(11px,1.35vw,16px)!important;line-height:1.12!important;}
+.resultLine .resultJp{font-size:clamp(8px,.95vw,11px)!important;line-height:1.12!important;margin-top:3px!important;}
+.resultActions{padding-top:5px!important;gap:6px!important;flex-wrap:nowrap!important;}
+.resultActions .btn{padding:7px 10px!important;font-size:11px!important;}
+
+@media(max-width:850px){
+  .resultScreen{padding:4px!important;}
+  .resultWrap{height:calc(100dvh - 8px)!important;padding:6px 8px!important;gap:4px!important;border-radius:10px!important;}
+  .resultHead{padding-bottom:3px!important;}
+  .resultHead h2{font-size:17px!important;}.resultKicker{font-size:7px!important}.resultWords{font-size:11px!important}
+  .resultQuestionBox{padding:4px 7px!important;}
+  .resultQuestion{font-size:11px!important}.resultQuestionBox .resultJp{font-size:7px!important}
+  .resultAnswer{gap:4px!important;}
+  .resultLine{padding:4px 5px!important;border-left-width:3px!important;}
+  .resultEn{font-size:9.3px!important}.resultLine .resultJp{font-size:6.9px!important;margin-top:2px!important}
+  .resultActions{padding-top:3px!important;gap:4px!important}.resultActions .btn{padding:5px 7px!important;font-size:8px!important}
+}
+
+/* ===== A4 landscape, exactly one page ===== */
+@media print{
+  @page{size:A4 landscape;margin:7mm}
+  html,body{width:100%!important;height:auto!important;background:#fff!important;overflow:visible!important;}
+  body>*{display:none!important}
+  #result{display:block!important;position:static!important;width:100%!important;height:auto!important;padding:0!important;background:#fff!important;overflow:visible!important}
+  #result .resultWrap{
+    display:grid!important;width:100%!important;height:190mm!important;min-height:0!important;
+    margin:0!important;padding:0!important;border-radius:0!important;overflow:hidden!important;
+    grid-template-rows:14mm 25mm minmax(0,1fr)!important;gap:4mm!important;
+  }
+  #result .resultHead{margin:0!important;padding:0 0 2mm!important;border-bottom:1.2mm solid #38bdf8!important;}
+  #result .resultHead h2{font-size:18pt!important}
+  #result .resultKicker{font-size:8pt!important}
+  #result .resultWords{font-size:13pt!important}
+  #result .resultQuestionBox{margin:0!important;padding:3mm 4mm!important;border-radius:3mm!important;}
+  #result .resultQuestion{font-size:13pt!important;line-height:1.15!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  #result .resultQuestionBox .resultJp{font-size:8.5pt!important;line-height:1.15!important}
+  #result .resultAnswer{
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    grid-template-rows:repeat(4,minmax(0,1fr))!important;gap:2.5mm!important;overflow:hidden!important;
+  }
+  #result .resultLine{margin:0!important;padding:2.3mm 3mm!important;border:0.35mm solid #cbd5e1!important;border-left:1.4mm solid #38bdf8!important;border-radius:2mm!important;background:#fff!important;break-inside:avoid!important;overflow:hidden!important;}
+  #result .resultEn{font-size:11pt!important;line-height:1.13!important}
+  #result .resultJp{font-size:7.8pt!important;line-height:1.13!important;color:#475569!important;margin-top:1mm!important}
+  #result .resultActions{display:none!important}
+}
+
 </style>
 </head>
 <body>
@@ -279,7 +349,7 @@ h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}
   <div class="resultWrap">
     <div class="resultHead">
       <div>
-        <div class="resultKicker">1問完成</div>
+        <div class="resultKicker">1問完成・全文確認</div>
         <h2>完成答案</h2>
       </div>
       <div id="resultWordCount" class="resultWords"></div>
@@ -492,9 +562,15 @@ function step1(x){
  }else{
   t.innerHTML=`<div><span class="red strike">Should</span> <span class="yellow">${x.subject}</span> ${x.predicate}?</div><div class="arrow">↓ Should を主語の後ろへ</div><div><span class="blue">I think that</span> ${x.subject} <span class="blue">should</span> ${x.predicate}.</div>`;
  }
- setDock("STEP 1｜書き出し",opening(x),"変換した文を答案に入れる",!state.fixedTapped);
+ setDock("STEP 1｜書き出し",`I think that ______.`,"ボタンを押すまでは完成文を表示しません",true);
  const btn=document.createElement("button");btn.className="fixedButton";btn.innerHTML=`この書き出しを答案に入れる<small>${opening(x)}</small>`;
- btn.onclick=()=>{state.fixedTapped=true;confirmDock();flash(opening(x));setTimeout(()=>{if(!state.lines.length)addLine(opening(x),"opening");setStep(2)},520)};
+ btn.onclick=()=>{
+   state.fixedTapped=true;
+   setDock("STEP 1｜書き出し",opening(x),"書き出しを答案に入れました",false);
+   confirmDock();
+   flash(opening(x));
+   setTimeout(()=>{if(!state.lines.length)addLine(opening(x),"opening");setStep(2)},520)
+ };
  box.append(t,btn);$("controls").append(box);guide("変わった部分を確認して、書き出しを答案に入れてください。");
 }
 function checkType(type,btn){
@@ -530,7 +606,7 @@ function reasonStep(which){
    $("controls").append(g);return;
  }
  const r=x.reasons[idx];
- setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,`${fixedChunk} ______.`,"「they can」までは定型。後ろだけ選ぶ",false);
+ setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,`${fixedChunk} ______.`,"カードを選ぶまでは答え部分を表示しません",false);
  guide("「they can」の後ろに入る、理由の中身を選んでください。");
  const build=document.createElement("div");build.className="sentenceBuilder";build.innerHTML=`<span class="blue">${fixedChunk}</span> <span class="yellow">______</span>.`;
  const g=document.createElement("div");g.className="choiceGrid three";
@@ -541,7 +617,11 @@ function reasonStep(which){
  ];
  opts.forEach(o=>g.append(choice(o.en,o.jp,()=>{
    if(!o.ok){toast("QUESTIONに合うものを選ぼう");return}
-   const s=`${lead.replace(",","")}, ${r.en}.`;flash(s);setTimeout(()=>{addLine(s,"reason");state.stage=null;save();setStep(first?4:6)},480)
+   const s=`${lead.replace(",","")}, ${r.en}.`;
+   setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,s,"選んだカードで文が完成しました",false);
+   confirmDock();
+   flash(s);
+   setTimeout(()=>{addLine(s,"reason");state.stage=null;save();setStep(first?4:6)},520)
  })));
  $("controls").append(build,g);
 }
@@ -554,7 +634,7 @@ function detailStep(which){
    b.onclick=()=>{state.fixedTapped=true;confirmDock();setTimeout(()=>{state.stage="detail";save();render()},260)};
    $("controls").append(b);return;
  }
- setDock(`STEP ${state.step}｜具体化`,"For example, they can ______.","「For example, they can」までは定型。後ろだけ選ぶ",false);
+ setDock(`STEP ${state.step}｜具体化`,"For example, they can ______.","カードを選ぶまでは答え部分を表示しません",false);
  guide("「they can」の後ろに入る、前の理由につながる具体的な内容を選んでください。");
  const build=document.createElement("div");build.className="sentenceBuilder";build.innerHTML=`<span class="blue">For example, they can</span> <span class="yellow">______</span>.`;
  const other=x.reasons[(idx+1)%x.reasons.length].detail.replace(/^they can /,"");
@@ -566,7 +646,11 @@ function detailStep(which){
  const g=document.createElement("div");g.className="choiceGrid three";
  opts.forEach(o=>g.append(choice(o.en,o.jp,()=>{
    if(!o.ok){toast("前の理由とつながるものを選ぼう");return}
-   const s=`For example, ${r.detail}.`;flash(s);setTimeout(()=>{addLine(s,"example");state.stage=null;save();setStep(which===1?5:7)},480)
+   const s=`For example, ${r.detail}.`;
+   setDock(`STEP ${state.step}｜具体化`,s,"選んだカードで文が完成しました",false);
+   confirmDock();
+   flash(s);
+   setTimeout(()=>{addLine(s,"example");state.stage=null;save();setStep(which===1?5:7)},520)
  })));
  $("controls").append(build,g);
 }
