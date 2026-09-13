@@ -255,6 +255,189 @@ button{touch-action:manipulation}
   #opinion .left > .card{padding:7px 10px}
 }
 
+
+/* ===== compact landscape layout v2 ===== */
+
+/* Top bar: title on left, all controls aligned on one row at right */
+#opinion .topbar{
+  display:grid;
+  grid-template-columns:minmax(300px,1fr) auto;
+  align-items:center;
+  gap:12px;
+  padding:7px 14px;
+}
+#opinion .topbar > div:first-child{
+  min-width:0 !important;
+}
+#opinion .topbar > div:last-child{
+  display:flex !important;
+  align-items:center;
+  justify-content:flex-end;
+  gap:7px !important;
+  flex-wrap:nowrap;
+}
+#opinion .langToggle{
+  flex-wrap:nowrap;
+  white-space:nowrap;
+}
+#opinion .langToggle button{
+  padding:7px 10px;
+}
+#opinion #guideReplay,
+#opinion #opHome{
+  flex:0 0 auto;
+}
+
+/* QUESTION: compact, one line */
+#opinion .left > .card{
+  padding:7px 12px;
+  border-radius:15px;
+}
+#opinion .left > .card .small:first-child{
+  display:inline-block;
+  margin-right:10px;
+  vertical-align:middle;
+}
+#opinion #question{
+  display:inline-block;
+  max-width:calc(100% - 105px);
+  vertical-align:middle;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:clamp(14px,1.75vw,21px);
+  line-height:1.25;
+  margin-top:0;
+}
+#opinion #questionJp{
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  margin-top:4px !important;
+  font-size:11px;
+}
+
+/* Main controls: clearly scrollable */
+#opinion #controls{
+  position:relative;
+  overflow-y:auto !important;
+  scrollbar-width:auto !important;
+  scrollbar-color:#38bdf8 #142238;
+  padding:4px 12px 10px 2px;
+}
+#opinion #controls::-webkit-scrollbar{
+  display:block !important;
+  width:10px;
+}
+#opinion #controls::-webkit-scrollbar-track{
+  background:#142238;
+  border-radius:99px;
+}
+#opinion #controls::-webkit-scrollbar-thumb{
+  background:#38bdf8;
+  border:2px solid #142238;
+  border-radius:99px;
+}
+#opinion #controls::after{
+  content:"";
+  position:sticky;
+  display:block;
+  bottom:0;
+  left:0;
+  height:18px;
+  pointer-events:none;
+  background:linear-gradient(to bottom,rgba(8,17,31,0),rgba(8,17,31,.92));
+}
+
+/* Bottom white box: smaller + independently scrollable */
+.currentDock{
+  min-height:76px !important;
+  max-height:112px;
+  padding:7px 14px calc(7px + env(safe-area-inset-bottom)) !important;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:#94a3b8 #e2e8f0;
+}
+.currentDock::-webkit-scrollbar{width:7px}
+.currentDock::-webkit-scrollbar-track{background:#e2e8f0}
+.currentDock::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:99px}
+.currentDockTop{
+  margin-bottom:2px;
+  position:sticky;
+  top:0;
+  background:#fff;
+  z-index:2;
+}
+.currentSentence{
+  font-size:clamp(17px,2.15vw,25px) !important;
+  line-height:1.18 !important;
+}
+.currentTranslation{
+  font-size:11px !important;
+  margin-top:2px !important;
+}
+
+/* Fit more controls without needing to scroll */
+#opinion .choice{
+  min-height:50px !important;
+  padding:9px 11px !important;
+}
+#opinion .fixedBtn{
+  min-height:48px !important;
+  padding:9px 12px !important;
+}
+#opinion .fixedBtn .en{
+  font-size:17px !important;
+}
+#opinion .fixedBtn .jp{
+  margin-top:2px !important;
+  font-size:11px !important;
+}
+#opinion .transformBox{
+  padding:9px 11px;
+  margin-top:5px;
+  font-size:15px;
+  line-height:1.4;
+}
+
+/* Small visible cue for the middle scroll area */
+#opinion .left::after{
+  content:"中央エリアは上下にスクロールできます";
+  position:absolute;
+  right:30px;
+  bottom:122px;
+  z-index:7;
+  font-size:10px;
+  font-weight:800;
+  color:#7dd3fc;
+  background:rgba(8,17,31,.78);
+  border:1px solid #26506b;
+  border-radius:99px;
+  padding:4px 8px;
+  pointer-events:none;
+  opacity:.78;
+}
+#opinion .left{
+  position:relative;
+}
+
+@media(max-width:850px){
+  #opinion .topbar{
+    grid-template-columns:minmax(250px,1fr) auto;
+    gap:8px;
+    padding:5px 8px;
+  }
+  #opinion .brand{font-size:14px}
+  #opinion .stepTitle{font-size:15px}
+  #opinion .langToggle button{padding:6px 7px;font-size:11px}
+  #opinion #guideReplay,
+  #opinion #opHome{padding:8px 10px}
+  #opinion #question{font-size:14px}
+  .currentDock{max-height:96px}
+  #opinion .left::after{bottom:102px}
+}
+
 </style>
 </head>
 <body>
@@ -330,7 +513,7 @@ button{touch-action:manipulation}
   </div>
   <div id="currentDock" class="currentDock">
     <div class="currentDockTop">
-      <div id="currentDockLabel" class="currentDockLabel">このSTEPで作る文</div>
+      <div id="currentDockLabel" class="currentDockLabel">このSTEPの文</div>
       <div id="currentDockCount" class="currentDockCount"></div>
     </div>
     <div id="currentSentence" class="currentSentence">I think that <span class="blankPart">...</span></div>
@@ -620,7 +803,7 @@ function renderCurrentDock(){
 
 function renderOpinion(){
  const x=q();
- question.textContent=x.q;
+ question.textContent=x.q; question.title=x.q;
  questionJp.textContent=state.lang==="hide"?"":x.jp;
  stepTitle.textContent=`STEP ${state.step} / 9　${["","QUESTION → 書き出し","理由を始める","理由①を作る","理由①を詳しくする","理由②を作る","理由②を詳しくする","最後の定型文","50〜60語に仕上げる","見ないで型を再現"][state.step]}`;
  stepFill.style.width=(state.step/9*100)+"%";
