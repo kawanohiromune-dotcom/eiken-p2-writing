@@ -1095,6 +1095,40 @@ button{touch-action:manipulation}
   .completionFlash{max-width:66vw}
 }
 
+
+/* ===== v7 STEP1 usability fix ===== */
+#opinion #controls .transformBox{
+  flex:0 0 auto !important;
+  max-height:120px !important;
+  overflow:hidden !important;
+}
+#opinion #controls .transformBox + .bigAction{
+  flex:0 0 auto !important;
+  min-height:54px !important;
+  max-height:62px !important;
+  margin-top:0 !important;
+}
+#opinion #controls .transformBox + .bigAction .en{
+  font-size:17px !important;
+}
+#opinion #controls .arrow{
+  font-size:18px !important;
+  margin:1px 0 !important;
+}
+@media(max-width:850px){
+  #opinion #controls .transformBox{
+    max-height:96px !important;
+    font-size:13px !important;
+  }
+  #opinion #controls .transformBox + .bigAction{
+    min-height:46px !important;
+    max-height:52px !important;
+  }
+  #opinion #controls .transformBox + .bigAction .en{
+    font-size:15px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -1601,18 +1635,26 @@ function renderOpinion(){
  renderCurrentDock();
 }
 function step1(x){
- setGuide("QUESTIONの形を見抜こう。正しい形をタップすると、<b>どこがどう変わるか</b>を色で見せます。");
+ if(state.step1Correct){
+   setGuide("変わったところを確認して、書き出しを答案に入れましょう。");
+   showTransform(x);
+   return;
+ }
+ setGuide("QUESTIONの形を見抜こう。正しい形をタップすると、どこがどう変わるかを色で見せます。");
  const g=document.createElement("div");g.className="choiceGrid";
  const a=choiceBtn("Do you think ～ ?",()=>checkType("doThink",a));
  const b=choiceBtn("Should ～ ?",()=>checkType("should",b));
  g.append(a,b);controls.appendChild(g);
- if(state.step1Correct)showTransform(x);
 }
 function checkType(type,btn){
  if(type===q().type){
-   btn.classList.add("correct");state.step1Correct=true;save();setTimeout(()=>showTransform(q()),250);
+   btn.classList.add("correct");
+   state.step1Correct=true;
+   save();
+   setTimeout(()=>renderOpinion(),220);
  }else{
-   btn.classList.add("wrong");toast("もう一度！ QUESTIONの最初を見てみよう");
+   btn.classList.add("wrong");
+   toast("もう一度！ QUESTIONの最初を見てみよう");
    setTimeout(()=>btn.classList.remove("wrong"),600);
  }
 }
@@ -1629,7 +1671,7 @@ function showTransform(x){
   <div><span class="replace flash">I think that</span> <span class="keep">${x.subject}</span> <span class="replace">should</span> ${x.predicate}.</div>`;
  }
  controls.appendChild(box);
- const btn=document.createElement("button");btn.className="btn fixedBtn bigAction pulse";btn.innerHTML=`<span class="en">この書き出しを答案に入れる</span><span class="jp">${openingFor(x)}</span>`;
+ const btn=document.createElement("button");btn.className="btn fixedBtn bigAction pulse";btn.innerHTML=`<span class="en">👇 この書き出しを答案に入れる</span><span class="jp">${openingFor(x)}</span>`;
  btn.onclick=()=>{
    state.fixedTapped=true; save(); renderCurrentDock();
    currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
