@@ -88,6 +88,112 @@ button{touch-action:manipulation}
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0b1525;border:1px solid var(--line);padding:11px 16px;border-radius:99px;font-weight:900;opacity:0;pointer-events:none;transition:.25s;z-index:50}.toast.show{opacity:1}
 @media(max-width:850px){.studyBody,.emailWrap{grid-template-columns:46% 54%}.choiceGrid{grid-template-columns:1fr 1fr}.answerLine{font-size:15px}.left,.right{padding:10px}.topbar{padding:8px 10px}}
 @media(orientation:portrait) and (max-width:900px){.rotate{display:flex;position:fixed;inset:0;background:#07101e;color:#fff;z-index:100;align-items:center;justify-content:center;text-align:center;padding:28px}.hero{grid-template-columns:1fr}}
+
+/* ===== iPhone landscape: one-column opinion layout ===== */
+#opinion .studyBody{
+  display:block;
+  flex:1;
+  min-height:0;
+}
+#opinion .left{
+  height:100%;
+  width:100%;
+  border-right:0;
+  padding:10px 14px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+#opinion .left > .card{
+  flex:0 0 auto;
+  padding:11px 14px;
+}
+#opinion #guide{
+  flex:0 0 auto;
+  margin-top:0 !important;
+  padding:8px 11px;
+}
+#opinion #controls{
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+  margin-top:0;
+  padding:2px 2px 8px;
+}
+#opinion .right{display:none !important}
+
+.currentDock{
+  flex:0 0 auto;
+  background:#ffffff;
+  color:#0f172a;
+  border-top:4px solid var(--accent);
+  padding:9px 16px calc(9px + env(safe-area-inset-bottom));
+  min-height:104px;
+  box-shadow:0 -10px 28px rgba(0,0,0,.28);
+  position:relative;
+  z-index:8;
+}
+.currentDockTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  margin-bottom:4px;
+}
+.currentDockLabel{
+  color:#64748b;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.06em;
+}
+.currentDockCount{
+  color:#64748b;
+  font-size:11px;
+  font-weight:900;
+}
+.currentSentence{
+  font-size:clamp(19px,2.8vw,30px);
+  line-height:1.25;
+  font-weight:950;
+  white-space:normal;
+}
+.currentSentence .fixedPart{color:#7c3aed}
+.currentSentence .changePart{color:#0284c7}
+.currentSentence .contentPart{color:#ca8a04}
+.currentSentence .examplePart{color:#16a34a}
+.currentSentence .closePart{color:#db2777}
+.currentSentence .blankPart{
+  display:inline-block;
+  min-width:90px;
+  border-bottom:3px solid #94a3b8;
+  color:#94a3b8;
+  text-align:center;
+}
+.currentTranslation{
+  color:#64748b;
+  font-size:12px;
+  margin-top:4px;
+  font-weight:700;
+}
+@keyframes dockPop{
+  0%{transform:translateY(8px);opacity:.45}
+  50%{transform:translateY(-2px);opacity:1}
+  100%{transform:translateY(0);opacity:1}
+}
+.dockPop{animation:dockPop .38s ease}
+@media(max-width:850px){
+  #opinion .question{font-size:16px;line-height:1.35}
+  #opinion .left > .card{padding:8px 11px}
+  #opinion #guide{font-size:12px;line-height:1.35}
+  #opinion .choice{min-height:58px;padding:10px}
+  #opinion .fixedBtn{min-height:50px}
+  #opinion .fixedBtn .en{font-size:18px}
+  .currentDock{min-height:92px;padding-top:7px}
+  .currentSentence{font-size:20px}
+}
+
 </style>
 </head>
 <body>
@@ -159,6 +265,14 @@ button{touch-action:manipulation}
         <div id="wordCount" class="count">0 / 50–60</div>
       </div>
     </div>
+  </div>
+  <div id="currentDock" class="currentDock">
+    <div class="currentDockTop">
+      <div id="currentDockLabel" class="currentDockLabel">このSTEPで作る文</div>
+      <div id="currentDockCount" class="currentDockCount"></div>
+    </div>
+    <div id="currentSentence" class="currentSentence">I think that <span class="blankPart">...</span></div>
+    <div id="currentTranslation" class="currentTranslation">このSTEPで使う部分だけを表示します。</div>
   </div>
 </section>
 
@@ -266,6 +380,7 @@ let state=JSON.parse(localStorage.getItem(KEY)||"null")||{
 const homeDone=document.getElementById("homeDone"),homeStreak=document.getElementById("homeStreak"),homeLang=document.getElementById("homeLang");
 const question=document.getElementById("question"),questionJp=document.getElementById("questionJp"),stepTitle=document.getElementById("stepTitle"),stepFill=document.getElementById("stepFill");
 const controls=document.getElementById("controls"),guide=document.getElementById("guide"),answerLines=document.getElementById("answerLines"),wordCount=document.getElementById("wordCount"),wordFill=document.getElementById("wordFill");
+const currentDock=document.getElementById("currentDock"),currentDockLabel=document.getElementById("currentDockLabel"),currentDockCount=document.getElementById("currentDockCount"),currentSentence=document.getElementById("currentSentence"),currentTranslation=document.getElementById("currentTranslation");
 
 function save(){localStorage.setItem(KEY,JSON.stringify(state))}
 function q(){return QUESTIONS[state.qIndex%QUESTIONS.length]}
@@ -288,7 +403,7 @@ function addLine(text,role){state.lines.push({text,role});save();renderAnswer()}
 function replaceLine(idx,text){if(state.lines[idx])state.lines[idx].text=text;save();renderAnswer()}
 function renderAnswer(){
  const e=answerLines;e.innerHTML="";
- if(!state.lines.length)e.innerHTML='<div class="answerLine pending">ここに1文ずつ答案が完成していきます。</div>';
+ if(!state.lines.length)e.innerHTML='<div class="answerLine pending">途中の全文は表示しません。各STEPの文は下の白枠に表示します。</div>';
  state.lines.forEach(x=>{
    const d=document.createElement("div");d.className="answerLine role-"+x.role+" pop";d.textContent=x.text;e.appendChild(d);
  });
@@ -305,6 +420,132 @@ function choiceBtn(html,fn,cls="choice"){
  const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b;
 }
 function setGuide(t){guide.innerHTML=t}
+
+function setDock(label, sentenceHtml, jp="", showCount=false){
+  currentDockLabel.textContent=label;
+  currentSentence.innerHTML=sentenceHtml;
+  currentTranslation.textContent=(state.lang==="hide" ? "" : jp);
+  currentDockCount.textContent=showCount ? (words(allText())+" / 50–60 words") : "";
+  currentSentence.classList.remove("dockPop");
+  void currentSentence.offsetWidth;
+  currentSentence.classList.add("dockPop");
+}
+function renderCurrentDock(){
+  const x=q();
+  const s1=state.selected1!==null ? x.reasons[state.selected1] : null;
+  const s2=state.selected2!==null ? x.reasons[state.selected2] : null;
+
+  if(state.step===1){
+    if(state.step1Correct){
+      if(x.type==="doThink"){
+        setDock("STEP 1｜書き出し",
+          `<span class="changePart">I think that</span> <span class="contentPart">${x.statement}</span>.`,
+          "「Do you think」を「I think that」に変える");
+      }else{
+        setDock("STEP 1｜書き出し",
+          `<span class="changePart">I think that</span> <span class="contentPart">${x.subject}</span> <span class="changePart">should</span> ${x.predicate}.`,
+          "Should を主語の後ろへ移す");
+      }
+    }else{
+      setDock("STEP 1｜書き出し",
+        `<span class="changePart">I think that</span> <span class="blankPart">QUESTIONの後半</span>.`,
+        "QUESTIONの形を見抜こう");
+    }
+    return;
+  }
+
+  if(state.step===2){
+    setDock("STEP 2｜理由を始める",
+      `<span class="fixedPart">I have two reasons.</span>`,
+      "理由は2つあります。");
+    return;
+  }
+
+  if(state.step===3){
+    if(state.stage==="phrase" && s1){
+      setDock("STEP 3｜理由①",
+        `<span class="fixedPart">First,</span> they can <span class="blankPart">ここを選ぶ</span>.`,
+        "First, の後にQUESTIONに合う理由を入れる");
+    }else if(state.stage==="category"){
+      setDock("STEP 3｜理由①",
+        `<span class="fixedPart">First,</span> <span class="blankPart">理由①</span>`,
+        "1つ目の理由を選ぼう");
+    }else{
+      setDock("STEP 3｜理由①",
+        `<span class="fixedPart">First,</span>`,
+        "第一に、");
+    }
+    return;
+  }
+
+  if(state.step===4){
+    if(state.stage==="detail" && s1){
+      setDock("STEP 4｜理由①を詳しく",
+        `<span class="fixedPart">For example,</span> they can <span class="blankPart">具体化</span>.`,
+        "例えば、理由①をもう少し具体的にする");
+    }else{
+      setDock("STEP 4｜理由①を詳しく",
+        `<span class="fixedPart">For example,</span>`,
+        "例えば、");
+    }
+    return;
+  }
+
+  if(state.step===5){
+    if(state.stage==="phrase" && s2){
+      setDock("STEP 5｜理由②",
+        `<span class="fixedPart">Second,</span> they can <span class="blankPart">ここを選ぶ</span>.`,
+        "Second, の後に別の理由を入れる");
+    }else if(state.stage==="category"){
+      setDock("STEP 5｜理由②",
+        `<span class="fixedPart">Second,</span> <span class="blankPart">理由②</span>`,
+        "2つ目は別の方向から考えよう");
+    }else{
+      setDock("STEP 5｜理由②",
+        `<span class="fixedPart">Second,</span>`,
+        "第二に、");
+    }
+    return;
+  }
+
+  if(state.step===6){
+    if(state.stage==="detail" && s2){
+      setDock("STEP 6｜理由②を詳しく",
+        `<span class="fixedPart">For example,</span> they can <span class="blankPart">具体化</span>.`,
+        "例えば、理由②をもう少し具体的にする");
+    }else{
+      setDock("STEP 6｜理由②を詳しく",
+        `<span class="fixedPart">For example,</span>`,
+        "例えば、");
+    }
+    return;
+  }
+
+  if(state.step===7){
+    setDock("STEP 7｜締め",
+      `<span class="closePart">For these reasons, I think so.</span>`,
+      "これらの理由から、私はそう思います。");
+    return;
+  }
+
+  if(state.step===8){
+    const n=words(allText());
+    setDock("STEP 8｜語数確認",
+      n>=50&&n<=60
+        ? `<span class="examplePart">🎯 ${n} WORDS — OK!</span>`
+        : `<span class="contentPart">${n} WORDS</span>`,
+      n>=50&&n<=60 ? "50〜60語に入っています。" : "必要なときだけ語数を調整します。",
+      true);
+    return;
+  }
+
+  if(state.step===9){
+    setDock("STEP 9｜型を再現",
+      `<span class="fixedPart">I think that → I have two reasons → First → For example → Second → For example → 結論</span>`,
+      "全文ではなく、答案の順番を思い出そう");
+  }
+}
+
 function renderOpinion(){
  const x=q();
  question.textContent=x.q;
@@ -323,6 +564,7 @@ function renderOpinion(){
  if(state.step===7)fixedStep("For these reasons, I think so.","これらの理由から、私はそう思います。","close",8,"最後の定型文を押して答案を締めよう！");
  if(state.step===8)wordStep();
  if(state.step===9)sequenceStep();
+ renderCurrentDock();
 }
 function step1(x){
  setGuide("QUESTIONの形を見抜こう。正しい形をタップすると、<b>どこがどう変わるか</b>を色で見せます。");
