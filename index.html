@@ -751,6 +751,143 @@ button{touch-action:manipulation}
   .currentDock{margin-right:calc(var(--railW) + 10px)}
 }
 
+
+/* ===== v5 layout hotfix: stable main area + right rail ===== */
+#opinion{
+  position:relative;
+  overflow:hidden;
+}
+
+/* Right rail: independent column, full usable height */
+#opinion .topbar{
+  position:absolute !important;
+  top:8px !important;
+  right:8px !important;
+  bottom:8px !important;
+  width:168px !important;
+  height:auto !important;
+  max-height:none !important;
+  overflow-y:auto !important;
+  padding:8px !important;
+  z-index:50 !important;
+}
+
+/* Main study area reserves the rail exactly once */
+#opinion .studyBody{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  padding:8px 186px 0 12px !important;
+  margin:0 !important;
+  overflow:hidden !important;
+}
+#opinion .left{
+  width:100% !important;
+  height:100% !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:8px !important;
+}
+
+/* QUESTION uses the whole main width */
+#opinion .left > .card{
+  width:100% !important;
+  min-height:0 !important;
+  padding:8px 12px !important;
+  flex:0 0 auto !important;
+}
+#opinion #question{
+  display:inline !important;
+  max-width:none !important;
+  width:auto !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  font-size:clamp(15px,1.8vw,22px) !important;
+}
+#opinion #questionJp{
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+/* Work area */
+#opinion #controls{
+  width:100% !important;
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  overflow-y:auto !important;
+  padding:52px 10px 10px 2px !important;
+  margin:0 !important;
+}
+
+/* Instruction strip sits only over main area */
+#opinion #guide{
+  left:16px !important;
+  right:194px !important;
+  top:118px !important;
+  width:auto !important;
+}
+
+/* Bottom white dock: normal flow, main width only.
+   Important: no 'right' offset — that was shifting it off-screen. */
+.currentDock{
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  width:auto !important;
+  margin:8px 186px 8px 12px !important;
+  min-height:92px !important;
+  max-height:116px !important;
+  flex:0 0 auto !important;
+  overflow-y:auto !important;
+  border-radius:0 !important;
+}
+
+/* Keep sidebar buttons compact enough so Home never clips */
+#opinion .topbar > div:first-child{
+  flex:0 0 auto !important;
+  padding:6px !important;
+}
+#opinion .topbar > div:last-child{
+  margin-top:8px !important;
+  gap:5px !important;
+}
+#opinion .langToggle button{
+  padding:7px 4px !important;
+}
+#opinion #guideReplay,
+#opinion #opHome{
+  padding:7px 4px !important;
+}
+
+/* Remove stray old scroll hint */
+#opinion .left::after{display:none !important}
+
+/* iPhone landscape */
+@media(max-width:850px){
+  #opinion .topbar{
+    width:142px !important;
+  }
+  #opinion .studyBody{
+    padding-right:158px !important;
+  }
+  #opinion #guide{
+    right:166px !important;
+    top:100px !important;
+  }
+  .currentDock{
+    margin-right:158px !important;
+    min-height:80px !important;
+    max-height:98px !important;
+  }
+  #opinion #controls{
+    padding-top:45px !important;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -792,7 +929,7 @@ button{touch-action:manipulation}
         <button data-lang="tap">押して訳</button>
         <button data-lang="hide">訳なし</button>
       </div>
-      <button id="guideReplay" class="btn ghost" style="padding:10px 12px">？</button>
+      <button id="guideReplay" class="btn ghost" style="padding:10px 12px" title="指示をもう一度表示・自然音声で再生">？</button>
       <button id="opHome" class="btn ghost">ホーム</button>
     </div>
   </div>
@@ -985,20 +1122,106 @@ function stripHtml(s){
   const d=document.createElement("div"); d.innerHTML=s;
   return d.textContent || d.innerText || "";
 }
+let preferredJaVoice=null;
+
+function pickNaturalJaVoice(){
+  try{
+    const voices=speechSynthesis.getVoices().filter(v=>/^ja/i.test(v.lang));
+    if(!voices.length) return null;
+
+    const preferredNames=[
+      "Siri","Kyoko","Otoya","Nanami","Hattori",
+      "Enhanced","Premium","Natural"
+    ];
+
+    for(const key of preferredNames){
+      const hit=voices.find(v=>(v.name||"").toLowerCase().includes(key.toLowerCase()));
+      if(hit) return hit;
+    }
+    return voices[0];
+  }catch(e){
+    return null;
+  }
+}
+
+function naturalizeJapanese(text){
+  let t=stripHtml(text)
+    .replace(/QUESTION/g,"クエスチョン")
+    .replace(/First,/g,"ファースト、")
+    .replace(/Second,/g,"セカンド、")
+    .replace(/For example,/g,"フォー・イグザンプル、")
+    .replace(/I have two reasons\./g,"アイ・ハブ・トゥー・リーズンズ。")
+    .replace(/I think that/g,"アイ・シンク・ザット")
+    .replace(/STEP\s*(\d+)/gi,"ステップ $1")
+    .replace(/①/g,"1")
+    .replace(/②/g,"2");
+
+  t=t
+    .replace(/。/g,"。　")
+    .replace(/、/g,"、 ")
+    .replace(/してください/g,"してください。")
+    .replace(/選ぼう/g,"選びましょう")
+    .replace(/押そう/g,"押しましょう")
+    .replace(/見抜こう/g,"見抜きましょう");
+
+  t=t.replace(/。。+/g,"。");
+  return t.trim();
+}
+
+function splitForNaturalSpeech(text){
+  const t=naturalizeJapanese(text);
+  const parts=t
+    .split(/(?<=[。！？])/)
+    .map(s=>s.trim())
+    .filter(Boolean);
+
+  const out=[];
+  parts.forEach(p=>{
+    if(p.length<=28){ out.push(p); return; }
+    const sub=p.split(/(?<=、)/).map(s=>s.trim()).filter(Boolean);
+    out.push(...sub);
+  });
+  return out;
+}
+
 function speakGuide(text){
   try{
     if(!("speechSynthesis" in window)) return;
+
     speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(stripHtml(text));
-    u.lang="ja-JP";
-    u.rate=1.02;
-    u.pitch=1.0;
-    const voices=speechSynthesis.getVoices();
-    const ja=voices.find(v=>/^ja/i.test(v.lang));
-    if(ja)u.voice=ja;
-    speechSynthesis.speak(u);
+    if(!preferredJaVoice) preferredJaVoice=pickNaturalJaVoice();
+
+    const chunks=splitForNaturalSpeech(text);
+    let i=0;
+
+    const speakNext=()=>{
+      if(i>=chunks.length) return;
+
+      const u=new SpeechSynthesisUtterance(chunks[i++]);
+      u.lang="ja-JP";
+      u.rate=0.92;
+      u.pitch=1.03;
+      u.volume=1.0;
+      if(preferredJaVoice) u.voice=preferredJaVoice;
+
+      u.onend=()=>setTimeout(speakNext,140);
+      u.onerror=()=>setTimeout(speakNext,80);
+      speechSynthesis.speak(u);
+    };
+
+    speakNext();
   }catch(e){}
 }
+
+if("speechSynthesis" in window){
+  try{
+    speechSynthesis.onvoiceschanged=()=>{
+      preferredJaVoice=pickNaturalJaVoice();
+    };
+    preferredJaVoice=pickNaturalJaVoice();
+  }catch(e){}
+}
+
 function setGuide(t){
   lastGuide=t;
   guide.innerHTML=t;
