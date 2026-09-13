@@ -4,1257 +4,239 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="英検準2級 Writing">
-<meta name="theme-color" content="#0b1220">
-<title>英検準2級 Writing Trainer</title>
+<meta name="theme-color" content="#07111f">
 <link rel="apple-touch-icon" href="icon-180.png">
+<title>英検準2級 Writing Trainer</title>
 <style>
 :root{
-  --bg:#08111f;--panel:#101b2c;--panel2:#15253a;--line:#2a3f59;--text:#f8fafc;--muted:#9fb0c4;
-  --accent:#38bdf8;--good:#22c55e;--warn:#f59e0b;--bad:#ef4444;--purple:#a78bfa;--yellow:#facc15;
-  --blue:#60a5fa;--green:#4ade80;--orange:#fb923c;--pink:#f472b6;
+  --bg:#07111f;--panel:#101d30;--panel2:#182a43;--line:#29425f;--text:#f8fafc;--muted:#9fb0c5;
+  --cyan:#38bdf8;--purple:#7c3aed;--green:#22c55e;--yellow:#facc15;--red:#f87171;
+  --rail:172px;--dock:58px;
 }
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
-button,input,textarea{font:inherit}
-button{touch-action:manipulation}
-.screen{display:none;height:100dvh;width:100%;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
-.screen.active{display:flex;flex-direction:column}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);background:rgba(10,18,31,.96);backdrop-filter:blur(8px);gap:12px}
-.brand{font-weight:900}.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button{font:inherit;touch-action:manipulation}
+.screen{display:none;width:100%;height:100dvh}
+.screen.active{display:block}
+
+/* HOME */
+#home{padding:22px}
+.homeGrid{height:100%;display:grid;place-items:center}
+.homeCard{width:min(900px,94vw);display:grid;grid-template-columns:1.2fr .8fr;gap:16px}
+.panel{background:linear-gradient(180deg,var(--panel),#0c1727);border:1px solid var(--line);border-radius:22px;padding:20px}
+h1{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}
+.muted{color:var(--muted)}
+.homeBtns{display:grid;gap:10px}
 .btn{border:0;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer}
-.primary{background:var(--accent);color:#062236}.secondary{background:#21324a;color:#fff}.ghost{background:transparent;color:#fff;border:1px solid var(--line)}
-.home{align-items:center;justify-content:center;padding:18px}
-.hero{width:min(980px,96vw);display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
-.box{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 16px 40px rgba(0,0,0,.22)}
-.title{font-size:clamp(28px,4vw,48px);font-weight:950;line-height:1.05;margin:0 0 8px}
-.actions{display:grid;gap:10px}.actions .btn{min-height:54px;text-align:left}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
-.stat{background:#0c1626;border:1px solid var(--line);border-radius:14px;padding:12px}.stat b{font-size:24px;display:block}
-.notice{background:#0b1525;border:1px solid var(--line);border-radius:14px;padding:10px 12px;line-height:1.5;color:#d6e1ee}
-.studyBody{display:grid;grid-template-columns:43% 57%;flex:1;min-height:0}
-.left,.right{min-height:0;overflow:auto;padding:14px}
-.left{border-right:1px solid var(--line)}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px}
-.question{font-size:clamp(17px,2vw,24px);font-weight:900;line-height:1.45;margin-top:6px}
-.stepTitle{font-size:18px;font-weight:950;color:var(--accent)}
-.progressTrack{height:6px;background:#20334a;border-radius:99px;overflow:hidden;margin-top:6px}.progressFill{height:100%;background:var(--accent);transition:.35s}
-.answerPaper{background:#fff;color:#0f172a;border-radius:18px;padding:16px;min-height:210px;box-shadow:inset 0 0 0 1px #dbe4ef}
-.answerTitle{font-size:12px;color:#64748b;font-weight:800;margin-bottom:8px}
-.answerLine{font-size:17px;line-height:1.75;margin:0 0 3px;min-height:29px}
-.answerLine.pending{color:#94a3b8}
-.role-opening{border-left:5px solid var(--blue);padding-left:9px}
-.role-fixed{border-left:5px solid var(--purple);padding-left:9px}
-.role-reason{border-left:5px solid var(--yellow);padding-left:9px}
-.role-example{border-left:5px solid var(--green);padding-left:9px}
-.role-close{border-left:5px solid var(--pink);padding-left:9px}
-.controls{display:grid;gap:10px;margin-top:12px}
-.choiceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.choice{background:#1a2a41;color:#fff;border:2px solid transparent;border-radius:16px;padding:13px;text-align:left;cursor:pointer;font-weight:800;min-height:72px}
-.choice:hover,.choice:active{border-color:var(--accent)}
-.choice.correct{border-color:var(--good);background:#102719}.choice.wrong{border-color:var(--bad);background:#2d1518}
-.choice .jp{display:block;margin-top:5px;color:#c4d2e3;font-size:12px;font-weight:600}
-.bigAction{width:100%;min-height:58px;font-size:17px}
-.fixedBtn{background:#312e81;color:#fff;border:2px solid #818cf8}
-.fixedBtn .en{font-size:21px;display:block}
-.fixedBtn .jp{font-size:12px;color:#ddd6fe;display:block;margin-top:4px}
-.reasonCat{min-height:78px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);background:#122238;color:#fff;border-radius:99px;padding:9px 12px;font-weight:800;cursor:pointer}
-.guide{border-color:var(--accent);color:#fff}
-.goodBox{border-color:#166534;background:#0f2519}
-.warnBox{border-color:#92400e;background:#2a1b0c}
-@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(56,189,248,0)}50%{transform:scale(1.02);box-shadow:0 0 0 7px rgba(56,189,248,.18)}}
-.pulse{animation:pulse 1.05s infinite}
-@keyframes pop{0%{opacity:0;transform:translateY(8px) scale(.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
-.pop{animation:pop .35s ease both}
-@keyframes colorFlash{0%{color:#fff}30%{color:var(--yellow);transform:scale(1.03)}100%{color:var(--accent);transform:scale(1)}}
-.flash{display:inline-block;animation:colorFlash 1s ease}
-.transformBox{background:#0a1525;border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:10px;font-size:18px;line-height:1.6}
-.strike{color:#f87171;text-decoration:line-through;text-decoration-thickness:3px}.keep{color:#facc15;font-weight:900}.replace{color:#38bdf8;font-weight:950}
-.arrow{font-size:24px;text-align:center;color:var(--muted);margin:4px 0}
-.meter{display:flex;gap:10px;align-items:center;margin-top:12px}.bar{height:12px;background:#22354c;flex:1;border-radius:99px;overflow:hidden}.fill{height:100%;width:0;background:var(--accent);transition:.3s}.count{min-width:112px;text-align:right;font-weight:950}
-.legend{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;margin-top:10px}.legend span{padding:5px 8px;border-radius:99px;background:#0d1929;border:1px solid var(--line)}
-.langToggle{display:flex;gap:5px;background:#0c1727;border:1px solid var(--line);border-radius:12px;padding:4px}
-.langToggle button{border:0;background:transparent;color:#aebed0;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:800}
-.langToggle button.active{background:#223750;color:#fff}
-.sequence{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
-.seqBtn{background:#17283e;color:#fff;border:1px solid var(--line);border-radius:14px;padding:11px;font-weight:800;cursor:pointer}
-.seqBtn.used{opacity:.32;pointer-events:none}
-.seqAnswer{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;min-height:42px}.seqToken{background:#0f2f23;border:1px solid #166534;border-radius:10px;padding:7px 9px;font-size:12px}
-.emailWrap{display:grid;grid-template-columns:45% 55%;flex:1;min-height:0}
-.rotate{display:none}
-.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0b1525;border:1px solid var(--line);padding:11px 16px;border-radius:99px;font-weight:900;opacity:0;pointer-events:none;transition:.25s;z-index:50}.toast.show{opacity:1}
-@media(max-width:850px){.studyBody,.emailWrap{grid-template-columns:46% 54%}.choiceGrid{grid-template-columns:1fr 1fr}.answerLine{font-size:15px}.left,.right{padding:10px}.topbar{padding:8px 10px}}
-@media(orientation:portrait) and (max-width:900px){.rotate{display:flex;position:fixed;inset:0;background:#07101e;color:#fff;z-index:100;align-items:center;justify-content:center;text-align:center;padding:28px}.hero{grid-template-columns:1fr}}
+.primary{background:var(--cyan);color:#062236}
+.secondary{background:#20344f;color:#fff}
+.ghost{background:transparent;border:1px solid var(--line);color:#fff}
 
-/* ===== iPhone landscape: one-column opinion layout ===== */
-#opinion .studyBody{
-  display:block;
-  flex:1;
-  min-height:0;
-}
-#opinion .left{
+/* OPINION — hard fixed landscape layout, no center scroll */
+#opinion{position:relative;overflow:hidden;padding:8px calc(var(--rail) + 16px) 8px 10px}
+.main{
   height:100%;
-  width:100%;
-  border-right:0;
-  padding:10px 14px;
-  overflow:hidden;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-#opinion .left > .card{
-  flex:0 0 auto;
-  padding:11px 14px;
-}
-#opinion #guide{
-  flex:0 0 auto;
-  margin-top:0 !important;
-  padding:8px 11px;
-}
-#opinion #controls{
-  flex:1 1 auto;
-  min-height:0;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  margin-top:0;
-  padding:2px 2px 8px;
-}
-#opinion .right{display:none !important}
-
-.currentDock{
-  flex:0 0 auto;
-  background:#ffffff;
-  color:#0f172a;
-  border-top:4px solid var(--accent);
-  padding:9px 16px calc(9px + env(safe-area-inset-bottom));
-  min-height:104px;
-  box-shadow:0 -10px 28px rgba(0,0,0,.28);
-  position:relative;
-  z-index:8;
-}
-.currentDockTop{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  margin-bottom:4px;
-}
-.currentDockLabel{
-  color:#64748b;
-  font-size:11px;
-  font-weight:900;
-  letter-spacing:.06em;
-}
-.currentDockCount{
-  color:#64748b;
-  font-size:11px;
-  font-weight:900;
-}
-.currentSentence{
-  font-size:clamp(19px,2.8vw,30px);
-  line-height:1.25;
-  font-weight:950;
-  white-space:normal;
-}
-.currentSentence .fixedPart{color:#7c3aed}
-.currentSentence .changePart{color:#0284c7}
-.currentSentence .contentPart{color:#ca8a04}
-.currentSentence .examplePart{color:#16a34a}
-.currentSentence .closePart{color:#db2777}
-.currentSentence .blankPart{
-  display:inline-block;
-  min-width:90px;
-  border-bottom:3px solid #94a3b8;
-  color:#94a3b8;
-  text-align:center;
-}
-.currentTranslation{
-  color:#64748b;
-  font-size:12px;
-  margin-top:4px;
-  font-weight:700;
-}
-@keyframes dockPop{
-  0%{transform:translateY(8px);opacity:.45}
-  50%{transform:translateY(-2px);opacity:1}
-  100%{transform:translateY(0);opacity:1}
-}
-.dockPop{animation:dockPop .38s ease}
-@media(max-width:850px){
-  #opinion .question{font-size:16px;line-height:1.35}
-  #opinion .left > .card{padding:8px 11px}
-  #opinion #guide{font-size:12px;line-height:1.35}
-  #opinion .choice{min-height:58px;padding:10px}
-  #opinion .fixedBtn{min-height:50px}
-  #opinion .fixedBtn .en{font-size:18px}
-  .currentDock{min-height:92px;padding-top:7px}
-  .currentSentence{font-size:20px}
-}
-
-
-/* ===== transient instruction popup ===== */
-#opinion #guide{
-  position:fixed;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  z-index:40;
-  width:min(78vw,980px);
-  margin:0 !important;
-  padding:14px 18px;
-  background:rgba(8,17,31,.96);
-  border:2px solid var(--accent);
-  border-radius:18px;
-  box-shadow:0 18px 50px rgba(0,0,0,.42);
-  color:#fff;
-  text-align:center;
-  font-size:16px;
-  font-weight:800;
-  line-height:1.5;
-  opacity:0;
-  pointer-events:none;
-}
-#opinion #guide.guideShow{
-  animation:guidePopup 2.15s ease forwards;
-}
-@keyframes guidePopup{
-  0%{opacity:0;transform:translate(-50%,-44%) scale(.96)}
-  12%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  78%{opacity:1;transform:translate(-50%,-50%) scale(1)}
-  100%{opacity:0;transform:translate(-50%,-54%) scale(.98)}
-}
-
-/* Give the controls all remaining vertical space. */
-#opinion .left{
-  gap:6px;
-}
-#opinion #controls{
-  margin-top:0;
-  padding:4px 2px 10px;
-  overflow-y:auto;
-  scrollbar-width:none;
-}
-#opinion #controls::-webkit-scrollbar{display:none}
-#opinion .left > .card{
-  margin-bottom:0;
-}
-#opinion .choiceGrid{
-  align-content:start;
-}
-@media(max-width:850px){
-  #opinion #guide{
-    width:88vw;
-    font-size:13px;
-    padding:11px 14px;
-  }
-  #opinion .topbar{padding-top:6px;padding-bottom:6px}
-  #opinion .question{font-size:15px}
-  #opinion .left > .card{padding:7px 10px}
-}
-
-
-/* ===== compact landscape layout v2 ===== */
-
-/* Top bar: title on left, all controls aligned on one row at right */
-#opinion .topbar{
+  min-width:0;
   display:grid;
-  grid-template-columns:minmax(300px,1fr) auto;
-  align-items:center;
-  gap:12px;
-  padding:7px 14px;
+  grid-template-rows:auto minmax(0,1fr) var(--dock);
+  gap:7px;
 }
-#opinion .topbar > div:first-child{
-  min-width:0 !important;
-}
-#opinion .topbar > div:last-child{
-  display:flex !important;
-  align-items:center;
-  justify-content:flex-end;
-  gap:7px !important;
-  flex-wrap:nowrap;
-}
-#opinion .langToggle{
-  flex-wrap:nowrap;
-  white-space:nowrap;
-}
-#opinion .langToggle button{
-  padding:7px 10px;
-}
-#opinion #guideReplay,
-#opinion #opHome{
-  flex:0 0 auto;
-}
-
-/* QUESTION: compact, one line */
-#opinion .left > .card{
+.questionCard{
+  min-width:0;
+  background:var(--panel);border:1px solid var(--line);border-radius:16px;
   padding:7px 12px;
-  border-radius:15px;
 }
-#opinion .left > .card .small:first-child{
-  display:inline-block;
-  margin-right:10px;
-  vertical-align:middle;
-}
-#opinion #question{
-  display:inline-block;
-  max-width:calc(100% - 105px);
-  vertical-align:middle;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  font-size:clamp(14px,1.75vw,21px);
-  line-height:1.25;
-  margin-top:0;
-}
-#opinion #questionJp{
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  margin-top:4px !important;
-  font-size:11px;
-}
+.qRow{display:flex;align-items:baseline;gap:12px;min-width:0}
+.qLabel{flex:0 0 auto;color:var(--muted);font-size:12px}
+#question{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:900;font-size:clamp(15px,1.8vw,22px)}
+#questionJp{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);font-size:10px;margin-top:3px}
 
-/* Main controls: clearly scrollable */
-#opinion #controls{
-  position:relative;
-  overflow-y:auto !important;
-  scrollbar-width:auto !important;
-  scrollbar-color:#38bdf8 #142238;
-  padding:4px 12px 10px 2px;
+/* Center work stage */
+.work{
+  position:relative;min-height:0;overflow:hidden;
+  display:grid;align-content:center;gap:9px;
 }
-#opinion #controls::-webkit-scrollbar{
-  display:block !important;
-  width:10px;
-}
-#opinion #controls::-webkit-scrollbar-track{
-  background:#142238;
-  border-radius:99px;
-}
-#opinion #controls::-webkit-scrollbar-thumb{
-  background:#38bdf8;
-  border:2px solid #142238;
-  border-radius:99px;
-}
-#opinion #controls::after{
-  content:"";
-  position:sticky;
-  display:block;
-  bottom:0;
-  left:0;
-  height:18px;
-  pointer-events:none;
-  background:linear-gradient(to bottom,rgba(8,17,31,0),rgba(8,17,31,.92));
-}
-
-/* Bottom white box: smaller + independently scrollable */
-.currentDock{
-  min-height:76px !important;
-  max-height:112px;
-  padding:7px 14px calc(7px + env(safe-area-inset-bottom)) !important;
-  overflow-y:auto;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:thin;
-  scrollbar-color:#94a3b8 #e2e8f0;
-}
-.currentDock::-webkit-scrollbar{width:7px}
-.currentDock::-webkit-scrollbar-track{background:#e2e8f0}
-.currentDock::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:99px}
-.currentDockTop{
-  margin-bottom:2px;
-  position:sticky;
-  top:0;
-  background:#fff;
-  z-index:2;
-}
-.currentSentence{
-  font-size:clamp(17px,2.15vw,25px) !important;
-  line-height:1.18 !important;
-}
-.currentTranslation{
-  font-size:11px !important;
-  margin-top:2px !important;
-}
-
-/* Fit more controls without needing to scroll */
-#opinion .choice{
-  min-height:50px !important;
-  padding:9px 11px !important;
-}
-#opinion .fixedBtn{
-  min-height:48px !important;
-  padding:9px 12px !important;
-}
-#opinion .fixedBtn .en{
-  font-size:17px !important;
-}
-#opinion .fixedBtn .jp{
-  margin-top:2px !important;
-  font-size:11px !important;
-}
-#opinion .transformBox{
-  padding:9px 11px;
-  margin-top:5px;
-  font-size:15px;
-  line-height:1.4;
-}
-
-/* Small visible cue for the middle scroll area */
-#opinion .left::after{
-  content:"";
-  position:absolute;
-  right:30px;
-  bottom:122px;
-  z-index:7;
-  font-size:10px;
-  font-weight:800;
-  color:#7dd3fc;
-  background:rgba(8,17,31,.78);
-  border:1px solid #26506b;
-  border-radius:99px;
-  padding:4px 8px;
-  pointer-events:none;
-  opacity:.78;
-}
-#opinion .left{
-  position:relative;
-}
-
-@media(max-width:850px){
-  #opinion .topbar{
-    grid-template-columns:minmax(250px,1fr) auto;
-    gap:8px;
-    padding:5px 8px;
-  }
-  #opinion .brand{font-size:14px}
-  #opinion .stepTitle{font-size:15px}
-  #opinion .langToggle button{padding:6px 7px;font-size:11px}
-  #opinion #guideReplay,
-  #opinion #opHome{padding:8px 10px}
-  #opinion #question{font-size:14px}
-  .currentDock{max-height:96px}
-  #opinion .left::after{bottom:102px}
-}
-
-
-/* ===== v3: STEP/status block moved to upper-right ===== */
-
-/* Remove the old horizontal top bar feel */
-#opinion .topbar{
-  position:absolute;
-  top:calc(8px + env(safe-area-inset-top));
-  right:calc(12px + env(safe-area-inset-right));
-  left:auto;
-  width:min(520px,44vw);
-  z-index:20;
-  display:grid;
-  grid-template-columns:1fr auto;
-  grid-template-areas:
-    "status tools";
-  align-items:start;
-  gap:10px;
-  padding:0;
-  border-bottom:0;
-  background:transparent;
-  backdrop-filter:none;
-}
-
-/* The red-circled block: title + STEP + progress */
-#opinion .topbar > div:first-child{
-  grid-area:status;
-  min-width:0 !important;
-  background:rgba(8,17,31,.90);
-  border:1px solid var(--line);
-  border-radius:15px;
-  padding:7px 10px 8px;
-  box-shadow:0 8px 22px rgba(0,0,0,.18);
-}
-#opinion .brand{
-  font-size:13px;
-  line-height:1.1;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-#opinion .stepTitle{
-  margin-top:3px;
-  font-size:16px;
-  line-height:1.15;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-#opinion .progressTrack{
-  height:5px;
-  margin-top:5px;
-}
-
-/* Existing utility controls remain at the far right */
-#opinion .topbar > div:last-child{
-  grid-area:tools;
-  display:flex !important;
-  flex-direction:column;
-  align-items:stretch;
-  justify-content:flex-start;
-  gap:5px !important;
-}
-#opinion .langToggle{
-  display:flex;
-  flex-direction:column;
-  gap:3px;
-  padding:3px;
-  border-radius:11px;
-}
-#opinion .langToggle button{
-  padding:5px 7px;
-  font-size:10px;
-  white-space:nowrap;
-}
-#opinion #guideReplay,
-#opinion #opHome{
-  padding:6px 8px !important;
-  min-height:0;
-  border-radius:10px;
-  font-size:11px;
-}
-
-/* Main study content now starts at the top-left with QUESTION */
-#opinion .studyBody{
-  padding-top:calc(8px + env(safe-area-inset-top));
-}
-#opinion .left{
-  padding-top:8px;
-  padding-right:calc(min(520px,44vw) + 28px);
-}
-
-/* QUESTION gets the wide left area and never sits under the status panel */
-#opinion .left > .card{
-  min-height:72px;
-}
-#opinion #question{
-  max-width:calc(100% - 105px);
-}
-
-/* Once below the question, controls may use almost the full width */
-#opinion #controls{
-  width:calc(100vw - 30px - env(safe-area-inset-left) - env(safe-area-inset-right));
-  max-width:none;
-  padding-right:12px;
-}
-
-/* Keep the white dock full-width at bottom */
-.currentDock{
-  z-index:15;
-}
-
-/* Hide old visual divider that belonged to the former top bar */
-#opinion .topbar::after{display:none}
-
-@media(max-width:850px){
-  #opinion .topbar{
-    width:min(430px,48vw);
-    top:calc(5px + env(safe-area-inset-top));
-    right:calc(7px + env(safe-area-inset-right));
-    gap:6px;
-  }
-  #opinion .topbar > div:first-child{
-    padding:5px 7px 6px;
-  }
-  #opinion .brand{font-size:11px}
-  #opinion .stepTitle{font-size:13px}
-  #opinion .left{
-    padding-right:calc(min(430px,48vw) + 18px);
-  }
-  #opinion .left > .card{min-height:62px}
-}
-
-
-/* ===== v4: right rail + instruction strip + ghost-to-confirm dock ===== */
-:root{--railW:176px}
-
-/* Reserve a permanent right rail */
-#opinion .studyBody{
-  padding-right:calc(var(--railW) + 14px) !important;
-  padding-top:8px !important;
-}
-#opinion .left{
-  padding:8px 10px 8px 14px !important;
-  width:100%;
-}
-
-/* Put ALL status / translation / help / home controls inside right rail */
-#opinion .topbar{
-  position:absolute !important;
-  top:calc(8px + env(safe-area-inset-top)) !important;
-  right:calc(8px + env(safe-area-inset-right)) !important;
-  width:var(--railW) !important;
-  height:calc(100% - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 92px);
-  z-index:30;
-  display:flex !important;
-  flex-direction:column !important;
-  gap:7px !important;
-  padding:8px !important;
-  border:1px solid var(--line) !important;
-  border-radius:18px !important;
-  background:rgba(8,17,31,.97) !important;
-  box-shadow:0 10px 28px rgba(0,0,0,.28);
-  overflow-y:auto;
-}
-#opinion .topbar > div:first-child{
-  width:100%;
-  padding:7px 8px !important;
-  border:0 !important;
-  background:transparent !important;
-  box-shadow:none !important;
-}
-#opinion .brand{
-  font-size:12px !important;
-  white-space:normal !important;
-  text-align:center;
-}
-#opinion .stepTitle{
-  font-size:14px !important;
-  white-space:normal !important;
-  text-align:center;
-  margin-top:6px !important;
-}
-#opinion .progressTrack{height:6px !important;margin-top:7px !important}
-#opinion .topbar > div:last-child{
-  width:100%;
-  display:flex !important;
-  flex-direction:column !important;
-  gap:6px !important;
-  margin-top:auto;
-}
-#opinion .langToggle{
-  width:100%;
-  display:flex !important;
-  flex-direction:column !important;
-  gap:4px !important;
-  padding:4px !important;
-}
-#opinion .langToggle button{
-  width:100%;
-  padding:8px 5px !important;
-  font-size:11px !important;
-}
-#opinion #guideReplay,#opinion #opHome{
-  width:100%;
-  padding:8px 5px !important;
-  font-size:12px !important;
-}
-
-/* Question gets full available width and stays one line */
-#opinion .left > .card{
-  min-height:58px !important;
-  padding:7px 11px !important;
-}
-#opinion #question{
-  max-width:calc(100% - 105px) !important;
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-}
-
-/* Instruction popup: slim strip between QUESTION and the work area.
-   It overlays empty transition space, never the answer choices. */
-#opinion #guide{
-  position:fixed !important;
-  left:calc(14px + env(safe-area-inset-left)) !important;
-  right:calc(var(--railW) + 26px + env(safe-area-inset-right)) !important;
-  top:126px !important;
-  width:auto !important;
-  transform:none !important;
-  min-height:44px;
-  padding:9px 50px 9px 48px !important;
-  border-radius:14px !important;
-  text-align:left !important;
-  font-size:13px !important;
-  line-height:1.35 !important;
-  background:rgba(240,249,255,.97) !important;
-  color:#0f2740 !important;
-  border:2px solid var(--accent) !important;
-  box-shadow:0 10px 28px rgba(0,0,0,.26) !important;
-}
-#opinion #guide::before{
-  content:"🔊";
-  position:absolute;
-  left:14px;top:50%;transform:translateY(-50%);
-  font-size:20px;
-}
-#opinion #guide::after{
-  content:"×";
-  position:absolute;
-  right:15px;top:50%;transform:translateY(-52%);
-  font-size:22px;font-weight:900;color:#17415f;
-}
-#opinion #guide.guideShow{
-  animation:guideStrip 2.8s ease forwards !important;
-}
-@keyframes guideStrip{
-  0%{opacity:0;transform:translateY(-5px)}
-  10%{opacity:1;transform:translateY(0)}
-  82%{opacity:1;transform:translateY(0)}
-  100%{opacity:0;transform:translateY(-4px)}
-}
-
-/* Middle area remains scrollable, but no text label floating over it */
-#opinion .left::after{display:none !important}
-#opinion #controls{
-  padding-top:54px !important; /* space for instruction strip */
-  padding-right:12px !important;
-  width:100% !important;
-}
-
-/* Bottom dock ends before right rail */
-.currentDock{
-  right:calc(var(--railW) + 14px);
-  width:auto;
-  margin-right:calc(var(--railW) + 14px);
-  min-height:86px !important;
-  max-height:118px !important;
-}
-
-/* Ghost / confirmed visual states */
-.currentSentence.ghostState{
-  opacity:.28;
-  filter:grayscale(.15);
-}
-.currentSentence.ghostState .fixedPart,
-.currentSentence.ghostState .changePart,
-.currentSentence.ghostState .contentPart,
-.currentSentence.ghostState .examplePart,
-.currentSentence.ghostState .closePart{
-  color:#64748b !important;
-}
-.currentSentence.confirmedState{
-  opacity:1;
-  filter:none;
-}
-@keyframes confirmInk{
-  0%{opacity:.28;transform:scale(.985)}
-  42%{opacity:1;transform:scale(1.018)}
-  100%{opacity:1;transform:scale(1)}
-}
-.currentSentence.inkIn{animation:confirmInk .5s ease}
-
-/* On small landscape phones use a slightly narrower rail */
-@media(max-width:850px){
-  :root{--railW:142px}
-  #opinion .topbar{padding:5px !important}
-  #opinion .brand{font-size:10px !important}
-  #opinion .stepTitle{font-size:12px !important}
-  #opinion #guide{top:104px !important;font-size:11px !important;min-height:38px;padding-top:7px !important;padding-bottom:7px !important}
-  #opinion #controls{padding-top:45px !important}
-  .currentDock{margin-right:calc(var(--railW) + 10px)}
-}
-
-
-/* ===== v5 layout hotfix: stable main area + right rail ===== */
-#opinion{
-  position:relative;
+#controls{
+  min-height:0;width:100%;height:100%;
+  display:grid;align-content:center;gap:9px;
   overflow:hidden;
 }
+.choiceGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.choiceGrid.three{grid-template-columns:repeat(3,minmax(0,1fr))}
+.choiceGrid.four{grid-template-columns:repeat(4,minmax(0,1fr))}
+.choice{
+  min-width:0;border:2px solid transparent;border-radius:16px;background:#1a2d47;color:#fff;
+  padding:10px 12px;text-align:left;font-weight:850;cursor:pointer;
+  min-height:58px;max-height:78px;overflow:hidden;
+}
+.choice.center{text-align:center}
+.choice.good{border-color:var(--green);background:#0f2b1b}
+.choice.bad{border-color:var(--red)}
+.choice .jp{display:block;color:#b9c7d8;font-size:10px;margin-top:4px;line-height:1.15}
+.fixedButton{
+  width:100%;min-height:58px;max-height:72px;border-radius:16px;border:2px solid #8b8df8;
+  background:#37358d;color:#fff;font-weight:950;font-size:clamp(17px,2vw,23px);cursor:pointer;
+}
+.fixedButton small{display:block;font-size:10px;color:#ddd6fe;margin-top:3px}
+.sentenceBuilder{
+  border:1px solid var(--line);border-radius:16px;background:#0c1829;padding:10px 13px;
+  font-size:clamp(18px,2.1vw,26px);font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.blue{color:var(--cyan)} .yellow{color:var(--yellow)} .red{color:var(--red)} .purple{color:#8b5cf6}
+.strike{text-decoration:line-through;text-decoration-thickness:3px}
+.arrow{text-align:center;color:var(--muted);font-size:20px;line-height:1}
+.transform{
+  display:grid;gap:5px;border:1px solid var(--line);border-radius:16px;background:#0c1829;padding:10px 13px;
+  font-size:clamp(16px,1.9vw,22px);font-weight:800;line-height:1.25;
+}
+.centerWrap{display:grid;gap:9px;align-content:center}
+.statusBox{border:1px solid var(--line);border-radius:16px;padding:12px;background:#0c1829;text-align:center;font-weight:900}
 
-/* Right rail: independent column, full usable height */
-#opinion .topbar{
-  position:absolute !important;
-  top:8px !important;
-  right:8px !important;
-  bottom:8px !important;
-  width:168px !important;
-  height:auto !important;
-  max-height:none !important;
-  overflow-y:auto !important;
-  padding:8px !important;
-  z-index:50 !important;
+/* transient instruction; overlays only upper edge of work */
+#guide{
+  position:absolute;left:7%;right:7%;top:4px;z-index:20;
+  background:rgba(240,249,255,.97);color:#12304a;border:2px solid var(--cyan);border-radius:13px;
+  padding:8px 46px;text-align:center;font-size:12px;font-weight:850;line-height:1.25;
+  opacity:0;pointer-events:auto;
 }
+#guide::before{content:"🔊";position:absolute;left:13px;top:50%;transform:translateY(-50%)}
+#guide::after{content:"×";position:absolute;right:14px;top:50%;transform:translateY(-54%);font-size:18px}
+#guide.show{animation:guideFade 2.65s ease forwards}
+@keyframes guideFade{0%{opacity:0;transform:translateY(-4px)}10%,80%{opacity:1;transform:none}100%{opacity:0;transform:translateY(-3px)}}
 
-/* Main study area reserves the rail exactly once */
-#opinion .studyBody{
-  flex:1 1 auto !important;
-  min-height:0 !important;
-  padding:8px 186px 0 12px !important;
-  margin:0 !important;
-  overflow:hidden !important;
+/* compact dock */
+.dock{
+  background:#fff;color:#0f172a;border-top:4px solid var(--cyan);
+  padding:4px 10px 5px;overflow:hidden;
 }
-#opinion .left{
-  width:100% !important;
-  height:100% !important;
-  padding:0 !important;
-  margin:0 !important;
-  overflow:hidden !important;
-  display:flex !important;
-  flex-direction:column !important;
-  gap:8px !important;
-}
+.dockTop{display:flex;justify-content:space-between;gap:8px;color:#64748b;font-size:9px;font-weight:900;line-height:1}
+#dockSentence{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(15px,1.8vw,20px);font-weight:950;line-height:1.25;margin-top:3px}
+#dockTranslation{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#64748b;font-size:9px;margin-top:1px}
+.ghostText{opacity:.23;color:#64748b!important}
+@keyframes ink{0%{opacity:.2;transform:scale(.985)}50%{opacity:1;transform:scale(1.015)}100%{opacity:1;transform:scale(1)}}
+.ink{animation:ink .42s ease}
 
-/* QUESTION uses the whole main width */
-#opinion .left > .card{
-  width:100% !important;
-  min-height:0 !important;
-  padding:8px 12px !important;
-  flex:0 0 auto !important;
+/* right rail */
+.rail{
+  position:absolute;top:8px;right:8px;bottom:8px;width:var(--rail);
+  background:rgba(8,17,31,.98);border:1px solid var(--line);border-radius:19px;padding:8px;
+  display:flex;flex-direction:column;gap:7px;overflow:hidden;
 }
-#opinion #question{
-  display:inline !important;
-  max-width:none !important;
-  width:auto !important;
-  white-space:nowrap !important;
-  overflow:visible !important;
-  text-overflow:clip !important;
-  font-size:clamp(15px,1.8vw,22px) !important;
-}
-#opinion #questionJp{
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-}
+.brand{text-align:center;font-size:12px;font-weight:950}
+#stepTitle{text-align:center;color:var(--cyan);font-size:14px;font-weight:950;line-height:1.15}
+.track{height:6px;background:#233852;border-radius:99px;overflow:hidden}.fill{height:100%;background:var(--cyan)}
+.langBox{margin-top:auto;display:grid;gap:4px;border:1px solid var(--line);border-radius:13px;padding:4px}
+.langBtn{border:0;border-radius:10px;background:transparent;color:#aebdd0;padding:7px 3px;font-size:11px;font-weight:850}
+.langBtn.active{background:#29415f;color:#fff}
+.railBtn{border:1px solid var(--line);border-radius:11px;background:transparent;color:#fff;font-weight:900;padding:8px 4px;cursor:pointer}
 
-/* Work area */
-#opinion #controls{
-  width:100% !important;
-  flex:1 1 auto !important;
-  min-height:0 !important;
-  overflow-y:auto !important;
-  padding:52px 10px 10px 2px !important;
-  margin:0 !important;
-}
+/* Step 9: seven items all visible */
+.sequenceGrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.seq{border:1px solid var(--line);border-radius:14px;background:#182a43;color:#fff;padding:9px 7px;min-height:50px;font-size:12px;font-weight:900;cursor:pointer;text-align:center}
+.seq.used{opacity:.28;pointer-events:none}
+.sequenceMade{display:flex;gap:5px;flex-wrap:wrap;min-height:24px;justify-content:center}
+.token{background:#0f2e23;border:1px solid #1d7a50;border-radius:9px;padding:4px 7px;font-size:10px}
 
-/* Instruction strip sits only over main area */
-#opinion #guide{
-  left:16px !important;
-  right:194px !important;
-  top:118px !important;
-  width:auto !important;
+/* toast + completion flash */
+.toast{position:fixed;left:42%;bottom:72px;transform:translateX(-50%);z-index:80;background:#07111f;border:1px solid var(--line);border-radius:99px;padding:9px 14px;font-size:12px;font-weight:900;opacity:0;transition:.2s;pointer-events:none}
+.toast.show{opacity:1}
+.flash{
+  position:fixed;left:42%;top:52%;transform:translate(-50%,-50%);z-index:70;
+  background:#07111f;border:2px solid var(--cyan);border-radius:17px;padding:12px 18px;
+  max-width:65vw;font-size:clamp(18px,2.2vw,26px);font-weight:950;opacity:0;pointer-events:none;
 }
+.flash.show{animation:flashMove .62s ease forwards}
+@keyframes flashMove{0%{opacity:0;transform:translate(-50%,-46%) scale(.97)}25%,65%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-56%) scale(.94)}}
 
-/* Bottom white dock: normal flow, main width only.
-   Important: no 'right' offset — that was shifting it off-screen. */
-.currentDock{
-  position:relative !important;
-  left:auto !important;
-  right:auto !important;
-  width:auto !important;
-  margin:8px 186px 8px 12px !important;
-  min-height:92px !important;
-  max-height:116px !important;
-  flex:0 0 auto !important;
-  overflow-y:auto !important;
-  border-radius:0 !important;
-}
-
-/* Keep sidebar buttons compact enough so Home never clips */
-#opinion .topbar > div:first-child{
-  flex:0 0 auto !important;
-  padding:6px !important;
-}
-#opinion .topbar > div:last-child{
-  margin-top:8px !important;
-  gap:5px !important;
-}
-#opinion .langToggle button{
-  padding:7px 4px !important;
-}
-#opinion #guideReplay,
-#opinion #opHome{
-  padding:7px 4px !important;
-}
-
-/* Remove stray old scroll hint */
-#opinion .left::after{display:none !important}
-
-/* iPhone landscape */
-@media(max-width:850px){
-  #opinion .topbar{
-    width:142px !important;
-  }
-  #opinion .studyBody{
-    padding-right:158px !important;
-  }
-  #opinion #guide{
-    right:166px !important;
-    top:100px !important;
-  }
-  .currentDock{
-    margin-right:158px !important;
-    min-height:80px !important;
-    max-height:98px !important;
-  }
-  #opinion #controls{
-    padding-top:45px !important;
-  }
-}
-
-
-/* ===== v6: no-scroll center / compact bottom / clean workspace ===== */
-
-/* Remove any persistent helper labels from the middle */
-#opinion .left::after{display:none !important}
-
-/* Main area uses a fixed three-zone layout: QUESTION / controls / compact dock */
-#opinion{
-  position:relative;
-  overflow:hidden;
-}
-#opinion .studyBody{
-  flex:1 1 auto !important;
-  min-height:0 !important;
-  padding:8px 186px 0 12px !important;
-  overflow:hidden !important;
-}
-#opinion .left{
-  width:100% !important;
-  height:100% !important;
-  min-height:0 !important;
-  padding:0 !important;
-  margin:0 !important;
-  overflow:hidden !important;
-  display:grid !important;
-  grid-template-rows:auto 1fr !important;
-  gap:8px !important;
-}
-
-/* QUESTION: compact 2-line block */
-#opinion .left > .card{
-  min-height:0 !important;
-  height:auto !important;
-  padding:7px 12px !important;
-  border-radius:15px !important;
-  flex:none !important;
-}
-#opinion .left > .card .small:first-child{
-  display:inline-block !important;
-  margin-right:10px !important;
-}
-#opinion #question{
-  display:inline !important;
-  max-width:none !important;
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-  font-size:clamp(14px,1.65vw,20px) !important;
-  line-height:1.2 !important;
-}
-#opinion #questionJp{
-  margin-top:3px !important;
-  white-space:nowrap !important;
-  overflow:hidden !important;
-  text-overflow:ellipsis !important;
-  font-size:10px !important;
-}
-
-/* Central work area: NO scrolling */
-#opinion #controls{
-  width:100% !important;
-  height:100% !important;
-  min-height:0 !important;
-  overflow:hidden !important;
-  padding:44px 0 6px !important; /* room for transient instruction strip */
-  margin:0 !important;
-  display:flex !important;
-  flex-direction:column !important;
-  justify-content:flex-start !important;
-  gap:8px !important;
-}
-
-/* 3 options = one row, 4 options = 2x2; keep all visible */
-#opinion .choiceGrid{
-  display:grid !important;
-  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
-  gap:8px !important;
-  width:100% !important;
-}
-#opinion .choiceGrid > .choice:only-child{
-  grid-column:1 / -1;
-}
-#opinion .choice{
-  min-height:48px !important;
-  max-height:72px !important;
-  padding:8px 10px !important;
-  overflow:hidden !important;
-}
-#opinion .choice b{
-  font-size:15px !important;
-}
-#opinion .choice .jp{
-  margin-top:3px !important;
-  font-size:10px !important;
-  line-height:1.2 !important;
-}
-#opinion .fixedBtn{
-  min-height:52px !important;
-  max-height:70px !important;
-  padding:8px 12px !important;
-}
-#opinion .fixedBtn .en{font-size:18px !important}
-#opinion .fixedBtn .jp{font-size:10px !important;margin-top:2px !important}
-#opinion .transformBox{
-  margin-top:0 !important;
-  padding:8px 10px !important;
-  font-size:14px !important;
-  line-height:1.3 !important;
-}
-
-/* Instruction popup = slim strip under QUESTION; disappears and leaves no text */
-#opinion #guide{
-  position:fixed !important;
-  left:16px !important;
-  right:194px !important;
-  top:102px !important;
-  width:auto !important;
-  min-height:36px !important;
-  padding:7px 48px 7px 44px !important;
-  font-size:12px !important;
-  line-height:1.3 !important;
-  border-radius:12px !important;
-  text-align:left !important;
-}
-#opinion #guide::before{left:13px !important;font-size:17px !important}
-#opinion #guide::after{right:13px !important;font-size:20px !important}
-
-/* Bottom white area: much smaller, pushed lower, independently scrollable only if needed */
-.currentDock{
-  position:relative !important;
-  left:auto !important;
-  right:auto !important;
-  width:auto !important;
-  margin:5px 186px 6px 12px !important;
-  min-height:58px !important;
-  max-height:76px !important;
-  padding:5px 12px calc(5px + env(safe-area-inset-bottom)) !important;
-  overflow-y:auto !important;
-  flex:0 0 auto !important;
-}
-.currentDockTop{margin-bottom:1px !important}
-.currentDockLabel{font-size:9px !important}
-.currentDockCount{font-size:9px !important}
-.currentSentence{
-  font-size:clamp(15px,1.85vw,21px) !important;
-  line-height:1.08 !important;
-}
-.currentTranslation{
-  font-size:9px !important;
-  margin-top:1px !important;
-  line-height:1.15 !important;
-}
-
-/* Right rail stays independent and compact */
-#opinion .topbar{
-  width:168px !important;
-}
-#opinion .topbar > div:last-child{
-  margin-top:auto !important;
-}
-#opinion .langToggle button{
-  padding:6px 4px !important;
-}
-
-/* The controls should not show scrollbars anymore */
-#opinion #controls::-webkit-scrollbar{display:none !important}
-#opinion #controls{scrollbar-width:none !important}
-
-/* Completion flash: sentence briefly emphasized in the middle */
-.completionFlash{
-  position:fixed;
-  left:50%;
-  top:52%;
-  transform:translate(-58%,-50%);
-  z-index:60;
-  max-width:62vw;
-  background:rgba(8,17,31,.96);
-  color:#fff;
-  border:2px solid var(--accent);
-  border-radius:18px;
-  padding:14px 20px;
-  font-size:clamp(18px,2.2vw,28px);
-  font-weight:950;
-  box-shadow:0 16px 45px rgba(0,0,0,.38);
-  pointer-events:none;
-  opacity:0;
-}
-.completionFlash.show{
-  animation:completionMove .72s ease forwards;
-}
-@keyframes completionMove{
-  0%{opacity:0;transform:translate(-58%,-46%) scale(.96)}
-  20%{opacity:1;transform:translate(-58%,-50%) scale(1.03)}
-  62%{opacity:1;transform:translate(-58%,-50%) scale(1)}
-  100%{opacity:0;transform:translate(-58%,-58%) scale(.92)}
-}
-
-@media(max-width:850px){
-  #opinion .studyBody{padding-right:158px !important}
-  .currentDock{margin-right:158px !important;min-height:52px !important;max-height:68px !important}
-  #opinion #guide{right:166px !important;top:88px !important}
-  #opinion #controls{padding-top:39px !important}
-  #opinion .choice{min-height:43px !important;max-height:62px !important}
-  #opinion .fixedBtn{min-height:46px !important}
-  .completionFlash{max-width:66vw}
-}
-
-
-/* ===== v7 STEP1 usability fix ===== */
-#opinion #controls .transformBox{
-  flex:0 0 auto !important;
-  max-height:120px !important;
-  overflow:hidden !important;
-}
-#opinion #controls .transformBox + .bigAction{
-  flex:0 0 auto !important;
-  min-height:54px !important;
-  max-height:62px !important;
-  margin-top:0 !important;
-}
-#opinion #controls .transformBox + .bigAction .en{
-  font-size:17px !important;
-}
-#opinion #controls .arrow{
-  font-size:18px !important;
-  margin:1px 0 !important;
+/* email minimal */
+#email{padding:16px}.emailBox{max-width:900px;margin:auto}.emailText{line-height:1.55}
+.rotate{display:none}
+@media(orientation:portrait) and (max-width:900px){
+  .rotate{display:flex;position:fixed;inset:0;z-index:999;background:#07111f;align-items:center;justify-content:center;text-align:center;padding:24px}
 }
 @media(max-width:850px){
-  #opinion #controls .transformBox{
-    max-height:96px !important;
-    font-size:13px !important;
-  }
-  #opinion #controls .transformBox + .bigAction{
-    min-height:46px !important;
-    max-height:52px !important;
-  }
-  #opinion #controls .transformBox + .bigAction .en{
-    font-size:15px !important;
-  }
+  :root{--rail:142px;--dock:52px}
+  #opinion{padding-right:calc(var(--rail) + 12px);padding-left:7px}
+  .rail{top:5px;right:5px;bottom:5px;padding:5px}
+  .brand{font-size:10px}.langBtn{padding:5px 2px;font-size:9px}.railBtn{padding:6px 3px;font-size:10px}
+  #stepTitle{font-size:11px}
+  .questionCard{padding:5px 9px}
+  #question{font-size:13px}#questionJp{font-size:9px}
+  .choice{min-height:46px;max-height:62px;padding:7px 8px;font-size:12px}
+  .choice .jp{font-size:8px}
+  .fixedButton{min-height:46px;max-height:54px;font-size:15px}
+  .sentenceBuilder,.transform{font-size:14px;padding:7px 9px}
+  #guide{left:4%;right:4%;font-size:10px;padding:6px 38px}
+  .sequenceGrid{gap:5px}.seq{min-height:40px;padding:6px 4px;font-size:10px}
 }
-
 </style>
 </head>
 <body>
-<div class="rotate"><div><div style="font-size:48px">↻</div><h2>横向きにしてください</h2><p>このアプリは横画面で使います。</p></div></div>
-<div id="completionFlash" class="completionFlash"></div>
+<div class="rotate"><div><div style="font-size:42px">↻</div><h2>iPhoneを横向きにしてください</h2></div></div>
 <div id="toast" class="toast"></div>
+<div id="flash" class="flash"></div>
 
-<section id="home" class="screen active home">
-  <div class="hero">
-    <div class="box">
-      <div class="small">EIKEN PRE-2 WRITING</div>
-      <h1 class="title">英検準2級<br>Writing Trainer</h1>
-      <p class="muted">定型文は「押して覚える」。変わる部分は「問題に合うものを選ぶ」。最後は日本語なし・本番形式へ。</p>
-      <div class="stats">
-        <div class="stat"><span class="small">論述クリア</span><b id="homeDone">0</b></div>
-        <div class="stat"><span class="small">連続クリア</span><b id="homeStreak">0</b></div>
-        <div class="stat"><span class="small">日本語設定</span><b id="homeLang" style="font-size:17px">あり</b></div>
-      </div>
-      <div class="notice" style="margin-top:14px">途中経過はこのiPhoneのSafariに自動保存します。</div>
+<section id="home" class="screen active">
+  <div class="homeGrid"><div class="homeCard">
+    <div class="panel">
+      <div class="muted" style="font-size:12px">EIKEN PRE-2</div>
+      <h1>Writing Trainer</h1>
+      <p class="muted">定型文は押して覚える。問題に合わせる部分だけを選ぶ。最後に型を再現します。</p>
     </div>
-    <div class="box actions">
-      <button id="opinionBtn" class="btn primary">✍️ 意見論述 9STEP</button>
-      <button id="emailBtn" class="btn secondary">✉️ Eメール</button>
-      <button id="resumeBtn" class="btn secondary">▶ 続きから</button>
-      <button id="resetOpinionBtn" class="btn ghost">↺ 論述を最初から</button>
+    <div class="panel homeBtns">
+      <button id="startOpinion" class="btn primary">✍️ 意見論述 9STEP</button>
+      <button id="resumeOpinion" class="btn secondary">▶ 続きから</button>
+      <button id="startEmail" class="btn secondary">✉️ Eメール</button>
+      <button id="resetBtn" class="btn ghost">↺ 論述を最初から</button>
     </div>
-  </div>
+  </div></div>
 </section>
 
 <section id="opinion" class="screen">
-  <div class="topbar">
-    <div style="min-width:260px">
-      <div class="brand">✍️ 意見論述 TRAINER</div>
-      <div id="stepTitle" class="stepTitle">STEP 1 / 9</div>
-      <div class="progressTrack"><div id="stepFill" class="progressFill"></div></div>
+  <main class="main">
+    <section class="questionCard">
+      <div class="qRow"><span class="qLabel">QUESTION</span><div id="question"></div></div>
+      <div id="questionJp"></div>
+    </section>
+
+    <section class="work">
+      <div id="guide"></div>
+      <div id="controls"></div>
+    </section>
+
+    <section class="dock">
+      <div class="dockTop"><span id="dockLabel">このSTEPの文</span><span id="dockCount"></span></div>
+      <div id="dockSentence"></div>
+      <div id="dockTranslation"></div>
+    </section>
+  </main>
+
+  <aside class="rail">
+    <div class="brand">✍️ 意見論述 TRAINER</div>
+    <div id="stepTitle"></div>
+    <div class="track"><div id="stepFill" class="fill"></div></div>
+    <div class="langBox">
+      <button class="langBtn" data-lang="show">訳あり</button>
+      <button class="langBtn" data-lang="tap">押して訳</button>
+      <button class="langBtn" data-lang="hide">訳なし</button>
     </div>
-    <div style="display:flex;align-items:center;gap:8px">
-      <div class="langToggle">
-        <button data-lang="show">訳あり</button>
-        <button data-lang="tap">押して訳</button>
-        <button data-lang="hide">訳なし</button>
-      </div>
-      <button id="guideReplay" class="btn ghost" style="padding:10px 12px" title="指示をもう一度表示・自然音声で再生">？</button>
-      <button id="opHome" class="btn ghost">ホーム</button>
-    </div>
-  </div>
-  <div class="studyBody">
-    <div class="left">
-      <div class="card">
-        <div class="small">QUESTION</div>
-        <div id="question" class="question"></div>
-        <div id="questionJp" class="small" style="margin-top:8px"></div>
-      </div>
-      <div id="guide" class="notice guide" style="margin-top:10px"></div>
-      <div id="controls" class="controls"></div>
-    </div>
-    <div class="right">
-      <div class="answerPaper">
-        <div class="answerTitle">いまの答案</div>
-        <div id="answerLines"></div>
-      </div>
-      <div class="legend">
-        <span style="border-color:var(--blue)">書き出し</span>
-        <span style="border-color:var(--purple)">定型文</span>
-        <span style="border-color:var(--yellow)">理由</span>
-        <span style="border-color:var(--green)">具体化</span>
-        <span style="border-color:var(--pink)">締め</span>
-      </div>
-      <div class="meter">
-        <div class="bar"><div id="wordFill" class="fill"></div></div>
-        <div id="wordCount" class="count">0 / 50–60</div>
-      </div>
-    </div>
-  </div>
-  <div id="currentDock" class="currentDock">
-    <div class="currentDockTop">
-      <div id="currentDockLabel" class="currentDockLabel">このSTEPの文</div>
-      <div id="currentDockCount" class="currentDockCount"></div>
-    </div>
-    <div id="currentSentence" class="currentSentence">I think that <span class="blankPart">...</span></div>
-    <div id="currentTranslation" class="currentTranslation">このSTEPで使う部分だけを表示します。</div>
-  </div>
+    <button id="helpBtn" class="railBtn">？</button>
+    <button id="homeBtn" class="railBtn">ホーム</button>
+  </aside>
 </section>
 
 <section id="email" class="screen">
-  <div class="topbar">
-    <div><div class="brand">✉️ Eメール TRAINER</div><div class="small">40〜50語・質問2つ＋相手の質問への回答</div></div>
-    <button id="emailHome" class="btn ghost">ホーム</button>
-  </div>
-  <div class="emailWrap">
-    <div class="left">
-      <div class="card">
-        <div class="small">EMAIL</div>
-        <div class="question" style="font-size:17px">My city started a new <u>weekend bus service for older people</u>. It is free, and my grandmother used it last Sunday. She said it was very helpful. Do you think more cities will have services like this in the future?</div>
-      </div>
-      <div class="notice guide" style="margin-top:10px">本文にまだ書かれていないことを2つ質問します。</div>
-      <div class="controls">
-        <button class="choice emailQ" data-q="How often does the bus run?">How often does the bus run?<span class="jp">どのくらいの頻度で運行しますか？</span></button>
-        <button class="choice emailQ" data-q="How many people can use it?">How many people can use it?<span class="jp">何人利用できますか？</span></button>
-        <button class="choice emailQ" data-q="Is the service free?">Is the service free?<span class="jp">無料ですか？（本文に書いてある）</span></button>
-        <button id="emailBuild" class="btn primary">選んだ2問で答案を作る</button>
-      </div>
-    </div>
-    <div class="right">
-      <div class="answerPaper"><div class="answerTitle">Eメール答案</div><div id="emailAnswer" style="white-space:pre-wrap;line-height:1.7"></div></div>
-      <div class="meter"><div class="bar"><div id="emailFill" class="fill"></div></div><div id="emailCount" class="count">0 / 40–50</div></div>
-    </div>
+  <div class="emailBox panel">
+    <h2>✉️ Eメール</h2>
+    <p class="emailText">Eメールコースは現在の簡易版を保持しています。論述レイアウトを固めたあと、同じ考え方でSTEP化できます。</p>
+    <button id="emailHome" class="btn secondary">ホーム</button>
   </div>
 </section>
 
 <script>
-const KEY="eikenP2Writing_v3_steps";
+const KEY="eikenP2Writing_clean_v1";
 const QUESTIONS=[
-{
- id:"books",type:"doThink",
- q:"Do you think students should read books every day?",
- jp:"生徒は毎日本を読むべきだと思いますか？",
- statement:"students should read books every day",
- reasons:[
-  {cat:"📚 学び",en:"they can learn many things",jp:"たくさんのことを学べる",detail:"they can learn about different countries",detailJp:"いろいろな国について学べる"},
-  {cat:"🧠 考える力",en:"they can think about many ideas",jp:"いろいろな考えについて考えられる",detail:"they can think about the characters and stories",detailJp:"登場人物や物語について考えられる"},
-  {cat:"👥 人・交流",en:"they can talk about books with other people",jp:"ほかの人と本について話せる",detail:"they can share their ideas with their friends",detailJp:"友達と自分の考えを共有できる"}
- ],
- wrong:["save money","stay healthy"],
- boosters:[{text:"in their free time",jp:"自由時間に",line:2},{text:"with their friends",jp:"友達と",line:4}]
-},
 {
  id:"morning",type:"doThink",
  q:"Do you think students should study before school in the morning?",
@@ -1266,10 +248,10 @@ const QUESTIONS=[
   {cat:"🧠 集中",en:"they can concentrate better",jp:"より集中できる",detail:"they can study in a quiet place in the morning",detailJp:"朝の静かな場所で勉強できる"}
  ],
  wrong:["save money","play more sports"],
- boosters:[{text:"every day",jp:"毎日",line:2},{text:"before class",jp:"授業前に",line:4}]
+ boosters:["every day","before class"]
 },
 {
- id:"sportsfamily",type:"should",
+ id:"sports",type:"should",
  q:"Should families make time to play sports together?",
  jp:"家族は一緒にスポーツをする時間を作るべきですか？",
  subject:"families",predicate:"make time to play sports together",
@@ -1279,7 +261,7 @@ const QUESTIONS=[
   {cat:"😊 楽しさ",en:"they can enjoy their free time",jp:"自由時間を楽しめる",detail:"they can try different sports together",detailJp:"一緒にいろいろなスポーツを試せる"}
  ],
  wrong:["study English","save money"],
- boosters:[{text:"on weekends",jp:"週末に",line:2},{text:"with their families",jp:"家族と",line:4}]
+ boosters:["on weekends","with their families"]
 },
 {
  id:"tablet",type:"doThink",
@@ -1287,591 +269,260 @@ const QUESTIONS=[
  jp:"生徒は勉強にタブレット端末を使うべきだと思いますか？",
  statement:"students should use tablet computers for studying",
  reasons:[
-  {cat:"⏰ 便利",en:"they can find information quickly",jp:"情報をすぐ見つけられる",detail:"they can search for words and pictures easily",detailJp:"単語や画像を簡単に調べられる"},
-  {cat:"📚 学び",en:"they can learn in many ways",jp:"いろいろな方法で学べる",detail:"they can watch videos and use learning apps",detailJp:"動画を見たり学習アプリを使ったりできる"},
-  {cat:"🎒 手軽さ",en:"they can carry fewer books",jp:"持ち歩く本を減らせる",detail:"they can keep many textbooks on one device",detailJp:"1台の端末に多くの教科書を入れられる"}
+  {cat:"🔎 便利",en:"they can find information quickly",jp:"情報をすぐ見つけられる",detail:"they can search for words and pictures easily",detailJp:"単語や画像を簡単に調べられる"},
+  {cat:"📚 学び",en:"they can learn in many ways",jp:"いろいろな方法で学べる",detail:"they can watch videos and use learning apps",detailJp:"動画や学習アプリを使える"},
+  {cat:"🎒 手軽さ",en:"they can carry fewer books",jp:"持ち歩く本を減らせる",detail:"they can keep many textbooks on one device",detailJp:"1台に多くの教科書を入れられる"}
  ],
  wrong:["exercise more","sleep longer"],
- boosters:[{text:"at school",jp:"学校で",line:2},{text:"every day",jp:"毎日",line:4}]
-},
-{
- id:"cleaning",type:"should",
- q:"Should students join community cleaning events?",
- jp:"生徒は地域の清掃活動に参加するべきですか？",
- subject:"students",predicate:"join community cleaning events",
- reasons:[
-  {cat:"🌱 環境",en:"they can help keep their town clean",jp:"町をきれいに保つ手助けができる",detail:"they can pick up trash in parks and streets",detailJp:"公園や道のごみを拾える"},
-  {cat:"👥 人・交流",en:"they can work with local people",jp:"地域の人と一緒に活動できる",detail:"they can meet and talk with many people",detailJp:"多くの人に会って話せる"},
-  {cat:"📚 経験",en:"they can learn about their community",jp:"地域について学べる",detail:"they can see local problems by themselves",detailJp:"地域の問題を自分の目で見られる"}
- ],
- wrong:["sleep more","buy cheaper things"],
- boosters:[{text:"on weekends",jp:"週末に",line:2},{text:"with local people",jp:"地域の人と",line:4}]
+ boosters:["at school","every day"]
 }
 ];
 
-let state=JSON.parse(localStorage.getItem(KEY)||"null")||{
- qIndex:0,step:1,lines:[],lang:"show",history:[],streak:0,
- selected1:null,selected2:null,stage:null,sequence:[],step1Correct:false,fixedTapped:false
+const defaultState=()=>({
+ qIndex:0,step:1,lang:"show",lines:[],stage:null,selected1:null,selected2:null,
+ step1Correct:false,fixedTapped:false,sequence:[],history:[],streak:0
+});
+let state;
+try{state=Object.assign(defaultState(),JSON.parse(localStorage.getItem(KEY)||"{}"))}catch(e){state=defaultState()}
+const debugStep=Number(new URLSearchParams(location.search).get("testStep")||0);
+if(debugStep){
+ state=defaultState(); state.step=debugStep;
+ state.lines=[
+  {text:"I think that students should study before school in the morning.",role:"opening"},
+  {text:"I have two reasons.",role:"fixed"},
+  {text:"First, they can use their time well.",role:"reason"},
+  {text:"For example, they can finish some homework early.",role:"example"},
+  {text:"Second, they can concentrate better.",role:"reason"}
+ ];
+ state.selected1=1;state.selected2=2;state.step1Correct=true;
+ if([3,5].includes(debugStep))state.stage="phrase";
+ if([4,6].includes(debugStep))state.stage="detail";
+}
+const $=id=>document.getElementById(id);
+const q=()=>QUESTIONS[state.qIndex%QUESTIONS.length];
+const words=s=>(s.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]).length;
+const allText=()=>state.lines.map(x=>x.text).join(" ");
+function save(){if(!debugStep)localStorage.setItem(KEY,JSON.stringify(state))}
+function showScreen(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active")}
+function toast(t){$("toast").textContent=t;$("toast").classList.add("show");setTimeout(()=>$("toast").classList.remove("show"),950)}
+function flash(t){$("flash").textContent=t;$("flash").classList.remove("show");void $("flash").offsetWidth;$("flash").classList.add("show")}
+function opening(x){return x.type==="doThink" ? `I think that ${x.statement}.` : `I think that ${x.subject} should ${x.predicate}.`}
+function jpHTML(jp){
+ if(state.lang==="hide")return "";
+ if(state.lang==="show")return `<span class="jp">${jp}</span>`;
+ return `<span class="jp">［タップで訳］</span>`;
+}
+function choice(text,jp,onClick,cls=""){
+ const b=document.createElement("button");b.className=`choice ${cls}`;b.innerHTML=`${text}${jpHTML(jp)}`;
+ b.onclick=()=>{
+   if(state.lang==="tap"){
+     const j=b.querySelector(".jp"); if(j&&j.textContent.includes("タップで訳")){j.textContent=jp;return}
+   }
+   onClick();
+ };return b;
+}
+function addLine(text,role){state.lines.push({text,role});save()}
+function setStep(n){state.step=n;state.stage=null;state.fixedTapped=false;save();render()}
+function setDock(label,html,jp="",ghost=false){
+ $("dockLabel").textContent=label;$("dockSentence").innerHTML=html;$("dockTranslation").textContent=state.lang==="hide"?"":jp;
+ $("dockSentence").classList.toggle("ghostText",ghost);
+}
+let lastGuide="",guideTimer=null,preferredVoice=null;
+function naturalText(t){return t.replace(/<[^>]+>/g,"").replace(/QUESTION/g,"クエスチョン").replace(/First/g,"ファースト").replace(/Second/g,"セカンド").replace(/For example/g,"フォー・イグザンプル")}
+function pickVoice(){
+ if(!("speechSynthesis" in window))return null;
+ const vs=speechSynthesis.getVoices().filter(v=>/^ja/i.test(v.lang));
+ const keys=["Siri","Kyoko","Otoya","Nanami","Premium","Enhanced"];
+ for(const k of keys){const v=vs.find(x=>(x.name||"").includes(k));if(v)return v}
+ return vs[0]||null;
+}
+function speak(t){
+ try{
+   if(new URLSearchParams(location.search).has("noVoice")) return;
+   if(!("speechSynthesis" in window))return;
+   speechSynthesis.cancel();preferredVoice=preferredVoice||pickVoice();
+   const u=new SpeechSynthesisUtterance(naturalText(t));u.lang="ja-JP";u.rate=.94;u.pitch=1.02;if(preferredVoice)u.voice=preferredVoice;
+   speechSynthesis.speak(u);
+ }catch(e){}
+}
+if("speechSynthesis" in window)speechSynthesis.onvoiceschanged=()=>preferredVoice=pickVoice();
+function guide(t){
+ lastGuide=t;$("guide").innerHTML=t;$("guide").classList.remove("show");void $("guide").offsetWidth;$("guide").classList.add("show");
+ speak(t);clearTimeout(guideTimer);guideTimer=setTimeout(()=>$("guide").classList.remove("show"),2700)
+}
+$("guide").onclick=e=>{
+ const r=$("guide").getBoundingClientRect();
+ if(e.clientX>r.right-46){$("guide").classList.remove("show");try{speechSynthesis.cancel()}catch(_){}}
+ else speak(lastGuide);
 };
 
-if(typeof state.fixedTapped==="undefined") state.fixedTapped=false;
-
-const homeDone=document.getElementById("homeDone"),homeStreak=document.getElementById("homeStreak"),homeLang=document.getElementById("homeLang");
-const question=document.getElementById("question"),questionJp=document.getElementById("questionJp"),stepTitle=document.getElementById("stepTitle"),stepFill=document.getElementById("stepFill");
-const controls=document.getElementById("controls"),guide=document.getElementById("guide"),answerLines=document.getElementById("answerLines"),wordCount=document.getElementById("wordCount"),wordFill=document.getElementById("wordFill");
-const currentDock=document.getElementById("currentDock"),currentDockLabel=document.getElementById("currentDockLabel"),currentDockCount=document.getElementById("currentDockCount"),currentSentence=document.getElementById("currentSentence"),currentTranslation=document.getElementById("currentTranslation");
-
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
-function q(){return QUESTIONS[state.qIndex%QUESTIONS.length]}
-function words(s){return (s.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]).length}
-function showScreen(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active")}
-function toast(t){const x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1100)}
-function flashSentence(text){
-  const f=document.getElementById("completionFlash");
-  f.textContent=text;
-  f.classList.remove("show");
-  void f.offsetWidth;
-  f.classList.add("show");
-}
-function langLabel(){return state.lang==="show"?"あり":state.lang==="tap"?"押して訳":"なし"}
-function updateHome(){homeDone.textContent=state.history.length;homeStreak.textContent=state.streak;homeLang.textContent=langLabel()}
-function jpHtml(text){
- if(state.lang==="hide")return "";
- if(state.lang==="show")return `<span class="jp">${text}</span>`;
- return `<span class="jp"><button class="chip" type="button" onclick="this.outerHTML='<span class=&quot;jp&quot;>${text.replace(/'/g,"&#39;")}</span>'">訳を見る</button></span>`;
-}
-function openingFor(x){
- if(x.type==="doThink")return "I think that "+x.statement+".";
- return "I think that "+x.subject+" should "+x.predicate+".";
-}
-function allText(){return state.lines.map(x=>x.text).join(" ")}
-function addLine(text,role){state.lines.push({text,role});save();renderAnswer()}
-function replaceLine(idx,text){if(state.lines[idx])state.lines[idx].text=text;save();renderAnswer()}
-function renderAnswer(){
- const e=answerLines;e.innerHTML="";
- if(!state.lines.length)e.innerHTML='<div class="answerLine pending">途中の全文は表示しません。各STEPの文は下の白枠に表示します。</div>';
- state.lines.forEach(x=>{
-   const d=document.createElement("div");d.className="answerLine role-"+x.role+" pop";d.textContent=x.text;e.appendChild(d);
- });
- const n=words(allText());wordCount.textContent=n+" / 50–60";wordFill.style.width=Math.min(100,n/60*100)+"%";
- wordFill.style.background=(n>=50&&n<=60)?"var(--good)":(n>60?"var(--bad)":"var(--accent)");
-}
-function setStep(n){state.step=n;state.stage=null;state.fixedTapped=false;save();renderOpinion()}
-function nextQuestion(){
- state.qIndex=(state.qIndex+1)%QUESTIONS.length;
- state.step=1;state.lines=[];state.selected1=null;state.selected2=null;state.stage=null;state.sequence=[];state.step1Correct=false;state.fixedTapped=false;
- save();renderOpinion();
-}
-function choiceBtn(html,fn,cls="choice"){
- const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b;
-}
-let guideTimer=null;
-let lastGuide="";
-function stripHtml(s){
-  const d=document.createElement("div"); d.innerHTML=s;
-  return d.textContent || d.innerText || "";
-}
-let preferredJaVoice=null;
-
-function pickNaturalJaVoice(){
-  try{
-    const voices=speechSynthesis.getVoices().filter(v=>/^ja/i.test(v.lang));
-    if(!voices.length) return null;
-
-    const preferredNames=[
-      "Siri","Kyoko","Otoya","Nanami","Hattori",
-      "Enhanced","Premium","Natural"
-    ];
-
-    for(const key of preferredNames){
-      const hit=voices.find(v=>(v.name||"").toLowerCase().includes(key.toLowerCase()));
-      if(hit) return hit;
-    }
-    return voices[0];
-  }catch(e){
-    return null;
-  }
-}
-
-function naturalizeJapanese(text){
-  let t=stripHtml(text)
-    .replace(/QUESTION/g,"クエスチョン")
-    .replace(/First,/g,"ファースト、")
-    .replace(/Second,/g,"セカンド、")
-    .replace(/For example,/g,"フォー・イグザンプル、")
-    .replace(/I have two reasons\./g,"アイ・ハブ・トゥー・リーズンズ。")
-    .replace(/I think that/g,"アイ・シンク・ザット")
-    .replace(/STEP\s*(\d+)/gi,"ステップ $1")
-    .replace(/①/g,"1")
-    .replace(/②/g,"2");
-
-  t=t
-    .replace(/。/g,"。　")
-    .replace(/、/g,"、 ")
-    .replace(/してください/g,"してください。")
-    .replace(/選ぼう/g,"選びましょう")
-    .replace(/押そう/g,"押しましょう")
-    .replace(/見抜こう/g,"見抜きましょう");
-
-  t=t.replace(/。。+/g,"。");
-  return t.trim();
-}
-
-function splitForNaturalSpeech(text){
-  const t=naturalizeJapanese(text);
-  const parts=t
-    .split(/(?<=[。！？])/)
-    .map(s=>s.trim())
-    .filter(Boolean);
-
-  const out=[];
-  parts.forEach(p=>{
-    if(p.length<=28){ out.push(p); return; }
-    const sub=p.split(/(?<=、)/).map(s=>s.trim()).filter(Boolean);
-    out.push(...sub);
-  });
-  return out;
-}
-
-function speakGuide(text){
-  try{
-    if(!("speechSynthesis" in window)) return;
-
-    speechSynthesis.cancel();
-    if(!preferredJaVoice) preferredJaVoice=pickNaturalJaVoice();
-
-    const chunks=splitForNaturalSpeech(text);
-    let i=0;
-
-    const speakNext=()=>{
-      if(i>=chunks.length) return;
-
-      const u=new SpeechSynthesisUtterance(chunks[i++]);
-      u.lang="ja-JP";
-      u.rate=0.92;
-      u.pitch=1.03;
-      u.volume=1.0;
-      if(preferredJaVoice) u.voice=preferredJaVoice;
-
-      u.onend=()=>setTimeout(speakNext,140);
-      u.onerror=()=>setTimeout(speakNext,80);
-      speechSynthesis.speak(u);
-    };
-
-    speakNext();
-  }catch(e){}
-}
-
-if("speechSynthesis" in window){
-  try{
-    speechSynthesis.onvoiceschanged=()=>{
-      preferredJaVoice=pickNaturalJaVoice();
-    };
-    preferredJaVoice=pickNaturalJaVoice();
-  }catch(e){}
-}
-
-function setGuide(t){
-  lastGuide=t;
-  guide.innerHTML=t;
-  guide.classList.remove("guideShow");
-  void guide.offsetWidth;
-  guide.classList.add("guideShow");
-  speakGuide(t);
-  if(guideTimer) clearTimeout(guideTimer);
-  guideTimer=setTimeout(()=>guide.classList.remove("guideShow"),2850);
-}
-function setDock(label, sentenceHtml, jp="", showCount=false){
-  currentDockLabel.textContent=label;
-  currentSentence.innerHTML=sentenceHtml;
-  currentTranslation.textContent=(state.lang==="hide" ? "" : jp);
-  currentDockCount.textContent=showCount ? (words(allText())+" / 50–60 words") : "";
-  currentSentence.classList.remove("dockPop");
-  void currentSentence.offsetWidth;
-  currentSentence.classList.add("dockPop");
-}
-function renderCurrentDock(){
-  const x=q();
-  const s1=state.selected1!==null ? x.reasons[state.selected1] : null;
-  const s2=state.selected2!==null ? x.reasons[state.selected2] : null;
-
-  if(state.step===1){
-    if(state.step1Correct){
-      currentSentence.classList.toggle("ghostState", !state.fixedTapped);
-      if(x.type==="doThink"){
-        setDock("STEP 1｜書き出し",
-          `<span class="changePart">I think that</span> <span class="contentPart">${x.statement}</span>.`,
-          "「Do you think」を「I think that」に変える");
-      }else{
-        setDock("STEP 1｜書き出し",
-          `<span class="changePart">I think that</span> <span class="contentPart">${x.subject}</span> <span class="changePart">should</span> ${x.predicate}.`,
-          "Should を主語の後ろへ移す");
-      }
-    }else{
-      setDock("STEP 1｜書き出し",
-        `<span class="changePart">I think that</span> <span class="blankPart">QUESTIONの後半</span>.`,
-        "QUESTIONの形を見抜こう");
-    }
-    return;
-  }
-
-  if(state.step===2){
-    setDock("STEP 2｜理由を始める",
-      `<span class="fixedPart">I have two reasons.</span>`,
-      "理由は2つあります。");
-    return;
-  }
-
-  if(state.step===3){
-    if(state.stage==="phrase" && s1){
-      setDock("STEP 3｜理由①",
-        `<span class="fixedPart">First,</span> they can <span class="blankPart">ここを選ぶ</span>.`,
-        "First, の後にQUESTIONに合う理由を入れる");
-    }else if(state.stage==="category"){
-      setDock("STEP 3｜理由①",
-        `<span class="fixedPart">First,</span> <span class="blankPart">理由①</span>`,
-        "1つ目の理由を選ぼう");
-    }else{
-      setDock("STEP 3｜理由①",
-        `<span class="fixedPart">First,</span>`,
-        "第一に、");
-    }
-    return;
-  }
-
-  if(state.step===4){
-    if(state.stage==="detail" && s1){
-      setDock("STEP 4｜理由①を詳しく",
-        `<span class="fixedPart">For example,</span> they can <span class="blankPart">具体化</span>.`,
-        "例えば、理由①をもう少し具体的にする");
-    }else{
-      setDock("STEP 4｜理由①を詳しく",
-        `<span class="fixedPart">For example,</span>`,
-        "例えば、");
-    }
-    return;
-  }
-
-  if(state.step===5){
-    if(state.stage==="phrase" && s2){
-      setDock("STEP 5｜理由②",
-        `<span class="fixedPart">Second,</span> they can <span class="blankPart">ここを選ぶ</span>.`,
-        "Second, の後に別の理由を入れる");
-    }else if(state.stage==="category"){
-      setDock("STEP 5｜理由②",
-        `<span class="fixedPart">Second,</span> <span class="blankPart">理由②</span>`,
-        "2つ目は別の方向から考えよう");
-    }else{
-      setDock("STEP 5｜理由②",
-        `<span class="fixedPart">Second,</span>`,
-        "第二に、");
-    }
-    return;
-  }
-
-  if(state.step===6){
-    if(state.stage==="detail" && s2){
-      setDock("STEP 6｜理由②を詳しく",
-        `<span class="fixedPart">For example,</span> they can <span class="blankPart">具体化</span>.`,
-        "例えば、理由②をもう少し具体的にする");
-    }else{
-      setDock("STEP 6｜理由②を詳しく",
-        `<span class="fixedPart">For example,</span>`,
-        "例えば、");
-    }
-    return;
-  }
-
-  if(state.step===7){
-    setDock("STEP 7｜締め",
-      `<span class="closePart">For these reasons, I think so.</span>`,
-      "これらの理由から、私はそう思います。");
-    return;
-  }
-
-  if(state.step===8){
-    const n=words(allText());
-    setDock("STEP 8｜語数確認",
-      n>=50&&n<=60
-        ? `<span class="examplePart">🎯 ${n} WORDS — OK!</span>`
-        : `<span class="contentPart">${n} WORDS</span>`,
-      n>=50&&n<=60 ? "50〜60語に入っています。" : "必要なときだけ語数を調整します。",
-      true);
-    return;
-  }
-
-  if(state.step===9){
-    setDock("STEP 9｜型を再現",
-      `<span class="fixedPart">I think that → I have two reasons → First → For example → Second → For example → 結論</span>`,
-      "全文ではなく、答案の順番を思い出そう");
-  }
-
-  const waitingFixed =
-    (state.step===2 || state.step===7) ||
-    ((state.step===3 || state.step===4 || state.step===5 || state.step===6) && !state.stage);
-
-  currentSentence.classList.toggle("ghostState", waitingFixed && !state.fixedTapped);
-  currentSentence.classList.toggle("confirmedState", !waitingFixed || state.fixedTapped);
-}
-
-function renderOpinion(){
+const TITLES=["","QUESTION → 書き出し","理由を始める","理由①を作る","理由①を詳しく","理由②を作る","理由②を詳しく","最後の定型文","50〜60語を確認","見ないで型を再現"];
+function render(){
  const x=q();
- question.textContent=x.q; question.title=x.q;
- questionJp.textContent=state.lang==="hide"?"":x.jp;
- stepTitle.textContent=`STEP ${state.step} / 9　${["","QUESTION → 書き出し","理由を始める","理由①を作る","理由①を詳しくする","理由②を作る","理由②を詳しくする","最後の定型文","50〜60語に仕上げる","見ないで型を再現"][state.step]}`;
- stepFill.style.width=(state.step/9*100)+"%";
- document.querySelectorAll(".langToggle button").forEach(b=>b.classList.toggle("active",b.dataset.lang===state.lang));
- renderAnswer();
- controls.innerHTML="";
+ $("question").textContent=x.q;
+ $("questionJp").textContent=state.lang==="hide"?"":x.jp;
+ $("stepTitle").innerHTML=`STEP ${state.step} / 9<br>${TITLES[state.step]}`;
+ $("stepFill").style.width=`${state.step/9*100}%`;
+ document.querySelectorAll(".langBtn").forEach(b=>b.classList.toggle("active",b.dataset.lang===state.lang));
+ $("controls").innerHTML="";
  if(state.step===1)step1(x);
- if(state.step===2)fixedStep("I have two reasons.","理由は2つあります。","fixed",3,"次は、理由を始める定型文を押そう！");
+ if(state.step===2)fixedStep("I have two reasons.","理由は2つあります。","fixed",3,"理由を始める定型文を押してください。");
  if(state.step===3)reasonStep(1);
  if(state.step===4)detailStep(1);
  if(state.step===5)reasonStep(2);
  if(state.step===6)detailStep(2);
- if(state.step===7)fixedStep("For these reasons, I think so.","これらの理由から、私はそう思います。","close",8,"最後の定型文を押して答案を締めよう！");
+ if(state.step===7)fixedStep("For these reasons, I think so.","これらの理由から、私はそう思います。","close",8,"最後の定型文を押してください。");
  if(state.step===8)wordStep();
  if(state.step===9)sequenceStep();
- renderCurrentDock();
+}
+function confirmDock(){
+ $("dockSentence").classList.remove("ghostText");$("dockSentence").classList.remove("ink");void $("dockSentence").offsetWidth;$("dockSentence").classList.add("ink");
 }
 function step1(x){
- if(state.step1Correct){
-   setGuide("変わったところを確認して、書き出しを答案に入れましょう。");
-   showTransform(x);
-   return;
+ if(!state.step1Correct){
+   setDock("STEP 1｜書き出し",`<span class="blue">I think that</span> QUESTIONの後半.`,"QUESTIONの形を見抜こう",true);
+   guide("QUESTIONの形を選んでください。");
+   const g=document.createElement("div");g.className="choiceGrid";
+   const a=choice("Do you think ～ ?","",()=>checkType("doThink",a),"center");
+   const b=choice("Should ～ ?","",()=>checkType("should",b),"center");
+   g.append(a,b);$("controls").append(g);return;
  }
- setGuide("QUESTIONの形を見抜こう。正しい形をタップすると、どこがどう変わるかを色で見せます。");
- const g=document.createElement("div");g.className="choiceGrid";
- const a=choiceBtn("Do you think ～ ?",()=>checkType("doThink",a));
- const b=choiceBtn("Should ～ ?",()=>checkType("should",b));
- g.append(a,b);controls.appendChild(g);
+ const box=document.createElement("div");box.className="centerWrap";
+ const t=document.createElement("div");t.className="transform";
+ if(x.type==="doThink"){
+  t.innerHTML=`<div><span class="red strike">Do you think</span> <span class="yellow">${x.statement}</span> ?</div><div class="arrow">↓</div><div><span class="blue">I think that</span> <span class="yellow">${x.statement}</span>.</div>`;
+ }else{
+  t.innerHTML=`<div><span class="red strike">Should</span> <span class="yellow">${x.subject}</span> ${x.predicate}?</div><div class="arrow">↓ Should を主語の後ろへ</div><div><span class="blue">I think that</span> ${x.subject} <span class="blue">should</span> ${x.predicate}.</div>`;
+ }
+ setDock("STEP 1｜書き出し",opening(x),"変換した文を答案に入れる",!state.fixedTapped);
+ const btn=document.createElement("button");btn.className="fixedButton";btn.innerHTML=`この書き出しを答案に入れる<small>${opening(x)}</small>`;
+ btn.onclick=()=>{state.fixedTapped=true;confirmDock();flash(opening(x));setTimeout(()=>{if(!state.lines.length)addLine(opening(x),"opening");setStep(2)},520)};
+ box.append(t,btn);$("controls").append(box);guide("変わった部分を確認して、書き出しを答案に入れてください。");
 }
 function checkType(type,btn){
- if(type===q().type){
-   btn.classList.add("correct");
-   state.step1Correct=true;
-   save();
-   setTimeout(()=>renderOpinion(),220);
- }else{
-   btn.classList.add("wrong");
-   toast("もう一度！ QUESTIONの最初を見てみよう");
-   setTimeout(()=>btn.classList.remove("wrong"),600);
- }
+ if(type===q().type){btn.classList.add("good");state.step1Correct=true;save();setTimeout(render,180)}
+ else{btn.classList.add("bad");toast("もう一度！");setTimeout(()=>btn.classList.remove("bad"),450)}
 }
-function showTransform(x){
- if(document.getElementById("transformBox"))return;
- const box=document.createElement("div");box.id="transformBox";box.className="transformBox pop";
- if(x.type==="doThink"){
-  box.innerHTML=`<div><span class="strike flash">Do you think</span> <span class="keep">${x.statement}</span> ?</div>
-  <div class="arrow">↓</div>
-  <div><span class="replace flash">I think that</span> <span class="keep">${x.statement}</span>.</div>`;
- }else{
-  box.innerHTML=`<div><span class="strike flash">Should</span> <span class="keep">${x.subject}</span> ${x.predicate}?</div>
-  <div class="arrow">↓　Should を主語の後ろへ　↓</div>
-  <div><span class="replace flash">I think that</span> <span class="keep">${x.subject}</span> <span class="replace">should</span> ${x.predicate}.</div>`;
- }
- controls.appendChild(box);
- const btn=document.createElement("button");btn.className="btn fixedBtn bigAction pulse";btn.innerHTML=`<span class="en">👇 この書き出しを答案に入れる</span><span class="jp">${openingFor(x)}</span>`;
- btn.onclick=()=>{
-   state.fixedTapped=true; save(); renderCurrentDock();
-   currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
-   flashSentence(openingFor(x));
-   setTimeout(()=>{if(!state.lines.length)addLine(openingFor(x),"opening");setStep(2)},620);
- };
- controls.appendChild(btn);
- setGuide("色が変わったところに注目。<b>書き出しを押して答案に入れよう。</b>");
-}
-function fixedStep(en,jp,role,next,guideText){
- setGuide(guideText);
- const b=document.createElement("button");b.className="btn fixedBtn bigAction pulse";b.innerHTML=`<span class="en">${en}</span>${jpHtml(jp)}`;
- b.onclick=()=>{
-   state.fixedTapped=true; save(); renderCurrentDock();
-   currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
-   flashSentence(en);
-   setTimeout(()=>{addLine(en,role);setStep(next)},620);
- };controls.appendChild(b);
- 
+function fixedStep(en,jp,role,next,msg){
+ setDock(`STEP ${state.step}｜${TITLES[state.step]}`,en,jp,!state.fixedTapped);
+ guide(msg);
+ const b=document.createElement("button");b.className="fixedButton";b.innerHTML=`${en}<small>${state.lang==="hide"?"":jp}</small>`;
+ b.onclick=()=>{state.fixedTapped=true;confirmDock();flash(en);setTimeout(()=>{addLine(en,role);setStep(next)},500)};
+ $("controls").append(b);
 }
 function reasonStep(which){
- const x=q();const isFirst=which===1;
+ const x=q(),first=which===1,idx=first?state.selected1:state.selected2;
+ const lead=first?"First,":"Second,";
  if(!state.stage){
-  setGuide(`${isFirst?"1つ目":"2つ目"}の理由。まず定型の <b>${isFirst?"First,":"Second,"}</b> を押そう。`);
-  const b=document.createElement("button");b.className="btn fixedBtn bigAction pulse";b.innerHTML=`<span class="en">${isFirst?"First,":"Second,"}</span>${jpHtml(isFirst?"第一に、":"第二に、")}`;
-  b.onclick=()=>{
-    state.fixedTapped=true; save(); renderCurrentDock();
-    currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
-    setTimeout(()=>{state.stage="category";save();renderOpinion()},360);
-  };controls.appendChild(b);return;
+   setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,lead,first?"第一に、":"第二に、",true);
+   guide(`${first?"1つ目":"2つ目"}の理由を始める定型文を押してください。`);
+   const b=document.createElement("button");b.className="fixedButton";b.innerHTML=`${lead}<small>${first?"第一に、":"第二に、"}</small>`;
+   b.onclick=()=>{state.fixedTapped=true;confirmDock();setTimeout(()=>{state.stage="category";save();render()},260)};
+   $("controls").append(b);return;
  }
  if(state.stage==="category"){
-  setGuide("このQUESTIONに合う<b>理由の方向</b>を選ぼう。完成文の丸暗記ではなく、まず意味で選びます。");
-  const grid=document.createElement("div");grid.className="choiceGrid";
-  x.reasons.forEach((r,i)=>{
-    if(which===2 && state.selected1===i)return;
-    grid.appendChild(choiceBtn(`<b>${r.cat}</b>${jpHtml(r.jp)}`,()=>{if(which===1)state.selected1=i;else state.selected2=i;state.stage="phrase";save();renderOpinion()},"choice reasonCat"));
-  });
-  controls.appendChild(grid);return;
+   setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,`${lead} ______.`,"QUESTIONに合う理由の方向を選ぶ",false);
+   guide("QUESTIONに合う理由の方向を選んでください。");
+   const g=document.createElement("div");g.className="choiceGrid three";
+   x.reasons.forEach((r,i)=>{
+     if(!first&&i===state.selected1)return;
+     g.append(choice(r.cat,r.jp,()=>{if(first)state.selected1=i;else state.selected2=i;state.stage="phrase";save();render()}));
+   });
+   $("controls").append(g);return;
  }
- if(state.stage==="phrase"){
-  const idx=which===1?state.selected1:state.selected2;const r=x.reasons[idx];
-  setGuide("<b>They can + 〇〇</b> の「〇〇」を問題に合わせて選ぼう。");
-  const stem=document.createElement("div");stem.className="transformBox";stem.innerHTML=`<span class="replace">${isFirst?"First,":"Second,"}</span> they can <span class="keep">＿＿＿＿</span>.`;controls.appendChild(stem);
-  const options=[
-    {en:r.en.replace(/^they can /i,""),jp:r.jp,ok:true},
-    {en:x.wrong[0],jp:"この問題には合いにくい",ok:false},
-    {en:x.wrong[1],jp:"この問題には合いにくい",ok:false}
-  ].sort(()=>Math.random()-.5);
-  const grid=document.createElement("div");grid.className="choiceGrid";
-  options.forEach(o=>grid.appendChild(choiceBtn(`${o.en}${jpHtml(o.jp)}`,()=>{
-    if(!o.ok){toast("QUESTIONに合う理由を選ぼう");return}
-    const completed=`${isFirst?"First":"Second"}, ${r.en}.`;
-    flashSentence(completed);
-    setTimeout(()=>{
-      addLine(completed,"reason");
-      state.stage=null;save();setStep(isFirst?4:6);
-    },520);
-  })));
-  controls.appendChild(grid);
- }
+ const r=x.reasons[idx];
+ setDock(`STEP ${state.step}｜理由${first?"①":"②"}`,`${lead} they can ______.`,"中身を選ぶ",false);
+ guide("理由として使える内容を選んでください。");
+ const build=document.createElement("div");build.className="sentenceBuilder";build.innerHTML=`<span class="blue">${lead}</span> they can <span class="yellow">______</span>.`;
+ const g=document.createElement("div");g.className="choiceGrid three";
+ const opts=[
+   {en:r.en.replace(/^they can /,""),jp:r.jp,ok:true},
+   {en:x.wrong[0],jp:"この問題には合いにくい",ok:false},
+   {en:x.wrong[1],jp:"この問題には合いにくい",ok:false}
+ ];
+ opts.forEach(o=>g.append(choice(o.en,o.jp,()=>{
+   if(!o.ok){toast("QUESTIONに合うものを選ぼう");return}
+   const s=`${lead.replace(",","")}, ${r.en}.`;flash(s);setTimeout(()=>{addLine(s,"reason");state.stage=null;save();setStep(first?4:6)},480)
+ })));
+ $("controls").append(build,g);
 }
 function detailStep(which){
- const x=q();const idx=which===1?state.selected1:state.selected2;const r=x.reasons[idx];
+ const x=q(),idx=which===1?state.selected1:state.selected2,r=x.reasons[idx];
  if(!state.stage){
-  setGuide("理由をもう1文詳しくしよう。まず <b>For example,</b> を押します。");
-  const b=document.createElement("button");b.className="btn fixedBtn bigAction pulse";b.innerHTML=`<span class="en">For example,</span>${jpHtml("例えば、")}`;
-  b.onclick=()=>{
-    state.fixedTapped=true; save(); renderCurrentDock();
-    currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
-    setTimeout(()=>{state.stage="detail";save();renderOpinion()},360);
-  };controls.appendChild(b);return;
+   setDock(`STEP ${state.step}｜理由${which===1?"①":"②"}を詳しく`,"For example,","例えば、",true);
+   guide("具体例を始める定型文を押してください。");
+   const b=document.createElement("button");b.className="fixedButton";b.innerHTML=`For example,<small>例えば、</small>`;
+   b.onclick=()=>{state.fixedTapped=true;confirmDock();setTimeout(()=>{state.stage="detail";save();render()},260)};
+   $("controls").append(b);return;
  }
- setGuide("「どういうこと？」に答える内容を選ぼう。前の理由とつながるものを選びます。");
- const stem=document.createElement("div");stem.className="transformBox";stem.innerHTML=`<span class="replace">For example,</span> they can <span class="keep">＿＿＿＿</span>.`;controls.appendChild(stem);
- const good=r.detail.replace(/^they can /i,"");
- const other=x.reasons[(idx+1)%x.reasons.length].detail.replace(/^they can /i,"");
+ setDock(`STEP ${state.step}｜具体化`,"For example, they can ______.","前の理由につながる内容を選ぶ",false);
+ guide("前の理由につながる具体的な内容を選んでください。");
+ const build=document.createElement("div");build.className="sentenceBuilder";build.innerHTML=`<span class="blue">For example,</span> they can <span class="yellow">______</span>.`;
+ const other=x.reasons[(idx+1)%x.reasons.length].detail.replace(/^they can /,"");
  const opts=[
-  {en:good,jp:r.detailJp,ok:true},
+  {en:r.detail.replace(/^they can /,""),jp:r.detailJp,ok:true},
   {en:other,jp:"理由と少しずれる",ok:false},
   {en:x.wrong[0],jp:"この問題には合いにくい",ok:false}
- ].sort(()=>Math.random()-.5);
- const grid=document.createElement("div");grid.className="choiceGrid";
- opts.forEach(o=>grid.appendChild(choiceBtn(`${o.en}${jpHtml(o.jp)}`,()=>{
-   if(!o.ok){toast("前の理由とつながる内容を選ぼう");return}
-   const completed=`For example, ${r.detail}.`;
-   flashSentence(completed);
-   setTimeout(()=>{
-     addLine(completed,"example");
-     state.stage=null;save();setStep(which===1?5:7);
-   },520);
+ ];
+ const g=document.createElement("div");g.className="choiceGrid three";
+ opts.forEach(o=>g.append(choice(o.en,o.jp,()=>{
+   if(!o.ok){toast("前の理由とつながるものを選ぼう");return}
+   const s=`For example, ${r.detail}.`;flash(s);setTimeout(()=>{addLine(s,"example");state.stage=null;save();setStep(which===1?5:7)},480)
  })));
- controls.appendChild(grid);
+ $("controls").append(build,g);
 }
 function wordStep(){
- const n=words(allText());
+ const n=words(allText());$("dockCount").textContent=`${n} / 50–60 words`;
  if(n>=50&&n<=60){
-   setGuide(`<b>${n} WORDS</b>。50〜60語に入っています！ 語数ブースターは不要です。`);
-   const ok=document.createElement("div");ok.className="notice goodBox";ok.innerHTML=`🎯 <b>${n} WORDS — OK！</b>`;controls.appendChild(ok);
-   const b=document.createElement("button");b.className="btn primary bigAction pulse";b.textContent="型を覚えているか最終チェック ▶";b.onclick=()=>setStep(9);controls.appendChild(b);return;
+   setDock("STEP 8｜語数確認",`🎯 ${n} WORDS — OK!`,"50〜60語に入っています。",false);
+   guide("語数は合格範囲です。最後に型を確認しましょう。");
+   const b=document.createElement("button");b.className="fixedButton";b.textContent="型の最終チェックへ ▶";b.onclick=()=>setStep(9);$("controls").append(b);return;
  }
  if(n<50){
-   setGuide(`<b>${n} WORDS</b>。あと ${50-n} 語以上。意味が合う語数ブースターだけを使います。`);
-   const w=document.createElement("div");w.className="notice warnBox";w.textContent="語数ブースターは不足した時だけ。タップすると入る場所も自動で決めます。";controls.appendChild(w);
-   const x=q();x.boosters.forEach(z=>{
-     const b=choiceBtn(`+ ${z.text}${jpHtml(z.jp)}`,()=>applyBooster(z));controls.appendChild(b);
-   });
-   return;
+   setDock("STEP 8｜語数確認",`${n} WORDS`,"不足した時だけ自然な言葉を足す",false);
+   guide(`あと${50-n}語以上です。自然に足せる言葉を選んでください。`);
+   const g=document.createElement("div");g.className="choiceGrid";
+   q().boosters.forEach(t=>g.append(choice(`+ ${t}`,"",()=>{const i=Math.max(0,state.lines.length-2);state.lines[i].text=state.lines[i].text.replace(/\.$/,"")+" "+t+".";save();render()},"center")));
+   $("controls").append(g);return;
  }
- setGuide(`<b>${n} WORDS</b>。60語を超えています。今回は1問やり直して、短い理由を選び直します。`);
- const b=document.createElement("button");b.className="btn secondary bigAction";b.textContent="1問やり直す";b.onclick=()=>resetCurrent();controls.appendChild(b);
-}
-function applyBooster(z){
- const idx=Math.min(z.line,state.lines.length-1);
- if(idx<0)return;
- let s=state.lines[idx].text;
- if(s.toLowerCase().includes(z.text.toLowerCase()))return;
- s=s.replace(/\.$/,"")+" "+z.text+".";
- replaceLine(idx,s);toast("自然な位置に追加しました");renderOpinion();
+ setDock("STEP 8｜語数確認",`${n} WORDS`,"60語を超えています。",false);
+ const b=document.createElement("button");b.className="fixedButton";b.textContent="この問題をやり直す";b.onclick=resetCurrent;$("controls").append(b);
 }
 function sequenceStep(){
- setGuide("完成答案はいったん見ずに、<b>定型の順番</b>だけを再現しよう。タップで並べます。");
- answerLines.innerHTML='<div class="answerLine pending">答案を隠しています。型だけ思い出そう！</div>';
+ setDock("STEP 9｜型を再現","I think that → I have two reasons → First → For example → Second → For example → 結論","全文ではなく順番を思い出す",false);
+ guide("答案の定型文を、正しい順番にタップしてください。");
  const target=["I think that ～.","I have two reasons.","First, ～.","For example, ～.","Second, ～.","For example, ～.","For these reasons, I think so."];
- if(!state.sequence)state.sequence=[];
- const seq=document.createElement("div");seq.className="seqAnswer";state.sequence.forEach(t=>{const s=document.createElement("span");s.className="seqToken";s.textContent=t;seq.appendChild(s)});controls.appendChild(seq);
- const pool=[
-  "Second, ～.","I have two reasons.","For example, ～.","First, ～.","For these reasons, I think so.","I think that ～.","For example, ～."
- ];
- const grid=document.createElement("div");grid.className="sequence";
- pool.forEach((t,i)=>{
-  const b=document.createElement("button");b.className="seqBtn";b.textContent=t;
-  const usedCount=state.sequence.filter(x=>x===t).length;
-  const availableCount=pool.filter(x=>x===t).length;
-  if(usedCount>=availableCount)b.classList.add("used");
-  b.onclick=()=>{
-    const pos=state.sequence.length;
-    if(t!==target[pos]){toast("順番が違うよ。もう一度！");return}
-    state.sequence.push(t);save();
-    if(state.sequence.length===target.length){finishQuestion();return}
-    renderOpinion();
-  };
-  grid.appendChild(b);
- });controls.appendChild(grid);
+ const made=document.createElement("div");made.className="sequenceMade";
+ state.sequence.forEach(t=>{const s=document.createElement("span");s.className="token";s.textContent=t;made.append(s)});
+ const pool=["Second, ～.","I have two reasons.","For example, ～.","First, ～.","For these reasons, I think so.","I think that ～.","For example, ～."];
+ const grid=document.createElement("div");grid.className="sequenceGrid";
+ pool.forEach(t=>{
+   const b=document.createElement("button");b.className="seq";b.textContent=t;
+   const used=state.sequence.filter(x=>x===t).length,poolCount=pool.filter(x=>x===t).length;if(used>=poolCount)b.classList.add("used");
+   b.onclick=()=>{
+     const pos=state.sequence.length;
+     if(t!==target[pos]){toast("順番が違うよ");return}
+     state.sequence.push(t);save();
+     if(state.sequence.length===target.length){state.history.push({id:q().id,time:Date.now()});state.streak++;save();toast("1問クリア！");setTimeout(nextQuestion,650);return}
+     render();
+   };
+   grid.append(b);
+ });
+ $("controls").append(made,grid);
 }
-function finishQuestion(){
- state.history.push({id:q().id,time:Date.now(),words:words(allText())});state.streak++;save();
- toast("1問クリア！");
- setTimeout(()=>{state.sequence=[];nextQuestion()},700);
-}
-function resetCurrent(){
- state.step=1;state.lines=[];state.selected1=null;state.selected2=null;state.stage=null;state.sequence=[];state.step1Correct=false;state.fixedTapped=false;save();renderOpinion();
-}
-document.querySelectorAll(".langToggle button").forEach(b=>b.onclick=()=>{state.lang=b.dataset.lang;save();renderOpinion();updateHome()});
-document.getElementById("opinionBtn").onclick=()=>{showScreen("opinion");renderOpinion()};
-document.getElementById("resumeBtn").onclick=()=>{showScreen("opinion");renderOpinion()};
-document.getElementById("resetOpinionBtn").onclick=()=>{if(confirm("現在の論述問題を最初からやり直しますか？")){resetCurrent();showScreen("opinion")}};
-document.getElementById("opHome").onclick=()=>{save();updateHome();showScreen("home")};
-document.getElementById("emailBtn").onclick=()=>{showScreen("email");renderEmail()};
-document.getElementById("emailHome").onclick=()=>{updateHome();showScreen("home")};
+function resetCurrent(){state=Object.assign(defaultState(),{qIndex:state.qIndex,lang:state.lang,history:state.history,streak:state.streak});save();render()}
+function nextQuestion(){state.qIndex=(state.qIndex+1)%QUESTIONS.length;state.step=1;state.lines=[];state.stage=null;state.selected1=null;state.selected2=null;state.step1Correct=false;state.fixedTapped=false;state.sequence=[];save();render()}
 
-// Eメールは現行の簡易版を保持
-let emailSelected=[];
-document.querySelectorAll(".emailQ").forEach(btn=>btn.onclick=()=>{
- const t=btn.dataset.q;
- if(emailSelected.includes(t)){emailSelected=emailSelected.filter(x=>x!==t);btn.classList.remove("correct")}
- else if(emailSelected.length<2){emailSelected.push(t);btn.classList.add("correct")}
-});
-function renderEmail(){
- emailSelected=[];
- document.querySelectorAll(".emailQ").forEach(x=>x.classList.remove("correct"));
- document.getElementById("emailAnswer").textContent="";
- document.getElementById("emailCount").textContent="0 / 40–50";
- document.getElementById("emailFill").style.width="0%";
-}
-document.getElementById("emailBuild").onclick=()=>{
- if(emailSelected.length!==2){toast("質問を2つ選んでください");return}
- if(emailSelected.includes("Is the service free?")){toast("それは本文に答えが書いてあります");return}
- const t=`I would like to ask you two questions about the weekend bus service. ${emailSelected[0]} ${emailSelected[1]} About your question, I think more cities will have services like this. This is because they can help many older people.`;
- document.getElementById("emailAnswer").textContent=t;
- const n=words(t);
- document.getElementById("emailCount").textContent=n+" / 40–50";
- document.getElementById("emailFill").style.width=Math.min(100,n/50*100)+"%";
- document.getElementById("emailFill").style.background=n>=40&&n<=50?"var(--good)":"var(--warn)";
-};
+document.querySelectorAll(".langBtn").forEach(b=>b.onclick=()=>{state.lang=b.dataset.lang;save();render()});
+$("helpBtn").onclick=()=>{if(lastGuide)guide(lastGuide)};
+$("homeBtn").onclick=()=>{save();showScreen("home")};
+$("startOpinion").onclick=()=>{showScreen("opinion");render()};
+$("resumeOpinion").onclick=()=>{showScreen("opinion");render()};
+$("resetBtn").onclick=()=>{state=defaultState();save();showScreen("opinion");render()};
+$("startEmail").onclick=()=>showScreen("email");
+$("emailHome").onclick=()=>showScreen("home");
 
-document.getElementById("guide").onclick=(e)=>{
-  const r=guide.getBoundingClientRect();
-  if(e.clientX > r.right-48){
-    guide.classList.remove("guideShow");
-    try{speechSynthesis.cancel()}catch(_){}
-  }else{
-    speakGuide(lastGuide);
-  }
-};
-document.getElementById("guideReplay").onclick=()=>{
-  if(lastGuide) setGuide(lastGuide);
-};
-
-updateHome();
+render();
 </script>
 </body>
 </html>
