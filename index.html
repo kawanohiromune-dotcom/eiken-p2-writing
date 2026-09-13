@@ -570,6 +570,187 @@ button{touch-action:manipulation}
   #opinion .left > .card{min-height:62px}
 }
 
+
+/* ===== v4: right rail + instruction strip + ghost-to-confirm dock ===== */
+:root{--railW:176px}
+
+/* Reserve a permanent right rail */
+#opinion .studyBody{
+  padding-right:calc(var(--railW) + 14px) !important;
+  padding-top:8px !important;
+}
+#opinion .left{
+  padding:8px 10px 8px 14px !important;
+  width:100%;
+}
+
+/* Put ALL status / translation / help / home controls inside right rail */
+#opinion .topbar{
+  position:absolute !important;
+  top:calc(8px + env(safe-area-inset-top)) !important;
+  right:calc(8px + env(safe-area-inset-right)) !important;
+  width:var(--railW) !important;
+  height:calc(100% - 16px - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 92px);
+  z-index:30;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:7px !important;
+  padding:8px !important;
+  border:1px solid var(--line) !important;
+  border-radius:18px !important;
+  background:rgba(8,17,31,.97) !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.28);
+  overflow-y:auto;
+}
+#opinion .topbar > div:first-child{
+  width:100%;
+  padding:7px 8px !important;
+  border:0 !important;
+  background:transparent !important;
+  box-shadow:none !important;
+}
+#opinion .brand{
+  font-size:12px !important;
+  white-space:normal !important;
+  text-align:center;
+}
+#opinion .stepTitle{
+  font-size:14px !important;
+  white-space:normal !important;
+  text-align:center;
+  margin-top:6px !important;
+}
+#opinion .progressTrack{height:6px !important;margin-top:7px !important}
+#opinion .topbar > div:last-child{
+  width:100%;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:6px !important;
+  margin-top:auto;
+}
+#opinion .langToggle{
+  width:100%;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:4px !important;
+  padding:4px !important;
+}
+#opinion .langToggle button{
+  width:100%;
+  padding:8px 5px !important;
+  font-size:11px !important;
+}
+#opinion #guideReplay,#opinion #opHome{
+  width:100%;
+  padding:8px 5px !important;
+  font-size:12px !important;
+}
+
+/* Question gets full available width and stays one line */
+#opinion .left > .card{
+  min-height:58px !important;
+  padding:7px 11px !important;
+}
+#opinion #question{
+  max-width:calc(100% - 105px) !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+}
+
+/* Instruction popup: slim strip between QUESTION and the work area.
+   It overlays empty transition space, never the answer choices. */
+#opinion #guide{
+  position:fixed !important;
+  left:calc(14px + env(safe-area-inset-left)) !important;
+  right:calc(var(--railW) + 26px + env(safe-area-inset-right)) !important;
+  top:126px !important;
+  width:auto !important;
+  transform:none !important;
+  min-height:44px;
+  padding:9px 50px 9px 48px !important;
+  border-radius:14px !important;
+  text-align:left !important;
+  font-size:13px !important;
+  line-height:1.35 !important;
+  background:rgba(240,249,255,.97) !important;
+  color:#0f2740 !important;
+  border:2px solid var(--accent) !important;
+  box-shadow:0 10px 28px rgba(0,0,0,.26) !important;
+}
+#opinion #guide::before{
+  content:"🔊";
+  position:absolute;
+  left:14px;top:50%;transform:translateY(-50%);
+  font-size:20px;
+}
+#opinion #guide::after{
+  content:"×";
+  position:absolute;
+  right:15px;top:50%;transform:translateY(-52%);
+  font-size:22px;font-weight:900;color:#17415f;
+}
+#opinion #guide.guideShow{
+  animation:guideStrip 2.8s ease forwards !important;
+}
+@keyframes guideStrip{
+  0%{opacity:0;transform:translateY(-5px)}
+  10%{opacity:1;transform:translateY(0)}
+  82%{opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-4px)}
+}
+
+/* Middle area remains scrollable, but no text label floating over it */
+#opinion .left::after{display:none !important}
+#opinion #controls{
+  padding-top:54px !important; /* space for instruction strip */
+  padding-right:12px !important;
+  width:100% !important;
+}
+
+/* Bottom dock ends before right rail */
+.currentDock{
+  right:calc(var(--railW) + 14px);
+  width:auto;
+  margin-right:calc(var(--railW) + 14px);
+  min-height:86px !important;
+  max-height:118px !important;
+}
+
+/* Ghost / confirmed visual states */
+.currentSentence.ghostState{
+  opacity:.28;
+  filter:grayscale(.15);
+}
+.currentSentence.ghostState .fixedPart,
+.currentSentence.ghostState .changePart,
+.currentSentence.ghostState .contentPart,
+.currentSentence.ghostState .examplePart,
+.currentSentence.ghostState .closePart{
+  color:#64748b !important;
+}
+.currentSentence.confirmedState{
+  opacity:1;
+  filter:none;
+}
+@keyframes confirmInk{
+  0%{opacity:.28;transform:scale(.985)}
+  42%{opacity:1;transform:scale(1.018)}
+  100%{opacity:1;transform:scale(1)}
+}
+.currentSentence.inkIn{animation:confirmInk .5s ease}
+
+/* On small landscape phones use a slightly narrower rail */
+@media(max-width:850px){
+  :root{--railW:142px}
+  #opinion .topbar{padding:5px !important}
+  #opinion .brand{font-size:10px !important}
+  #opinion .stepTitle{font-size:12px !important}
+  #opinion #guide{top:104px !important;font-size:11px !important;min-height:38px;padding-top:7px !important;padding-bottom:7px !important}
+  #opinion #controls{padding-top:45px !important}
+  .currentDock{margin-right:calc(var(--railW) + 10px)}
+}
+
 </style>
 </head>
 <body>
@@ -751,8 +932,10 @@ const QUESTIONS=[
 
 let state=JSON.parse(localStorage.getItem(KEY)||"null")||{
  qIndex:0,step:1,lines:[],lang:"show",history:[],streak:0,
- selected1:null,selected2:null,stage:null,sequence:[],step1Correct:false
+ selected1:null,selected2:null,stage:null,sequence:[],step1Correct:false,fixedTapped:false
 };
+
+if(typeof state.fixedTapped==="undefined") state.fixedTapped=false;
 
 const homeDone=document.getElementById("homeDone"),homeStreak=document.getElementById("homeStreak"),homeLang=document.getElementById("homeLang");
 const question=document.getElementById("question"),questionJp=document.getElementById("questionJp"),stepTitle=document.getElementById("stepTitle"),stepFill=document.getElementById("stepFill");
@@ -787,10 +970,10 @@ function renderAnswer(){
  const n=words(allText());wordCount.textContent=n+" / 50–60";wordFill.style.width=Math.min(100,n/60*100)+"%";
  wordFill.style.background=(n>=50&&n<=60)?"var(--good)":(n>60?"var(--bad)":"var(--accent)");
 }
-function setStep(n){state.step=n;state.stage=null;save();renderOpinion()}
+function setStep(n){state.step=n;state.stage=null;state.fixedTapped=false;save();renderOpinion()}
 function nextQuestion(){
  state.qIndex=(state.qIndex+1)%QUESTIONS.length;
- state.step=1;state.lines=[];state.selected1=null;state.selected2=null;state.stage=null;state.sequence=[];state.step1Correct=false;
+ state.step=1;state.lines=[];state.selected1=null;state.selected2=null;state.stage=null;state.sequence=[];state.step1Correct=false;state.fixedTapped=false;
  save();renderOpinion();
 }
 function choiceBtn(html,fn,cls="choice"){
@@ -798,16 +981,34 @@ function choiceBtn(html,fn,cls="choice"){
 }
 let guideTimer=null;
 let lastGuide="";
+function stripHtml(s){
+  const d=document.createElement("div"); d.innerHTML=s;
+  return d.textContent || d.innerText || "";
+}
+function speakGuide(text){
+  try{
+    if(!("speechSynthesis" in window)) return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(stripHtml(text));
+    u.lang="ja-JP";
+    u.rate=1.02;
+    u.pitch=1.0;
+    const voices=speechSynthesis.getVoices();
+    const ja=voices.find(v=>/^ja/i.test(v.lang));
+    if(ja)u.voice=ja;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
 function setGuide(t){
   lastGuide=t;
   guide.innerHTML=t;
   guide.classList.remove("guideShow");
   void guide.offsetWidth;
   guide.classList.add("guideShow");
+  speakGuide(t);
   if(guideTimer) clearTimeout(guideTimer);
-  guideTimer=setTimeout(()=>guide.classList.remove("guideShow"),2200);
+  guideTimer=setTimeout(()=>guide.classList.remove("guideShow"),2850);
 }
-
 function setDock(label, sentenceHtml, jp="", showCount=false){
   currentDockLabel.textContent=label;
   currentSentence.innerHTML=sentenceHtml;
@@ -824,6 +1025,7 @@ function renderCurrentDock(){
 
   if(state.step===1){
     if(state.step1Correct){
+      currentSentence.classList.toggle("ghostState", !state.fixedTapped);
       if(x.type==="doThink"){
         setDock("STEP 1｜書き出し",
           `<span class="changePart">I think that</span> <span class="contentPart">${x.statement}</span>.`,
@@ -931,6 +1133,13 @@ function renderCurrentDock(){
       `<span class="fixedPart">I think that → I have two reasons → First → For example → Second → For example → 結論</span>`,
       "全文ではなく、答案の順番を思い出そう");
   }
+
+  const waitingFixed =
+    (state.step===2 || state.step===7) ||
+    ((state.step===3 || state.step===4 || state.step===5 || state.step===6) && !state.stage);
+
+  currentSentence.classList.toggle("ghostState", waitingFixed && !state.fixedTapped);
+  currentSentence.classList.toggle("confirmedState", !waitingFixed || state.fixedTapped);
 }
 
 function renderOpinion(){
@@ -983,14 +1192,22 @@ function showTransform(x){
  }
  controls.appendChild(box);
  const btn=document.createElement("button");btn.className="btn fixedBtn bigAction pulse";btn.innerHTML=`<span class="en">この書き出しを答案に入れる</span><span class="jp">${openingFor(x)}</span>`;
- btn.onclick=()=>{if(!state.lines.length)addLine(openingFor(x),"opening");setStep(2)};
+ btn.onclick=()=>{
+   state.fixedTapped=true; save(); renderCurrentDock();
+   currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
+   setTimeout(()=>{if(!state.lines.length)addLine(openingFor(x),"opening");setStep(2)},420);
+ };
  controls.appendChild(btn);
  setGuide("色が変わったところに注目。<b>書き出しを押して答案に入れよう。</b>");
 }
 function fixedStep(en,jp,role,next,guideText){
  setGuide(guideText);
  const b=document.createElement("button");b.className="btn fixedBtn bigAction pulse";b.innerHTML=`<span class="en">${en}</span>${jpHtml(jp)}`;
- b.onclick=()=>{addLine(en,role);setStep(next)};controls.appendChild(b);
+ b.onclick=()=>{
+   state.fixedTapped=true; save(); renderCurrentDock();
+   currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
+   setTimeout(()=>{addLine(en,role);setStep(next)},420);
+ };controls.appendChild(b);
  const n=document.createElement("div");n.className="notice";n.innerHTML="<b>定型文</b>は毎回同じ。キーボードではなく、押して順番ごと覚えます。";controls.appendChild(n);
 }
 function reasonStep(which){
@@ -998,7 +1215,11 @@ function reasonStep(which){
  if(!state.stage){
   setGuide(`${isFirst?"1つ目":"2つ目"}の理由。まず定型の <b>${isFirst?"First,":"Second,"}</b> を押そう。`);
   const b=document.createElement("button");b.className="btn fixedBtn bigAction pulse";b.innerHTML=`<span class="en">${isFirst?"First,":"Second,"}</span>${jpHtml(isFirst?"第一に、":"第二に、")}`;
-  b.onclick=()=>{state.stage="category";save();renderOpinion()};controls.appendChild(b);return;
+  b.onclick=()=>{
+    state.fixedTapped=true; save(); renderCurrentDock();
+    currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
+    setTimeout(()=>{state.stage="category";save();renderOpinion()},360);
+  };controls.appendChild(b);return;
  }
  if(state.stage==="category"){
   setGuide("このQUESTIONに合う<b>理由の方向</b>を選ぼう。完成文の丸暗記ではなく、まず意味で選びます。");
@@ -1032,7 +1253,11 @@ function detailStep(which){
  if(!state.stage){
   setGuide("理由をもう1文詳しくしよう。まず <b>For example,</b> を押します。");
   const b=document.createElement("button");b.className="btn fixedBtn bigAction pulse";b.innerHTML=`<span class="en">For example,</span>${jpHtml("例えば、")}`;
-  b.onclick=()=>{state.stage="detail";save();renderOpinion()};controls.appendChild(b);return;
+  b.onclick=()=>{
+    state.fixedTapped=true; save(); renderCurrentDock();
+    currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
+    setTimeout(()=>{state.stage="detail";save();renderOpinion()},360);
+  };controls.appendChild(b);return;
  }
  setGuide("「どういうこと？」に答える内容を選ぼう。前の理由とつながるものを選びます。");
  const stem=document.createElement("div");stem.className="transformBox";stem.innerHTML=`<span class="replace">For example,</span> they can <span class="keep">＿＿＿＿</span>.`;controls.appendChild(stem);
@@ -1108,7 +1333,7 @@ function finishQuestion(){
  setTimeout(()=>{state.sequence=[];nextQuestion()},700);
 }
 function resetCurrent(){
- state.step=1;state.lines=[];state.selected1=null;state.selected2=null;state.stage=null;state.sequence=[];state.step1Correct=false;save();renderOpinion();
+ state.step=1;state.lines=[];state.selected1=null;state.selected2=null;state.stage=null;state.sequence=[];state.step1Correct=false;state.fixedTapped=false;save();renderOpinion();
 }
 document.querySelectorAll(".langToggle button").forEach(b=>b.onclick=()=>{state.lang=b.dataset.lang;save();renderOpinion();updateHome()});
 document.getElementById("opinionBtn").onclick=()=>{showScreen("opinion");renderOpinion()};
@@ -1143,7 +1368,15 @@ document.getElementById("emailBuild").onclick=()=>{
  document.getElementById("emailFill").style.background=n>=40&&n<=50?"var(--good)":"var(--warn)";
 };
 
-document.getElementById("guide").onclick=()=>document.getElementById("guide").classList.remove("guideShow");
+document.getElementById("guide").onclick=(e)=>{
+  const r=guide.getBoundingClientRect();
+  if(e.clientX > r.right-48){
+    guide.classList.remove("guideShow");
+    try{speechSynthesis.cancel()}catch(_){}
+  }else{
+    speakGuide(lastGuide);
+  }
+};
 document.getElementById("guideReplay").onclick=()=>{
   if(lastGuide) setGuide(lastGuide);
 };
