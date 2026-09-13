@@ -438,6 +438,138 @@ button{touch-action:manipulation}
   #opinion .left::after{bottom:102px}
 }
 
+
+/* ===== v3: STEP/status block moved to upper-right ===== */
+
+/* Remove the old horizontal top bar feel */
+#opinion .topbar{
+  position:absolute;
+  top:calc(8px + env(safe-area-inset-top));
+  right:calc(12px + env(safe-area-inset-right));
+  left:auto;
+  width:min(520px,44vw);
+  z-index:20;
+  display:grid;
+  grid-template-columns:1fr auto;
+  grid-template-areas:
+    "status tools";
+  align-items:start;
+  gap:10px;
+  padding:0;
+  border-bottom:0;
+  background:transparent;
+  backdrop-filter:none;
+}
+
+/* The red-circled block: title + STEP + progress */
+#opinion .topbar > div:first-child{
+  grid-area:status;
+  min-width:0 !important;
+  background:rgba(8,17,31,.90);
+  border:1px solid var(--line);
+  border-radius:15px;
+  padding:7px 10px 8px;
+  box-shadow:0 8px 22px rgba(0,0,0,.18);
+}
+#opinion .brand{
+  font-size:13px;
+  line-height:1.1;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#opinion .stepTitle{
+  margin-top:3px;
+  font-size:16px;
+  line-height:1.15;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#opinion .progressTrack{
+  height:5px;
+  margin-top:5px;
+}
+
+/* Existing utility controls remain at the far right */
+#opinion .topbar > div:last-child{
+  grid-area:tools;
+  display:flex !important;
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:flex-start;
+  gap:5px !important;
+}
+#opinion .langToggle{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  padding:3px;
+  border-radius:11px;
+}
+#opinion .langToggle button{
+  padding:5px 7px;
+  font-size:10px;
+  white-space:nowrap;
+}
+#opinion #guideReplay,
+#opinion #opHome{
+  padding:6px 8px !important;
+  min-height:0;
+  border-radius:10px;
+  font-size:11px;
+}
+
+/* Main study content now starts at the top-left with QUESTION */
+#opinion .studyBody{
+  padding-top:calc(8px + env(safe-area-inset-top));
+}
+#opinion .left{
+  padding-top:8px;
+  padding-right:calc(min(520px,44vw) + 28px);
+}
+
+/* QUESTION gets the wide left area and never sits under the status panel */
+#opinion .left > .card{
+  min-height:72px;
+}
+#opinion #question{
+  max-width:calc(100% - 105px);
+}
+
+/* Once below the question, controls may use almost the full width */
+#opinion #controls{
+  width:calc(100vw - 30px - env(safe-area-inset-left) - env(safe-area-inset-right));
+  max-width:none;
+  padding-right:12px;
+}
+
+/* Keep the white dock full-width at bottom */
+.currentDock{
+  z-index:15;
+}
+
+/* Hide old visual divider that belonged to the former top bar */
+#opinion .topbar::after{display:none}
+
+@media(max-width:850px){
+  #opinion .topbar{
+    width:min(430px,48vw);
+    top:calc(5px + env(safe-area-inset-top));
+    right:calc(7px + env(safe-area-inset-right));
+    gap:6px;
+  }
+  #opinion .topbar > div:first-child{
+    padding:5px 7px 6px;
+  }
+  #opinion .brand{font-size:11px}
+  #opinion .stepTitle{font-size:13px}
+  #opinion .left{
+    padding-right:calc(min(430px,48vw) + 18px);
+  }
+  #opinion .left > .card{min-height:62px}
+}
+
 </style>
 </head>
 <body>
