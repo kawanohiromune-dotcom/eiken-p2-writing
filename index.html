@@ -403,7 +403,7 @@ button{touch-action:manipulation}
 
 /* Small visible cue for the middle scroll area */
 #opinion .left::after{
-  content:"中央エリアは上下にスクロールできます";
+  content:"";
   position:absolute;
   right:30px;
   bottom:122px;
@@ -888,10 +888,218 @@ button{touch-action:manipulation}
   }
 }
 
+
+/* ===== v6: no-scroll center / compact bottom / clean workspace ===== */
+
+/* Remove any persistent helper labels from the middle */
+#opinion .left::after{display:none !important}
+
+/* Main area uses a fixed three-zone layout: QUESTION / controls / compact dock */
+#opinion{
+  position:relative;
+  overflow:hidden;
+}
+#opinion .studyBody{
+  flex:1 1 auto !important;
+  min-height:0 !important;
+  padding:8px 186px 0 12px !important;
+  overflow:hidden !important;
+}
+#opinion .left{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  padding:0 !important;
+  margin:0 !important;
+  overflow:hidden !important;
+  display:grid !important;
+  grid-template-rows:auto 1fr !important;
+  gap:8px !important;
+}
+
+/* QUESTION: compact 2-line block */
+#opinion .left > .card{
+  min-height:0 !important;
+  height:auto !important;
+  padding:7px 12px !important;
+  border-radius:15px !important;
+  flex:none !important;
+}
+#opinion .left > .card .small:first-child{
+  display:inline-block !important;
+  margin-right:10px !important;
+}
+#opinion #question{
+  display:inline !important;
+  max-width:none !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  font-size:clamp(14px,1.65vw,20px) !important;
+  line-height:1.2 !important;
+}
+#opinion #questionJp{
+  margin-top:3px !important;
+  white-space:nowrap !important;
+  overflow:hidden !important;
+  text-overflow:ellipsis !important;
+  font-size:10px !important;
+}
+
+/* Central work area: NO scrolling */
+#opinion #controls{
+  width:100% !important;
+  height:100% !important;
+  min-height:0 !important;
+  overflow:hidden !important;
+  padding:44px 0 6px !important; /* room for transient instruction strip */
+  margin:0 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  justify-content:flex-start !important;
+  gap:8px !important;
+}
+
+/* 3 options = one row, 4 options = 2x2; keep all visible */
+#opinion .choiceGrid{
+  display:grid !important;
+  grid-template-columns:repeat(2,minmax(0,1fr)) !important;
+  gap:8px !important;
+  width:100% !important;
+}
+#opinion .choiceGrid > .choice:only-child{
+  grid-column:1 / -1;
+}
+#opinion .choice{
+  min-height:48px !important;
+  max-height:72px !important;
+  padding:8px 10px !important;
+  overflow:hidden !important;
+}
+#opinion .choice b{
+  font-size:15px !important;
+}
+#opinion .choice .jp{
+  margin-top:3px !important;
+  font-size:10px !important;
+  line-height:1.2 !important;
+}
+#opinion .fixedBtn{
+  min-height:52px !important;
+  max-height:70px !important;
+  padding:8px 12px !important;
+}
+#opinion .fixedBtn .en{font-size:18px !important}
+#opinion .fixedBtn .jp{font-size:10px !important;margin-top:2px !important}
+#opinion .transformBox{
+  margin-top:0 !important;
+  padding:8px 10px !important;
+  font-size:14px !important;
+  line-height:1.3 !important;
+}
+
+/* Instruction popup = slim strip under QUESTION; disappears and leaves no text */
+#opinion #guide{
+  position:fixed !important;
+  left:16px !important;
+  right:194px !important;
+  top:102px !important;
+  width:auto !important;
+  min-height:36px !important;
+  padding:7px 48px 7px 44px !important;
+  font-size:12px !important;
+  line-height:1.3 !important;
+  border-radius:12px !important;
+  text-align:left !important;
+}
+#opinion #guide::before{left:13px !important;font-size:17px !important}
+#opinion #guide::after{right:13px !important;font-size:20px !important}
+
+/* Bottom white area: much smaller, pushed lower, independently scrollable only if needed */
+.currentDock{
+  position:relative !important;
+  left:auto !important;
+  right:auto !important;
+  width:auto !important;
+  margin:5px 186px 6px 12px !important;
+  min-height:58px !important;
+  max-height:76px !important;
+  padding:5px 12px calc(5px + env(safe-area-inset-bottom)) !important;
+  overflow-y:auto !important;
+  flex:0 0 auto !important;
+}
+.currentDockTop{margin-bottom:1px !important}
+.currentDockLabel{font-size:9px !important}
+.currentDockCount{font-size:9px !important}
+.currentSentence{
+  font-size:clamp(15px,1.85vw,21px) !important;
+  line-height:1.08 !important;
+}
+.currentTranslation{
+  font-size:9px !important;
+  margin-top:1px !important;
+  line-height:1.15 !important;
+}
+
+/* Right rail stays independent and compact */
+#opinion .topbar{
+  width:168px !important;
+}
+#opinion .topbar > div:last-child{
+  margin-top:auto !important;
+}
+#opinion .langToggle button{
+  padding:6px 4px !important;
+}
+
+/* The controls should not show scrollbars anymore */
+#opinion #controls::-webkit-scrollbar{display:none !important}
+#opinion #controls{scrollbar-width:none !important}
+
+/* Completion flash: sentence briefly emphasized in the middle */
+.completionFlash{
+  position:fixed;
+  left:50%;
+  top:52%;
+  transform:translate(-58%,-50%);
+  z-index:60;
+  max-width:62vw;
+  background:rgba(8,17,31,.96);
+  color:#fff;
+  border:2px solid var(--accent);
+  border-radius:18px;
+  padding:14px 20px;
+  font-size:clamp(18px,2.2vw,28px);
+  font-weight:950;
+  box-shadow:0 16px 45px rgba(0,0,0,.38);
+  pointer-events:none;
+  opacity:0;
+}
+.completionFlash.show{
+  animation:completionMove .72s ease forwards;
+}
+@keyframes completionMove{
+  0%{opacity:0;transform:translate(-58%,-46%) scale(.96)}
+  20%{opacity:1;transform:translate(-58%,-50%) scale(1.03)}
+  62%{opacity:1;transform:translate(-58%,-50%) scale(1)}
+  100%{opacity:0;transform:translate(-58%,-58%) scale(.92)}
+}
+
+@media(max-width:850px){
+  #opinion .studyBody{padding-right:158px !important}
+  .currentDock{margin-right:158px !important;min-height:52px !important;max-height:68px !important}
+  #opinion #guide{right:166px !important;top:88px !important}
+  #opinion #controls{padding-top:39px !important}
+  #opinion .choice{min-height:43px !important;max-height:62px !important}
+  #opinion .fixedBtn{min-height:46px !important}
+  .completionFlash{max-width:66vw}
+}
+
 </style>
 </head>
 <body>
 <div class="rotate"><div><div style="font-size:48px">↻</div><h2>横向きにしてください</h2><p>このアプリは横画面で使います。</p></div></div>
+<div id="completionFlash" class="completionFlash"></div>
 <div id="toast" class="toast"></div>
 
 <section id="home" class="screen active home">
@@ -1084,6 +1292,13 @@ function q(){return QUESTIONS[state.qIndex%QUESTIONS.length]}
 function words(s){return (s.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]).length}
 function showScreen(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active")}
 function toast(t){const x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1100)}
+function flashSentence(text){
+  const f=document.getElementById("completionFlash");
+  f.textContent=text;
+  f.classList.remove("show");
+  void f.offsetWidth;
+  f.classList.add("show");
+}
 function langLabel(){return state.lang==="show"?"あり":state.lang==="tap"?"押して訳":"なし"}
 function updateHome(){homeDone.textContent=state.history.length;homeStreak.textContent=state.streak;homeLang.textContent=langLabel()}
 function jpHtml(text){
@@ -1418,7 +1633,8 @@ function showTransform(x){
  btn.onclick=()=>{
    state.fixedTapped=true; save(); renderCurrentDock();
    currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
-   setTimeout(()=>{if(!state.lines.length)addLine(openingFor(x),"opening");setStep(2)},420);
+   flashSentence(openingFor(x));
+   setTimeout(()=>{if(!state.lines.length)addLine(openingFor(x),"opening");setStep(2)},620);
  };
  controls.appendChild(btn);
  setGuide("色が変わったところに注目。<b>書き出しを押して答案に入れよう。</b>");
@@ -1429,9 +1645,10 @@ function fixedStep(en,jp,role,next,guideText){
  b.onclick=()=>{
    state.fixedTapped=true; save(); renderCurrentDock();
    currentSentence.classList.remove("inkIn"); void currentSentence.offsetWidth; currentSentence.classList.add("inkIn");
-   setTimeout(()=>{addLine(en,role);setStep(next)},420);
+   flashSentence(en);
+   setTimeout(()=>{addLine(en,role);setStep(next)},620);
  };controls.appendChild(b);
- const n=document.createElement("div");n.className="notice";n.innerHTML="<b>定型文</b>は毎回同じ。キーボードではなく、押して順番ごと覚えます。";controls.appendChild(n);
+ 
 }
 function reasonStep(which){
  const x=q();const isFirst=which===1;
@@ -1465,8 +1682,12 @@ function reasonStep(which){
   const grid=document.createElement("div");grid.className="choiceGrid";
   options.forEach(o=>grid.appendChild(choiceBtn(`${o.en}${jpHtml(o.jp)}`,()=>{
     if(!o.ok){toast("QUESTIONに合う理由を選ぼう");return}
-    addLine(`${isFirst?"First":"Second"}, ${r.en}.`,"reason");
-    state.stage=null;save();setStep(isFirst?4:6);
+    const completed=`${isFirst?"First":"Second"}, ${r.en}.`;
+    flashSentence(completed);
+    setTimeout(()=>{
+      addLine(completed,"reason");
+      state.stage=null;save();setStep(isFirst?4:6);
+    },520);
   })));
   controls.appendChild(grid);
  }
@@ -1494,8 +1715,12 @@ function detailStep(which){
  const grid=document.createElement("div");grid.className="choiceGrid";
  opts.forEach(o=>grid.appendChild(choiceBtn(`${o.en}${jpHtml(o.jp)}`,()=>{
    if(!o.ok){toast("前の理由とつながる内容を選ぼう");return}
-   addLine(`For example, ${r.detail}.`,"example");
-   state.stage=null;save();setStep(which===1?5:7);
+   const completed=`For example, ${r.detail}.`;
+   flashSentence(completed);
+   setTimeout(()=>{
+     addLine(completed,"example");
+     state.stage=null;save();setStep(which===1?5:7);
+   },520);
  })));
  controls.appendChild(grid);
 }
