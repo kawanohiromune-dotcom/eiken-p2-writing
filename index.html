@@ -1,272 +1,518 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="theme-color" content="#0f172a" />
-<title>英検準2級 Writing</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="英検準2級 Writing">
+<meta name="theme-color" content="#0b1220">
+<title>英検準2級 Writing Trainer</title>
 <link rel="apple-touch-icon" href="icon-180.png">
 <style>
-:root{--bg:#0b1220;--panel:#111827;--panel2:#182234;--text:#f8fafc;--muted:#94a3b8;--line:#2b3a52;--good:#22c55e;--warn:#f59e0b;--bad:#ef4444;--accent:#38bdf8;--card:#1e293b}
-*{box-sizing:border-box} html,body{margin:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
+:root{
+  --bg:#08111f;--panel:#101b2c;--panel2:#15253a;--line:#2a3f59;--text:#f8fafc;--muted:#9fb0c4;
+  --accent:#38bdf8;--good:#22c55e;--warn:#f59e0b;--bad:#ef4444;--purple:#a78bfa;--yellow:#facc15;
+  --blue:#60a5fa;--green:#4ade80;--orange:#fb923c;--pink:#f472b6;
+}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);overflow:hidden}
 button,input,textarea{font:inherit}
+button{touch-action:manipulation}
 .screen{display:none;height:100dvh;width:100%;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 .screen.active{display:flex;flex-direction:column}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:1px solid var(--line);background:rgba(15,23,42,.94);backdrop-filter:blur(8px)}
-.brand{font-weight:800;letter-spacing:.4px}.small{font-size:12px;color:var(--muted)}
-.home{align-items:center;justify-content:center;gap:18px;padding:20px}.hero{width:min(900px,96vw);display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
-.box{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 16px 40px rgba(0,0,0,.22)}
-.title{font-size:clamp(26px,4vw,46px);font-weight:900;line-height:1.05;margin:0 0 10px}.sub{color:var(--muted);line-height:1.6}
-.target{font-size:54px;font-weight:900;margin:8px 0}.target span{color:var(--accent)}
-.statsgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}.stat{background:#0f172a;border:1px solid var(--line);border-radius:16px;padding:14px}.stat b{font-size:26px;display:block}
-.actions{display:grid;gap:10px}.btn{border:0;border-radius:14px;padding:14px 18px;font-weight:800;cursor:pointer}.primary{background:var(--accent);color:#062238}.secondary{background:#243244;color:var(--text)}.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
-.notice{background:#0f172a;border:1px solid var(--line);border-radius:14px;padding:12px 14px;color:var(--muted);font-size:13px;line-height:1.5}
-.studyWrap{display:grid;grid-template-columns:38% 62%;min-height:0;flex:1}.leftPane,.rightPane{min-height:0;overflow:auto;padding:16px}.leftPane{border-right:1px solid var(--line)}
-.qbox{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:14px}.q{font-size:20px;font-weight:800;line-height:1.4}.jp{margin-top:8px;color:var(--muted);font-size:13px}
-.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.reason{background:var(--card);border:2px solid transparent;border-radius:16px;padding:14px;cursor:pointer;min-height:110px}.reason.selected{border-color:var(--accent);box-shadow:0 0 0 2px rgba(56,189,248,.15)}.reason .emoji{font-size:28px}.reason h3{margin:6px 0 4px;font-size:16px}.reason p{margin:0;color:#cbd5e1;font-size:13px;line-height:1.45}
-.answerBox{background:#fff;color:#111827;border-radius:18px;padding:18px;min-height:260px}.answerBox textarea{width:100%;height:230px;border:0;outline:0;resize:none;font-size:18px;line-height:1.6;background:transparent;color:#111827}.meter{display:flex;align-items:center;gap:12px;margin:12px 0}.bar{height:12px;flex:1;background:#253247;border-radius:99px;overflow:hidden}.fill{height:100%;width:0;background:var(--accent);transition:.2s}.count{font-weight:900;min-width:95px;text-align:right}.checks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.check{background:#111827;border:1px solid var(--line);border-radius:12px;padding:10px;font-size:12px}.check.ok{border-color:#14532d;background:#102419}.check.ng{border-color:#7f1d1d;background:#2a1212}
-.bottomActions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}.chip{font-size:12px;border:1px solid var(--line);border-radius:99px;padding:8px 10px;background:#132033;cursor:pointer}
-.results{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:18px;overflow:auto}.chartCard{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px}.bigPct{font-size:54px;font-weight:900}.row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--line)}.row:last-child{border-bottom:0}
-.levelBadge{display:inline-block;padding:6px 10px;border-radius:99px;background:#132033;border:1px solid var(--line);font-weight:800}
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.68);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal.show{display:flex}.modalCard{width:min(560px,94vw);background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:22px}.modalCard h2{margin-top:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;border-bottom:1px solid var(--line);background:rgba(10,18,31,.96);backdrop-filter:blur(8px);gap:12px}
+.brand{font-weight:900}.small{font-size:12px;color:var(--muted)}.muted{color:var(--muted)}
+.btn{border:0;border-radius:14px;padding:12px 16px;font-weight:900;cursor:pointer}
+.primary{background:var(--accent);color:#062236}.secondary{background:#21324a;color:#fff}.ghost{background:transparent;color:#fff;border:1px solid var(--line)}
+.home{align-items:center;justify-content:center;padding:18px}
+.hero{width:min(980px,96vw);display:grid;grid-template-columns:1.15fr .85fr;gap:16px}
+.box{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:0 16px 40px rgba(0,0,0,.22)}
+.title{font-size:clamp(28px,4vw,48px);font-weight:950;line-height:1.05;margin:0 0 8px}
+.actions{display:grid;gap:10px}.actions .btn{min-height:54px;text-align:left}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+.stat{background:#0c1626;border:1px solid var(--line);border-radius:14px;padding:12px}.stat b{font-size:24px;display:block}
+.notice{background:#0b1525;border:1px solid var(--line);border-radius:14px;padding:10px 12px;line-height:1.5;color:#d6e1ee}
+.studyBody{display:grid;grid-template-columns:43% 57%;flex:1;min-height:0}
+.left,.right{min-height:0;overflow:auto;padding:14px}
+.left{border-right:1px solid var(--line)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:14px}
+.question{font-size:clamp(17px,2vw,24px);font-weight:900;line-height:1.45;margin-top:6px}
+.stepTitle{font-size:18px;font-weight:950;color:var(--accent)}
+.progressTrack{height:6px;background:#20334a;border-radius:99px;overflow:hidden;margin-top:6px}.progressFill{height:100%;background:var(--accent);transition:.35s}
+.answerPaper{background:#fff;color:#0f172a;border-radius:18px;padding:16px;min-height:210px;box-shadow:inset 0 0 0 1px #dbe4ef}
+.answerTitle{font-size:12px;color:#64748b;font-weight:800;margin-bottom:8px}
+.answerLine{font-size:17px;line-height:1.75;margin:0 0 3px;min-height:29px}
+.answerLine.pending{color:#94a3b8}
+.role-opening{border-left:5px solid var(--blue);padding-left:9px}
+.role-fixed{border-left:5px solid var(--purple);padding-left:9px}
+.role-reason{border-left:5px solid var(--yellow);padding-left:9px}
+.role-example{border-left:5px solid var(--green);padding-left:9px}
+.role-close{border-left:5px solid var(--pink);padding-left:9px}
+.controls{display:grid;gap:10px;margin-top:12px}
+.choiceGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.choice{background:#1a2a41;color:#fff;border:2px solid transparent;border-radius:16px;padding:13px;text-align:left;cursor:pointer;font-weight:800;min-height:72px}
+.choice:hover,.choice:active{border-color:var(--accent)}
+.choice.correct{border-color:var(--good);background:#102719}.choice.wrong{border-color:var(--bad);background:#2d1518}
+.choice .jp{display:block;margin-top:5px;color:#c4d2e3;font-size:12px;font-weight:600}
+.bigAction{width:100%;min-height:58px;font-size:17px}
+.fixedBtn{background:#312e81;color:#fff;border:2px solid #818cf8}
+.fixedBtn .en{font-size:21px;display:block}
+.fixedBtn .jp{font-size:12px;color:#ddd6fe;display:block;margin-top:4px}
+.reasonCat{min-height:78px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:#122238;color:#fff;border-radius:99px;padding:9px 12px;font-weight:800;cursor:pointer}
+.guide{border-color:var(--accent);color:#fff}
+.goodBox{border-color:#166534;background:#0f2519}
+.warnBox{border-color:#92400e;background:#2a1b0c}
+@keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(56,189,248,0)}50%{transform:scale(1.02);box-shadow:0 0 0 7px rgba(56,189,248,.18)}}
+.pulse{animation:pulse 1.05s infinite}
+@keyframes pop{0%{opacity:0;transform:translateY(8px) scale(.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
+.pop{animation:pop .35s ease both}
+@keyframes colorFlash{0%{color:#fff}30%{color:var(--yellow);transform:scale(1.03)}100%{color:var(--accent);transform:scale(1)}}
+.flash{display:inline-block;animation:colorFlash 1s ease}
+.transformBox{background:#0a1525;border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:10px;font-size:18px;line-height:1.6}
+.strike{color:#f87171;text-decoration:line-through;text-decoration-thickness:3px}.keep{color:#facc15;font-weight:900}.replace{color:#38bdf8;font-weight:950}
+.arrow{font-size:24px;text-align:center;color:var(--muted);margin:4px 0}
+.meter{display:flex;gap:10px;align-items:center;margin-top:12px}.bar{height:12px;background:#22354c;flex:1;border-radius:99px;overflow:hidden}.fill{height:100%;width:0;background:var(--accent);transition:.3s}.count{min-width:112px;text-align:right;font-weight:950}
+.legend{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;margin-top:10px}.legend span{padding:5px 8px;border-radius:99px;background:#0d1929;border:1px solid var(--line)}
+.langToggle{display:flex;gap:5px;background:#0c1727;border:1px solid var(--line);border-radius:12px;padding:4px}
+.langToggle button{border:0;background:transparent;color:#aebed0;border-radius:9px;padding:7px 9px;font-size:12px;font-weight:800}
+.langToggle button.active{background:#223750;color:#fff}
+.sequence{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.seqBtn{background:#17283e;color:#fff;border:1px solid var(--line);border-radius:14px;padding:11px;font-weight:800;cursor:pointer}
+.seqBtn.used{opacity:.32;pointer-events:none}
+.seqAnswer{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;min-height:42px}.seqToken{background:#0f2f23;border:1px solid #166534;border-radius:10px;padding:7px 9px;font-size:12px}
+.emailWrap{display:grid;grid-template-columns:45% 55%;flex:1;min-height:0}
 .rotate{display:none}
-@media (orientation:portrait) and (max-width:900px){.rotate{display:flex;position:fixed;inset:0;z-index:50;background:#07101f;color:white;align-items:center;justify-content:center;text-align:center;padding:30px}.hero{grid-template-columns:1fr}.studyWrap{grid-template-columns:1fr}.leftPane{border-right:0}.cards{grid-template-columns:1fr 1fr}}
-@media (max-width:800px){.checks{grid-template-columns:1fr 1fr}.results{grid-template-columns:1fr}.q{font-size:17px}.answerBox textarea{font-size:16px}}
-
-@keyframes guidePulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(56,189,248,.0)}50%{transform:scale(1.035);box-shadow:0 0 0 7px rgba(56,189,248,.18)}}
-.guidePulse{animation:guidePulse 1.15s infinite}
-.modeChoice{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#0b1525;border:1px solid var(--line);padding:11px 16px;border-radius:99px;font-weight:900;opacity:0;pointer-events:none;transition:.25s;z-index:50}.toast.show{opacity:1}
+@media(max-width:850px){.studyBody,.emailWrap{grid-template-columns:46% 54%}.choiceGrid{grid-template-columns:1fr 1fr}.answerLine{font-size:15px}.left,.right{padding:10px}.topbar{padding:8px 10px}}
+@media(orientation:portrait) and (max-width:900px){.rotate{display:flex;position:fixed;inset:0;background:#07101e;color:#fff;z-index:100;align-items:center;justify-content:center;text-align:center;padding:28px}.hero{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="rotate"><div><div style="font-size:52px">↻</div><h2>横向きにしてください</h2><p>このアプリは横画面で最も見やすく使えます。</p></div></div>
+<div class="rotate"><div><div style="font-size:48px">↻</div><h2>横向きにしてください</h2><p>このアプリは横画面で使います。</p></div></div>
+<div id="toast" class="toast"></div>
 
 <section id="home" class="screen active home">
   <div class="hero">
     <div class="box">
       <div class="small">EIKEN PRE-2 WRITING</div>
       <h1 class="title">英検準2級<br>Writing Trainer</h1>
-<p class="sub"><b>練習する内容を選ぶ</b></p>
-      <p class="sub">YES固定＋4カードで、まず「崩れない答案」を作る。成績が安定したら13点・14点チャレンジを自動解放します。</p>
-      <div class="target">TARGET <span id="targetScore">12/16</span></div>
-      <span id="levelBadge" class="levelBadge">合格モード</span>
-      <div class="statsgrid">
-        <div class="stat"><span class="small">直近正解率</span><b id="homeAcc">0%</b></div>
+      <p class="muted">定型文は「押して覚える」。変わる部分は「問題に合うものを選ぶ」。最後は日本語なし・本番形式へ。</p>
+      <div class="stats">
+        <div class="stat"><span class="small">論述クリア</span><b id="homeDone">0</b></div>
         <div class="stat"><span class="small">連続クリア</span><b id="homeStreak">0</b></div>
-        <div class="stat"><span class="small">学習済み</span><b id="homeDone">0問</b></div>
-        <div class="stat"><span class="small">語数成功率</span><b id="homeWords">0%</b></div>
+        <div class="stat"><span class="small">日本語設定</span><b id="homeLang" style="font-size:17px">あり</b></div>
       </div>
+      <div class="notice" style="margin-top:14px">途中経過はこのiPhoneのSafariに自動保存します。</div>
     </div>
     <div class="box actions">
-       <button class="btn primary" id="emailModeBtn">✉️ Eメール（40〜50語）</button>
-       <button class="btn secondary" id="opinionModeBtn">✍️ 意見論述（50〜60語）</button>
-      <button class="btn primary" id="continueBtn">▶ 今日のおすすめ・続きから</button>
-      <button class="btn secondary" id="startBtn">意見論述を最初から</button>
-      <button class="btn secondary" id="weakBtn">⚡ 苦手だけ</button>
-      <button class="btn ghost" id="resultsBtn">📊 成績・設定</button>
-      <div class="notice">回答は自動保存されます。同じSafari・同じ端末なら、途中で閉じても続きから再開できます。</div>
+      <button id="opinionBtn" class="btn primary">✍️ 意見論述 9STEP</button>
+      <button id="emailBtn" class="btn secondary">✉️ Eメール</button>
+      <button id="resumeBtn" class="btn secondary">▶ 続きから</button>
+      <button id="resetOpinionBtn" class="btn ghost">↺ 論述を最初から</button>
     </div>
   </div>
 </section>
 
-<section id="study" class="screen">
-  <div class="topbar"><div><b>WRITING TRAINER</b>
-<div id="stepLabel" style="font-weight:900;color:#38bdf8">STEP 1 / 3　理由を2つ選ぶ</div>
-<div class="small" id="progressLabel">1 / 30</div></div><div><span class="levelBadge" id="studyLevel">合格モード</span> <button class="btn ghost" id="homeBtn" style="padding:8px 12px">ホーム</button></div></div>
-  <div class="studyWrap">
-    <div class="leftPane">
-      <div class="qbox"><div class="small">QUESTION</div><div id="question" class="q"></div><div id="questionJp" class="jp"></div></div>
-      <div id="nextGuide" class="notice" style="margin-bottom:10px;color:#fff;border-color:#38bdf8">👇 STEP 1：理由カードを2つ選んでください</div>
-<div class="small" style="margin-bottom:8px">理由を2つ選ぶ</div>
-      <div id="cards" class="cards"></div>
-      <div class="notice" style="margin-top:12px">迷ったら「学び・時間・人・健康」から2つ。自分の本当の意見ではなく、YESで書きやすい2つを選びます。</div>
+<section id="opinion" class="screen">
+  <div class="topbar">
+    <div style="min-width:260px">
+      <div class="brand">✍️ 意見論述 TRAINER</div>
+      <div id="stepTitle" class="stepTitle">STEP 1 / 9</div>
+      <div class="progressTrack"><div id="stepFill" class="progressFill"></div></div>
     </div>
-    <div class="rightPane">
-      <div class="answerBox"><textarea id="answer" spellcheck="false" placeholder="ここに答案が表示・入力されます"></textarea></div>
-      <div class="meter"><div class="bar"><div id="fill" class="fill"></div></div><div id="wordCount" class="count">0 / 50–60</div></div>
-      <div id="checks" class="checks"></div>
-      <div class="bottomActions">
-        <button class="btn secondary" id="buildBtn">4カードから答案を作る</button>
-        <button class="btn primary" id="gradeBtn">判定する</button>
-        <button class="btn secondary" id="nextBtn">次の問題 ▶</button>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="langToggle">
+        <button data-lang="show">訳あり</button>
+        <button data-lang="tap">押して訳</button>
+        <button data-lang="hide">訳なし</button>
       </div>
-      <div class="small" style="margin-top:12px">語数ブースター：</div>
-      <div id="boosters" class="bottomActions"></div>
+      <button id="opHome" class="btn ghost">ホーム</button>
+    </div>
+  </div>
+  <div class="studyBody">
+    <div class="left">
+      <div class="card">
+        <div class="small">QUESTION</div>
+        <div id="question" class="question"></div>
+        <div id="questionJp" class="small" style="margin-top:8px"></div>
+      </div>
+      <div id="guide" class="notice guide" style="margin-top:10px"></div>
+      <div id="controls" class="controls"></div>
+    </div>
+    <div class="right">
+      <div class="answerPaper">
+        <div class="answerTitle">いまの答案</div>
+        <div id="answerLines"></div>
+      </div>
+      <div class="legend">
+        <span style="border-color:var(--blue)">書き出し</span>
+        <span style="border-color:var(--purple)">定型文</span>
+        <span style="border-color:var(--yellow)">理由</span>
+        <span style="border-color:var(--green)">具体化</span>
+        <span style="border-color:var(--pink)">締め</span>
+      </div>
+      <div class="meter">
+        <div class="bar"><div id="wordFill" class="fill"></div></div>
+        <div id="wordCount" class="count">0 / 50–60</div>
+      </div>
     </div>
   </div>
 </section>
 
-
-<section id="emailStudy" class="screen">
-  <div class="topbar"><div><b>✉️ Eメール TRAINER</b><div id="emailStep" style="font-weight:900;color:#a78bfa">STEP 1 / 5　メールを読む</div></div><button class="btn ghost" id="emailHome">ホーム</button></div>
-  <div class="studyWrap">
-    <div class="leftPane">
-      <div class="qbox"><div class="small">EMAIL</div>
-        <div class="q" style="font-size:16px">My city started a new <u>weekend bus service for older people</u>. It is free, and my grandmother used it last Sunday. She said it was very helpful. Do you think more cities will have services like this in the future?</div>
-        <div class="jp">下線部について、本文にまだ書かれていないことを2つ質問します。</div>
+<section id="email" class="screen">
+  <div class="topbar">
+    <div><div class="brand">✉️ Eメール TRAINER</div><div class="small">40〜50語・質問2つ＋相手の質問への回答</div></div>
+    <button id="emailHome" class="btn ghost">ホーム</button>
+  </div>
+  <div class="emailWrap">
+    <div class="left">
+      <div class="card">
+        <div class="small">EMAIL</div>
+        <div class="question" style="font-size:17px">My city started a new <u>weekend bus service for older people</u>. It is free, and my grandmother used it last Sunday. She said it was very helpful. Do you think more cities will have services like this in the future?</div>
       </div>
-      <div id="emailGuide" class="notice" style="color:#fff;border-color:#a78bfa">👇 STEP 2：下の質問から2つ選んでください</div>
-      <div class="cards" style="margin-top:10px">
-        <button class="reason emailQ" data-q="How often do the buses run?"><h3>HOW OFTEN</h3><p>How often do the buses run?</p></button>
-        <button class="reason emailQ" data-q="How many stops does the bus have?"><h3>HOW MANY</h3><p>How many stops does the bus have?</p></button>
-        <button class="reason emailQ" data-q="How many people can ride the bus?"><h3>HOW MANY</h3><p>How many people can ride the bus?</p></button>
-        <button class="reason emailQ" data-q="What time does the service start?"><h3>WHAT</h3><p>What time does the service start?</p></button>
+      <div class="notice guide" style="margin-top:10px">本文にまだ書かれていないことを2つ質問します。</div>
+      <div class="controls">
+        <button class="choice emailQ" data-q="How often does the bus run?">How often does the bus run?<span class="jp">どのくらいの頻度で運行しますか？</span></button>
+        <button class="choice emailQ" data-q="How many people can use it?">How many people can use it?<span class="jp">何人利用できますか？</span></button>
+        <button class="choice emailQ" data-q="Is the service free?">Is the service free?<span class="jp">無料ですか？（本文に書いてある）</span></button>
+        <button id="emailBuild" class="btn primary">選んだ2問で答案を作る</button>
       </div>
     </div>
-    <div class="rightPane">
-      <div class="answerBox"><textarea id="emailAnswer" spellcheck="false" placeholder="質問を2つ選ぶと答案を作れます"></textarea></div>
+    <div class="right">
+      <div class="answerPaper"><div class="answerTitle">Eメール答案</div><div id="emailAnswer" style="white-space:pre-wrap;line-height:1.7"></div></div>
       <div class="meter"><div class="bar"><div id="emailFill" class="fill"></div></div><div id="emailCount" class="count">0 / 40–50</div></div>
-      <div class="bottomActions">
-        <button class="btn primary" id="emailBuild">STEP 3　答案を作る</button>
-        <button class="btn secondary" id="emailCheck">STEP 4　判定する</button>
-        <button class="btn secondary" id="emailNext">STEP 5　もう一度</button>
-      </div>
-      <div id="emailCheckMsg" class="notice" style="margin-top:12px">質問を2つ選ぶところから始めます。</div>
     </div>
   </div>
 </section>
-
-<section id="results" class="screen">
-  <div class="topbar"><div><b>成績・設定</b><div class="small">自動保存された学習履歴</div></div><button class="btn ghost" id="resultsHome">ホーム</button></div>
-  <div class="results">
-    <div class="chartCard"><div class="small">直近20問 正解率</div><div id="rAcc" class="bigPct">0%</div><div class="row"><span>現在の目標</span><b id="rTarget">12/16</b></div><div class="row"><span>現在のモード</span><b id="rLevel">合格モード</b></div><div class="row"><span>学習済み</span><b id="rDone">0</b></div><div class="row"><span>連続クリア</span><b id="rStreak">0</b></div></div>
-    <div class="chartCard"><h3 style="margin-top:0">4カード別</h3><div id="cardStats"></div></div>
-    <div class="chartCard"><h3 style="margin-top:0">判定項目</h3><div id="metricStats"></div></div>
-    <div class="chartCard"><h3 style="margin-top:0">設定</h3><div class="row"><span>自動レベルアップ</span><input id="autoLevel" type="checkbox" checked></div><div class="row"><span>横向き案内</span><span>ON</span></div><button class="btn secondary" id="resetProgress" style="margin-top:14px">成績をリセット</button></div>
-  </div>
-</section>
-
-<div id="unlockModal" class="modal"><div class="modalCard"><h2 id="unlockTitle">新しいチャレンジ解放！</h2><p id="unlockText"></p><div class="actions"><button id="unlockYes" class="btn primary">新しい目標で続ける</button><button id="unlockNo" class="btn secondary">今のまま続ける</button></div></div></div>
 
 <script>
+const KEY="eikenP2Writing_v3_steps";
 const QUESTIONS=[
-{q:'Do you think students should use smartphones when they study?',jp:'生徒は勉強するときにスマートフォンを使うべきだと思いますか？',tags:['learn','time'],kw:'smartphones',ex:{learn:'they can find useful information on their smartphones',time:'they can find information quickly'}},
-{q:'Do you think families should play sports together?',jp:'家族は一緒にスポーツをするべきだと思いますか？',tags:['people','health'],kw:'sports',ex:{people:'families can enjoy sports together',health:'they can stay healthy by playing sports'}},
-{q:'Do you think students should make a study plan for summer vacation?',jp:'生徒は夏休みの学習計画を立てるべきだと思いますか？',tags:['time','learn'],kw:'study plan',ex:{time:'they can use their time well during summer vacation',learn:'they can study a little every day'}},
-{q:'Do you think children should read books every day?',jp:'子どもは毎日本を読むべきだと思いますか？',tags:['learn','people'],kw:'books',ex:{learn:'they can learn new things from books',people:'they can talk about books with their friends'}},
-{q:'Do you think students should join team sports?',jp:'生徒はチームスポーツに参加するべきだと思いますか？',tags:['people','health'],kw:'team sports',ex:{people:'they can make new friends through team sports',health:'they can exercise and stay healthy'}},
-{q:'Do you think people should use the Internet to learn how to cook?',jp:'料理の仕方を学ぶためにインターネットを使うべきだと思いますか？',tags:['learn','time'],kw:'Internet',ex:{learn:'they can learn how to cook many dishes online',time:'they can learn at home without going to a class'}},
-{q:'Do you think students should get up early to study?',jp:'生徒は勉強するために早起きするべきだと思いますか？',tags:['learn','time'],kw:'study',ex:{learn:'they can study before going to school',time:'they can use the morning time well'}},
-{q:'Do you think libraries should have more events for children?',jp:'図書館は子ども向けイベントをもっと行うべきだと思いますか？',tags:['learn','people'],kw:'library events',ex:{learn:'children can learn new things at library events',people:'they can meet other children there'}},
-{q:'Do you think hospitals should be open on weekends?',jp:'病院は週末も開いているべきだと思いますか？',tags:['time','health'],kw:'hospitals',ex:{time:'people can go to the hospital when they have time',health:'people can get help when they are sick'}},
-{q:'Do you think people should take notes on their smartphones?',jp:'人々はスマートフォンでメモを取るべきだと思いますか？',tags:['time','learn'],kw:'notes',ex:{time:'they can take notes quickly',learn:'they can check important information later'}},
-{q:'Do you think students should share their opinions about books with friends?',jp:'生徒は本についての意見を友達と共有するべきだと思いますか？',tags:['learn','people'],kw:'books',ex:{learn:'they can learn new ideas from their friends',people:'they can enjoy talking about books together'}},
-{q:'Do you think children should eat breakfast every day?',jp:'子どもは毎朝朝食を食べるべきだと思いますか？',tags:['health','learn'],kw:'breakfast',ex:{health:'breakfast helps them stay healthy',learn:'they can study better in the morning'}},
-{q:'Do you think students should use tablets in class?',jp:'生徒は授業でタブレットを使うべきだと思いますか？',tags:['learn','time'],kw:'tablets',ex:{learn:'they can find useful information with tablets',time:'they can finish some schoolwork more quickly'}},
-{q:'Do you think children should spend time with their families every day?',jp:'子どもは毎日家族と過ごす時間を作るべきだと思いますか？',tags:['people','health'],kw:'families',ex:{people:'they can talk with their families every day',health:'they can relax and feel better at home'}},
-{q:'Do you think schools should have more sports events?',jp:'学校はスポーツ行事をもっと行うべきだと思いますか？',tags:['people','health'],kw:'sports events',ex:{people:'students can enjoy sports with their classmates',health:'students can exercise more at school'}}
+{
+ id:"books",type:"doThink",
+ q:"Do you think students should read books every day?",
+ jp:"生徒は毎日本を読むべきだと思いますか？",
+ statement:"students should read books every day",
+ reasons:[
+  {cat:"📚 学び",en:"they can learn many things",jp:"たくさんのことを学べる",detail:"they can learn about different countries",detailJp:"いろいろな国について学べる"},
+  {cat:"🧠 考える力",en:"they can think about many ideas",jp:"いろいろな考えについて考えられる",detail:"they can think about the characters and stories",detailJp:"登場人物や物語について考えられる"},
+  {cat:"👥 人・交流",en:"they can talk about books with other people",jp:"ほかの人と本について話せる",detail:"they can share their ideas with their friends",detailJp:"友達と自分の考えを共有できる"}
+ ],
+ wrong:["save money","stay healthy"],
+ boosters:[{text:"in their free time",jp:"自由時間に",line:2},{text:"with their friends",jp:"友達と",line:4}]
+},
+{
+ id:"morning",type:"doThink",
+ q:"Do you think students should study before school in the morning?",
+ jp:"生徒は朝、学校へ行く前に勉強するべきだと思いますか？",
+ statement:"students should study before school in the morning",
+ reasons:[
+  {cat:"📚 学び",en:"they can study more",jp:"より多く勉強できる",detail:"they can review important things before class",detailJp:"授業前に大事なことを復習できる"},
+  {cat:"⏰ 時間",en:"they can use their time well",jp:"時間を上手に使える",detail:"they can finish some homework early",detailJp:"宿題の一部を早く終えられる"},
+  {cat:"🧠 集中",en:"they can concentrate better",jp:"より集中できる",detail:"they can study in a quiet place in the morning",detailJp:"朝の静かな場所で勉強できる"}
+ ],
+ wrong:["save money","play more sports"],
+ boosters:[{text:"every day",jp:"毎日",line:2},{text:"before class",jp:"授業前に",line:4}]
+},
+{
+ id:"sportsfamily",type:"should",
+ q:"Should families make time to play sports together?",
+ jp:"家族は一緒にスポーツをする時間を作るべきですか？",
+ subject:"families",predicate:"make time to play sports together",
+ reasons:[
+  {cat:"❤️ 健康",en:"they can stay healthy",jp:"健康でいられる",detail:"they can exercise more together",detailJp:"一緒にもっと運動できる"},
+  {cat:"👥 家族",en:"they can spend more time together",jp:"一緒に過ごす時間が増える",detail:"they can talk and have fun while playing sports",detailJp:"スポーツをしながら話したり楽しんだりできる"},
+  {cat:"😊 楽しさ",en:"they can enjoy their free time",jp:"自由時間を楽しめる",detail:"they can try different sports together",detailJp:"一緒にいろいろなスポーツを試せる"}
+ ],
+ wrong:["study English","save money"],
+ boosters:[{text:"on weekends",jp:"週末に",line:2},{text:"with their families",jp:"家族と",line:4}]
+},
+{
+ id:"tablet",type:"doThink",
+ q:"Do you think students should use tablet computers for studying?",
+ jp:"生徒は勉強にタブレット端末を使うべきだと思いますか？",
+ statement:"students should use tablet computers for studying",
+ reasons:[
+  {cat:"⏰ 便利",en:"they can find information quickly",jp:"情報をすぐ見つけられる",detail:"they can search for words and pictures easily",detailJp:"単語や画像を簡単に調べられる"},
+  {cat:"📚 学び",en:"they can learn in many ways",jp:"いろいろな方法で学べる",detail:"they can watch videos and use learning apps",detailJp:"動画を見たり学習アプリを使ったりできる"},
+  {cat:"🎒 手軽さ",en:"they can carry fewer books",jp:"持ち歩く本を減らせる",detail:"they can keep many textbooks on one device",detailJp:"1台の端末に多くの教科書を入れられる"}
+ ],
+ wrong:["exercise more","sleep longer"],
+ boosters:[{text:"at school",jp:"学校で",line:2},{text:"every day",jp:"毎日",line:4}]
+},
+{
+ id:"cleaning",type:"should",
+ q:"Should students join community cleaning events?",
+ jp:"生徒は地域の清掃活動に参加するべきですか？",
+ subject:"students",predicate:"join community cleaning events",
+ reasons:[
+  {cat:"🌱 環境",en:"they can help keep their town clean",jp:"町をきれいに保つ手助けができる",detail:"they can pick up trash in parks and streets",detailJp:"公園や道のごみを拾える"},
+  {cat:"👥 人・交流",en:"they can work with local people",jp:"地域の人と一緒に活動できる",detail:"they can meet and talk with many people",detailJp:"多くの人に会って話せる"},
+  {cat:"📚 経験",en:"they can learn about their community",jp:"地域について学べる",detail:"they can see local problems by themselves",detailJp:"地域の問題を自分の目で見られる"}
+ ],
+ wrong:["sleep more","buy cheaper things"],
+ boosters:[{text:"on weekends",jp:"週末に",line:2},{text:"with local people",jp:"地域の人と",line:4}]
+}
 ];
-const REASONS={
-learn:{emoji:'📚',name:'LEARN',jp:'学び',base:'they can learn many things'},
-time:{emoji:'⏰',name:'TIME',jp:'時間',base:'they can save time'},
-people:{emoji:'👥',name:'PEOPLE',jp:'人・楽しさ',base:'they can enjoy it with other people'},
-health:{emoji:'❤️',name:'HEALTH',jp:'健康',base:'it is good for their health'}
+
+let state=JSON.parse(localStorage.getItem(KEY)||"null")||{
+ qIndex:0,step:1,lines:[],lang:"show",history:[],streak:0,
+ selected1:null,selected2:null,stage:null,sequence:[],step1Correct:false
 };
-const BOOSTERS=['at school','every day','after school','with their friends','with their families','in the future','at home or at school'];
-const KEY='eikenP2Writing_v1';
-let state=JSON.parse(localStorage.getItem(KEY)||'null')||{idx:0,selected:[],history:[],streak:0,level:1,autoLevel:true,currentAnswer:'',weakOnly:false};
-function save(){state.currentAnswer=document.getElementById('answer')?.value||state.currentAnswer;localStorage.setItem(KEY,JSON.stringify(state));}
-function words(s){return (s.trim().match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]).length}
-function show(id){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active')}
-function levelInfo(){return state.level===1?['合格モード','12/16']:state.level===2?['12点安定','12〜13/16']:state.level===3?['13点チャレンジ','13/16']:['14点チャレンジ','14/16前後']}
-function updateHome(){const h=state.history.slice(-20);const acc=h.length?Math.round(h.filter(x=>x.pass).length/h.length*100):0;const wr=h.length?Math.round(h.filter(x=>x.wordOK).length/h.length*100):0;const [l,t]=levelInfo();document.getElementById('homeAcc').textContent=acc+'%';document.getElementById('homeStreak').textContent=state.streak;document.getElementById('homeDone').textContent=state.history.length+'問';document.getElementById('homeWords').textContent=wr+'%';document.getElementById('levelBadge').textContent=l;document.getElementById('targetScore').textContent=t;document.getElementById('continueBtn').textContent=state.currentAnswer?'▶ 今日のおすすめ・続きから':'▶ 練習を始める'}
-function currentQ(){return QUESTIONS[state.idx%QUESTIONS.length]}
-function renderStudy(){const q=currentQ();const [l]=levelInfo();document.getElementById('studyLevel').textContent=l;document.getElementById('progressLabel').textContent=((state.idx%QUESTIONS.length)+1)+' / '+QUESTIONS.length;document.getElementById('question').textContent=q.q;document.getElementById('questionJp').textContent=q.jp;const c=document.getElementById('cards');c.innerHTML='';Object.entries(REASONS).forEach(([k,r])=>{const d=document.createElement('button');d.className='reason'+(state.selected.includes(k)?' selected':'');d.innerHTML=`<div class="emoji">${r.emoji}</div><h3>${r.jp} / ${r.name}</h3><p>${cap(r.base)}.</p>`;d.onclick=()=>{if(state.selected.includes(k))state.selected=state.selected.filter(x=>x!==k);else if(state.selected.length<2)state.selected.push(k);renderStudy();save()};c.appendChild(d)});document.getElementById('answer').value=state.currentAnswer||'';renderBoosters();updateMeter();}
-function cap(s){return s.charAt(0).toUpperCase()+s.slice(1)}
-function toStatement(q){let x=q.trim().replace(/\?$/,'');if(/^Do you think /i.test(x))x=x.replace(/^Do you think /i,'');if(/^Should /i.test(x)){const rest=x.replace(/^Should /i,'');const parts=rest.split(' ');return 'I think '+parts[0]+' should '+parts.slice(1).join(' ')+'.'}return 'I think that '+x.charAt(0).toLowerCase()+x.slice(1)+'.'}
-function buildAnswer(){if(state.selected.length!==2){alert('理由カードを2つ選んでください');return}const q=currentQ();const [a,b]=state.selected;let s=toStatement(q)+'\nI have two reasons.\nFirst, '+REASONS[a].base+'.\nFor example, '+(q.ex[a]||fallbackEx(a,q.kw))+'.\nSecond, '+REASONS[b].base+'.\nFor example, '+(q.ex[b]||fallbackEx(b,q.kw))+'.\nFor these reasons, I think so.';if(state.level>=2)s=s.replace('learn many things','learn many useful things');if(state.level>=3)s=s.replace(/For example, ([^.]+)\.\nSecond,/, 'This is because $1.\nSecond,');document.getElementById('answer').value=s;state.currentAnswer=s;save();updateMeter()}
-function fallbackEx(k,kw){if(k==='learn')return 'they can learn more about '+kw;if(k==='time')return 'they can do it more quickly';if(k==='people')return 'they can enjoy '+kw+' with their friends';return 'they can stay healthy by doing it'}
-function updateMeter(){const t=document.getElementById('answer').value;const n=words(t);document.getElementById('wordCount').textContent=n+' / 50–60';document.getElementById('fill').style.width=Math.min(100,n/60*100)+'%';document.getElementById('fill').style.background=n>=50&&n<=60?'var(--good)':n>60?'var(--bad)':'var(--accent)';renderChecks(false)}
-function renderChecks(final){const t=document.getElementById('answer').value;const q=currentQ();const n=words(t);const checks=[['50〜60語',n>=50&&n<=60],['YESで回答',/^I think/i.test(t.trim())],['理由2つ',/First,/i.test(t)&&/Second,/i.test(t)],['具体例・説明',((t.match(/For example|This is because/gi)||[]).length>=2)],['問題との関連',t.toLowerCase().includes(q.kw.toLowerCase().split(' ')[0])],['大事故なし',!/\bBecause\b[^.]*\./i.test(t)||!/^(Because)/im.test(t)]];const e=document.getElementById('checks');e.innerHTML='';checks.forEach(([name,ok])=>{const d=document.createElement('div');d.className='check '+(ok?'ok':'ng');d.textContent=(ok?'✓ ':'△ ')+name;e.appendChild(d)});return checks}
-function grade(){const checks=renderChecks(true);const pass=checks.filter(x=>x[1]).length>=5&&checks[0][1]&&checks[2][1];const rec={q:currentQ().q,idx:state.idx,pass,wordOK:checks[0][1],related:checks[4][1],structure:checks[2][1]&&checks[3][1],cards:[...state.selected],time:Date.now()};state.history.push(rec);state.streak=pass?state.streak+1:0;state.currentAnswer=document.getElementById('answer').value;save();maybeUnlock();alert(pass?'クリア！ 合格答案の形になっています。':'あと少し。赤い項目を直してもう一度判定してください。')}
-function maybeUnlock(){if(!state.autoLevel||state.level>=4)return;const h=state.history.slice(-20);if(h.length<10)return;const acc=h.filter(x=>x.pass).length/h.length;const wr=h.filter(x=>x.wordOK).length/h.length;let ok=false;if(state.level===1)ok=acc>=.85&&wr>=.9;if(state.level===2)ok=acc>=.9&&wr>=.9;if(state.level===3)ok=acc>=.95&&wr>=.95;if(ok){document.getElementById('unlockTitle').textContent='新しいチャレンジ解放！';document.getElementById('unlockText').textContent=`直近の成績が安定しています。${state.level+1}段階目へ上げて、より高い得点を狙えます。`;document.getElementById('unlockModal').classList.add('show')}}
-function nextQ(){state.idx=(state.idx+1)%QUESTIONS.length;state.selected=[];state.currentAnswer='';save();renderStudy()}
-function renderBoosters(){const b=document.getElementById('boosters');b.innerHTML='';BOOSTERS.forEach(x=>{const s=document.createElement('button');s.className='chip';s.textContent='+ '+x;s.onclick=()=>{const ta=document.getElementById('answer');ta.value=ta.value.trim()+ ' '+x+'.';state.currentAnswer=ta.value;save();updateMeter()};b.appendChild(s)})}
-function renderResults(){const h=state.history.slice(-20);const acc=h.length?Math.round(h.filter(x=>x.pass).length/h.length*100):0;const [l,t]=levelInfo();rAcc.textContent=acc+'%';rTarget.textContent=t;rLevel.textContent=l;rDone.textContent=state.history.length;rStreak.textContent=state.streak;autoLevel.checked=state.autoLevel;cardStats.innerHTML='';Object.entries(REASONS).forEach(([k,r])=>{const use=state.history.filter(x=>x.cards.includes(k));const a=use.length?Math.round(use.filter(x=>x.pass).length/use.length*100):0;cardStats.innerHTML+=`<div class="row"><span>${r.emoji} ${r.jp}</span><b>${a}%</b></div>`});const metrics=[['語数成功率','wordOK'],['問題との関連','related'],['構成成功率','structure']];metricStats.innerHTML='';metrics.forEach(([n,k])=>{const a=state.history.length?Math.round(state.history.filter(x=>x[k]).length/state.history.length*100):0;metricStats.innerHTML+=`<div class="row"><span>${n}</span><b>${a}%</b></div>`})}
-function start(newStart=false){if(newStart){state.idx=0;state.selected=[];state.currentAnswer=''}show('study');renderStudy();save()}
-answer.addEventListener('input',()=>{state.currentAnswer=answer.value;save();updateMeter()});
-continueBtn.onclick=()=>start(false);startBtn.onclick=()=>start(true);weakBtn.onclick=()=>{state.weakOnly=true;start(false)};resultsBtn.onclick=()=>{renderResults();show('results')};homeBtn.onclick=()=>{save();updateHome();show('home')};resultsHome.onclick=()=>{updateHome();show('home')};buildBtn.onclick=buildAnswer;gradeBtn.onclick=grade;nextBtn.onclick=nextQ;autoLevel.onchange=()=>{state.autoLevel=autoLevel.checked;save()};resetProgress.onclick=()=>{if(confirm('成績と途中データをすべてリセットしますか？')){localStorage.removeItem(KEY);location.reload()}};
-unlockYes.onclick=()=>{state.level=Math.min(4,state.level+1);save();unlockModal.classList.remove('show');renderStudy();updateHome()};unlockNo.onclick=()=>unlockModal.classList.remove('show');
 
-// --- v2 navigation / STEP guidance / E-mail mode ---
-function updateStepGuide(){
-  const b=document.getElementById('buildBtn'), g=document.getElementById('gradeBtn'), n=document.getElementById('nextBtn');
-  [b,g,n].forEach(x=>x&&x.classList.remove('guidePulse'));
-  const sl=document.getElementById('stepLabel'), ng=document.getElementById('nextGuide');
-  if(state.selected.length<2){
-    sl.textContent='STEP 1 / 3　理由を2つ選ぶ';
-    ng.textContent='👇 次は、理由カードを2つ選んでください';
-  }else if(!state.currentAnswer){
-    sl.textContent='STEP 2 / 3　答案を作る';
-    ng.textContent='✓ 2つ選べました。右の「答案を作る」を押してください';
-    b.classList.add('guidePulse');
-  }else{
-    sl.textContent='STEP 3 / 3　語数を確認して判定';
-    ng.textContent='✓ 答案ができました。50〜60語を確認して「判定する」を押してください';
-    g.classList.add('guidePulse');
-  }
+const homeDone=document.getElementById("homeDone"),homeStreak=document.getElementById("homeStreak"),homeLang=document.getElementById("homeLang");
+const question=document.getElementById("question"),questionJp=document.getElementById("questionJp"),stepTitle=document.getElementById("stepTitle"),stepFill=document.getElementById("stepFill");
+const controls=document.getElementById("controls"),guide=document.getElementById("guide"),answerLines=document.getElementById("answerLines"),wordCount=document.getElementById("wordCount"),wordFill=document.getElementById("wordFill");
+
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function q(){return QUESTIONS[state.qIndex%QUESTIONS.length]}
+function words(s){return (s.match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]).length}
+function showScreen(id){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));document.getElementById(id).classList.add("active")}
+function toast(t){const x=document.getElementById("toast");x.textContent=t;x.classList.add("show");setTimeout(()=>x.classList.remove("show"),1100)}
+function langLabel(){return state.lang==="show"?"あり":state.lang==="tap"?"押して訳":"なし"}
+function updateHome(){homeDone.textContent=state.history.length;homeStreak.textContent=state.streak;homeLang.textContent=langLabel()}
+function jpHtml(text){
+ if(state.lang==="hide")return "";
+ if(state.lang==="show")return `<span class="jp">${text}</span>`;
+ return `<span class="jp"><button class="chip" type="button" onclick="this.outerHTML='<span class=&quot;jp&quot;>${text.replace(/'/g,"&#39;")}</span>'">訳を見る</button></span>`;
 }
-const _renderStudy=renderStudy;
-renderStudy=function(){_renderStudy();updateStepGuide()}
-const _buildAnswer=buildAnswer;
-buildAnswer=function(){_buildAnswer();updateStepGuide()}
+function openingFor(x){
+ if(x.type==="doThink")return "I think that "+x.statement+".";
+ return "I think that "+x.subject+" should "+x.predicate+".";
+}
+function allText(){return state.lines.map(x=>x.text).join(" ")}
+function addLine(text,role){state.lines.push({text,role});save();renderAnswer()}
+function replaceLine(idx,text){if(state.lines[idx])state.lines[idx].text=text;save();renderAnswer()}
+function renderAnswer(){
+ const e=answerLines;e.innerHTML="";
+ if(!state.lines.length)e.innerHTML='<div class="answerLine pending">ここに1文ずつ答案が完成していきます。</div>';
+ state.lines.forEach(x=>{
+   const d=document.createElement("div");d.className="answerLine role-"+x.role+" pop";d.textContent=x.text;e.appendChild(d);
+ });
+ const n=words(allText());wordCount.textContent=n+" / 50–60";wordFill.style.width=Math.min(100,n/60*100)+"%";
+ wordFill.style.background=(n>=50&&n<=60)?"var(--good)":(n>60?"var(--bad)":"var(--accent)");
+}
+function setStep(n){state.step=n;state.stage=null;save();renderOpinion()}
+function nextQuestion(){
+ state.qIndex=(state.qIndex+1)%QUESTIONS.length;
+ state.step=1;state.lines=[];state.selected1=null;state.selected2=null;state.stage=null;state.sequence=[];state.step1Correct=false;
+ save();renderOpinion();
+}
+function choiceBtn(html,fn,cls="choice"){
+ const b=document.createElement("button");b.className=cls;b.innerHTML=html;b.onclick=fn;return b;
+}
+function setGuide(t){guide.innerHTML=t}
+function renderOpinion(){
+ const x=q();
+ question.textContent=x.q;
+ questionJp.textContent=state.lang==="hide"?"":x.jp;
+ stepTitle.textContent=`STEP ${state.step} / 9　${["","QUESTION → 書き出し","理由を始める","理由①を作る","理由①を詳しくする","理由②を作る","理由②を詳しくする","最後の定型文","50〜60語に仕上げる","見ないで型を再現"][state.step]}`;
+ stepFill.style.width=(state.step/9*100)+"%";
+ document.querySelectorAll(".langToggle button").forEach(b=>b.classList.toggle("active",b.dataset.lang===state.lang));
+ renderAnswer();
+ controls.innerHTML="";
+ if(state.step===1)step1(x);
+ if(state.step===2)fixedStep("I have two reasons.","理由は2つあります。","fixed",3,"次は、理由を始める定型文を押そう！");
+ if(state.step===3)reasonStep(1);
+ if(state.step===4)detailStep(1);
+ if(state.step===5)reasonStep(2);
+ if(state.step===6)detailStep(2);
+ if(state.step===7)fixedStep("For these reasons, I think so.","これらの理由から、私はそう思います。","close",8,"最後の定型文を押して答案を締めよう！");
+ if(state.step===8)wordStep();
+ if(state.step===9)sequenceStep();
+}
+function step1(x){
+ setGuide("QUESTIONの形を見抜こう。正しい形をタップすると、<b>どこがどう変わるか</b>を色で見せます。");
+ const g=document.createElement("div");g.className="choiceGrid";
+ const a=choiceBtn("Do you think ～ ?",()=>checkType("doThink",a));
+ const b=choiceBtn("Should ～ ?",()=>checkType("should",b));
+ g.append(a,b);controls.appendChild(g);
+ if(state.step1Correct)showTransform(x);
+}
+function checkType(type,btn){
+ if(type===q().type){
+   btn.classList.add("correct");state.step1Correct=true;save();setTimeout(()=>showTransform(q()),250);
+ }else{
+   btn.classList.add("wrong");toast("もう一度！ QUESTIONの最初を見てみよう");
+   setTimeout(()=>btn.classList.remove("wrong"),600);
+ }
+}
+function showTransform(x){
+ if(document.getElementById("transformBox"))return;
+ const box=document.createElement("div");box.id="transformBox";box.className="transformBox pop";
+ if(x.type==="doThink"){
+  box.innerHTML=`<div><span class="strike flash">Do you think</span> <span class="keep">${x.statement}</span> ?</div>
+  <div class="arrow">↓</div>
+  <div><span class="replace flash">I think that</span> <span class="keep">${x.statement}</span>.</div>`;
+ }else{
+  box.innerHTML=`<div><span class="strike flash">Should</span> <span class="keep">${x.subject}</span> ${x.predicate}?</div>
+  <div class="arrow">↓　Should を主語の後ろへ　↓</div>
+  <div><span class="replace flash">I think that</span> <span class="keep">${x.subject}</span> <span class="replace">should</span> ${x.predicate}.</div>`;
+ }
+ controls.appendChild(box);
+ const btn=document.createElement("button");btn.className="btn fixedBtn bigAction pulse";btn.innerHTML=`<span class="en">この書き出しを答案に入れる</span><span class="jp">${openingFor(x)}</span>`;
+ btn.onclick=()=>{if(!state.lines.length)addLine(openingFor(x),"opening");setStep(2)};
+ controls.appendChild(btn);
+ setGuide("色が変わったところに注目。<b>書き出しを押して答案に入れよう。</b>");
+}
+function fixedStep(en,jp,role,next,guideText){
+ setGuide(guideText);
+ const b=document.createElement("button");b.className="btn fixedBtn bigAction pulse";b.innerHTML=`<span class="en">${en}</span>${jpHtml(jp)}`;
+ b.onclick=()=>{addLine(en,role);setStep(next)};controls.appendChild(b);
+ const n=document.createElement("div");n.className="notice";n.innerHTML="<b>定型文</b>は毎回同じ。キーボードではなく、押して順番ごと覚えます。";controls.appendChild(n);
+}
+function reasonStep(which){
+ const x=q();const isFirst=which===1;
+ if(!state.stage){
+  setGuide(`${isFirst?"1つ目":"2つ目"}の理由。まず定型の <b>${isFirst?"First,":"Second,"}</b> を押そう。`);
+  const b=document.createElement("button");b.className="btn fixedBtn bigAction pulse";b.innerHTML=`<span class="en">${isFirst?"First,":"Second,"}</span>${jpHtml(isFirst?"第一に、":"第二に、")}`;
+  b.onclick=()=>{state.stage="category";save();renderOpinion()};controls.appendChild(b);return;
+ }
+ if(state.stage==="category"){
+  setGuide("このQUESTIONに合う<b>理由の方向</b>を選ぼう。完成文の丸暗記ではなく、まず意味で選びます。");
+  const grid=document.createElement("div");grid.className="choiceGrid";
+  x.reasons.forEach((r,i)=>{
+    if(which===2 && state.selected1===i)return;
+    grid.appendChild(choiceBtn(`<b>${r.cat}</b>${jpHtml(r.jp)}`,()=>{if(which===1)state.selected1=i;else state.selected2=i;state.stage="phrase";save();renderOpinion()},"choice reasonCat"));
+  });
+  controls.appendChild(grid);return;
+ }
+ if(state.stage==="phrase"){
+  const idx=which===1?state.selected1:state.selected2;const r=x.reasons[idx];
+  setGuide("<b>They can + 〇〇</b> の「〇〇」を問題に合わせて選ぼう。");
+  const stem=document.createElement("div");stem.className="transformBox";stem.innerHTML=`<span class="replace">${isFirst?"First,":"Second,"}</span> they can <span class="keep">＿＿＿＿</span>.`;controls.appendChild(stem);
+  const options=[
+    {en:r.en.replace(/^they can /i,""),jp:r.jp,ok:true},
+    {en:x.wrong[0],jp:"この問題には合いにくい",ok:false},
+    {en:x.wrong[1],jp:"この問題には合いにくい",ok:false}
+  ].sort(()=>Math.random()-.5);
+  const grid=document.createElement("div");grid.className="choiceGrid";
+  options.forEach(o=>grid.appendChild(choiceBtn(`${o.en}${jpHtml(o.jp)}`,()=>{
+    if(!o.ok){toast("QUESTIONに合う理由を選ぼう");return}
+    addLine(`${isFirst?"First":"Second"}, ${r.en}.`,"reason");
+    state.stage=null;save();setStep(isFirst?4:6);
+  })));
+  controls.appendChild(grid);
+ }
+}
+function detailStep(which){
+ const x=q();const idx=which===1?state.selected1:state.selected2;const r=x.reasons[idx];
+ if(!state.stage){
+  setGuide("理由をもう1文詳しくしよう。まず <b>For example,</b> を押します。");
+  const b=document.createElement("button");b.className="btn fixedBtn bigAction pulse";b.innerHTML=`<span class="en">For example,</span>${jpHtml("例えば、")}`;
+  b.onclick=()=>{state.stage="detail";save();renderOpinion()};controls.appendChild(b);return;
+ }
+ setGuide("「どういうこと？」に答える内容を選ぼう。前の理由とつながるものを選びます。");
+ const stem=document.createElement("div");stem.className="transformBox";stem.innerHTML=`<span class="replace">For example,</span> they can <span class="keep">＿＿＿＿</span>.`;controls.appendChild(stem);
+ const good=r.detail.replace(/^they can /i,"");
+ const other=x.reasons[(idx+1)%x.reasons.length].detail.replace(/^they can /i,"");
+ const opts=[
+  {en:good,jp:r.detailJp,ok:true},
+  {en:other,jp:"理由と少しずれる",ok:false},
+  {en:x.wrong[0],jp:"この問題には合いにくい",ok:false}
+ ].sort(()=>Math.random()-.5);
+ const grid=document.createElement("div");grid.className="choiceGrid";
+ opts.forEach(o=>grid.appendChild(choiceBtn(`${o.en}${jpHtml(o.jp)}`,()=>{
+   if(!o.ok){toast("前の理由とつながる内容を選ぼう");return}
+   addLine(`For example, ${r.detail}.`,"example");
+   state.stage=null;save();setStep(which===1?5:7);
+ })));
+ controls.appendChild(grid);
+}
+function wordStep(){
+ const n=words(allText());
+ if(n>=50&&n<=60){
+   setGuide(`<b>${n} WORDS</b>。50〜60語に入っています！ 語数ブースターは不要です。`);
+   const ok=document.createElement("div");ok.className="notice goodBox";ok.innerHTML=`🎯 <b>${n} WORDS — OK！</b>`;controls.appendChild(ok);
+   const b=document.createElement("button");b.className="btn primary bigAction pulse";b.textContent="型を覚えているか最終チェック ▶";b.onclick=()=>setStep(9);controls.appendChild(b);return;
+ }
+ if(n<50){
+   setGuide(`<b>${n} WORDS</b>。あと ${50-n} 語以上。意味が合う語数ブースターだけを使います。`);
+   const w=document.createElement("div");w.className="notice warnBox";w.textContent="語数ブースターは不足した時だけ。タップすると入る場所も自動で決めます。";controls.appendChild(w);
+   const x=q();x.boosters.forEach(z=>{
+     const b=choiceBtn(`+ ${z.text}${jpHtml(z.jp)}`,()=>applyBooster(z));controls.appendChild(b);
+   });
+   return;
+ }
+ setGuide(`<b>${n} WORDS</b>。60語を超えています。今回は1問やり直して、短い理由を選び直します。`);
+ const b=document.createElement("button");b.className="btn secondary bigAction";b.textContent="1問やり直す";b.onclick=()=>resetCurrent();controls.appendChild(b);
+}
+function applyBooster(z){
+ const idx=Math.min(z.line,state.lines.length-1);
+ if(idx<0)return;
+ let s=state.lines[idx].text;
+ if(s.toLowerCase().includes(z.text.toLowerCase()))return;
+ s=s.replace(/\.$/,"")+" "+z.text+".";
+ replaceLine(idx,s);toast("自然な位置に追加しました");renderOpinion();
+}
+function sequenceStep(){
+ setGuide("完成答案はいったん見ずに、<b>定型の順番</b>だけを再現しよう。タップで並べます。");
+ answerLines.innerHTML='<div class="answerLine pending">答案を隠しています。型だけ思い出そう！</div>';
+ const target=["I think that ～.","I have two reasons.","First, ～.","For example, ～.","Second, ～.","For example, ～.","For these reasons, I think so."];
+ if(!state.sequence)state.sequence=[];
+ const seq=document.createElement("div");seq.className="seqAnswer";state.sequence.forEach(t=>{const s=document.createElement("span");s.className="seqToken";s.textContent=t;seq.appendChild(s)});controls.appendChild(seq);
+ const pool=[
+  "Second, ～.","I have two reasons.","For example, ～.","First, ～.","For these reasons, I think so.","I think that ～.","For example, ～."
+ ];
+ const grid=document.createElement("div");grid.className="sequence";
+ pool.forEach((t,i)=>{
+  const b=document.createElement("button");b.className="seqBtn";b.textContent=t;
+  const usedCount=state.sequence.filter(x=>x===t).length;
+  const availableCount=pool.filter(x=>x===t).length;
+  if(usedCount>=availableCount)b.classList.add("used");
+  b.onclick=()=>{
+    const pos=state.sequence.length;
+    if(t!==target[pos]){toast("順番が違うよ。もう一度！");return}
+    state.sequence.push(t);save();
+    if(state.sequence.length===target.length){finishQuestion();return}
+    renderOpinion();
+  };
+  grid.appendChild(b);
+ });controls.appendChild(grid);
+}
+function finishQuestion(){
+ state.history.push({id:q().id,time:Date.now(),words:words(allText())});state.streak++;save();
+ toast("1問クリア！");
+ setTimeout(()=>{state.sequence=[];nextQuestion()},700);
+}
+function resetCurrent(){
+ state.step=1;state.lines=[];state.selected1=null;state.selected2=null;state.stage=null;state.sequence=[];state.step1Correct=false;save();renderOpinion();
+}
+document.querySelectorAll(".langToggle button").forEach(b=>b.onclick=()=>{state.lang=b.dataset.lang;save();renderOpinion();updateHome()});
+document.getElementById("opinionBtn").onclick=()=>{showScreen("opinion");renderOpinion()};
+document.getElementById("resumeBtn").onclick=()=>{showScreen("opinion");renderOpinion()};
+document.getElementById("resetOpinionBtn").onclick=()=>{if(confirm("現在の論述問題を最初からやり直しますか？")){resetCurrent();showScreen("opinion")}};
+document.getElementById("opHome").onclick=()=>{save();updateHome();showScreen("home")};
+document.getElementById("emailBtn").onclick=()=>{showScreen("email");renderEmail()};
+document.getElementById("emailHome").onclick=()=>{updateHome();showScreen("home")};
 
-document.getElementById('opinionModeBtn').onclick=()=>start(false);
-document.getElementById('emailModeBtn').onclick=()=>{show('emailStudy');renderEmail()};
-document.getElementById('emailHome').onclick=()=>{updateHome();show('home')};
-
+// Eメールは現行の簡易版を保持
 let emailSelected=[];
-function emailWords(t){return (t.trim().match(/[A-Za-z]+(?:'[A-Za-z]+)?/g)||[]).length}
-function renderEmail(){
-  emailSelected=[];
-  document.querySelectorAll('.emailQ').forEach(x=>x.classList.remove('selected','guidePulse'));
-  document.getElementById('emailAnswer').value='';
-  document.getElementById('emailStep').textContent='STEP 1 / 5　メールを読む → 質問を2つ選ぶ';
-  document.getElementById('emailGuide').textContent='👇 STEP 2：本文にまだ答えがない質問を2つ選んでください';
-  document.getElementById('emailBuild').classList.remove('guidePulse');
-  document.getElementById('emailCheck').classList.remove('guidePulse');
-  updateEmailMeter();
-}
-document.querySelectorAll('.emailQ').forEach(btn=>btn.onclick=()=>{
-  const q=btn.dataset.q;
-  if(emailSelected.includes(q)){emailSelected=emailSelected.filter(x=>x!==q);btn.classList.remove('selected')}
-  else if(emailSelected.length<2){emailSelected.push(q);btn.classList.add('selected')}
-  if(emailSelected.length===2){
-    document.getElementById('emailStep').textContent='STEP 3 / 5　答案を作る';
-    document.getElementById('emailGuide').textContent='✓ 質問を2つ選べました。右の点滅ボタンを押してください';
-    document.getElementById('emailBuild').classList.add('guidePulse');
-  }
+document.querySelectorAll(".emailQ").forEach(btn=>btn.onclick=()=>{
+ const t=btn.dataset.q;
+ if(emailSelected.includes(t)){emailSelected=emailSelected.filter(x=>x!==t);btn.classList.remove("correct")}
+ else if(emailSelected.length<2){emailSelected.push(t);btn.classList.add("correct")}
 });
-document.getElementById('emailBuild').onclick=()=>{
- if(emailSelected.length!==2){alert('質問を2つ選んでください');return}
- const t=`I would like to ask you two questions about the weekend bus service.
-First, ${emailSelected[0]}
-Second, ${emailSelected[1]}
-About your question, I think more cities will have services like this.
-This is because they can help many older people.`;
- document.getElementById('emailAnswer').value=t;
- document.getElementById('emailBuild').classList.remove('guidePulse');
- document.getElementById('emailCheck').classList.add('guidePulse');
- document.getElementById('emailStep').textContent='STEP 4 / 5　40〜50語を確認して判定';
- document.getElementById('emailGuide').textContent='✓ 答案ができました。右の語数を見て「判定する」を押してください';
- updateEmailMeter();
-};
-function updateEmailMeter(){
- const n=emailWords(document.getElementById('emailAnswer').value);
- document.getElementById('emailCount').textContent=n+' / 40–50';
- document.getElementById('emailFill').style.width=Math.min(100,n/50*100)+'%';
- document.getElementById('emailFill').style.background=n>=40&&n<=50?'var(--good)':n>50?'var(--bad)':'#a78bfa';
+function renderEmail(){
+ emailSelected=[];
+ document.querySelectorAll(".emailQ").forEach(x=>x.classList.remove("correct"));
+ document.getElementById("emailAnswer").textContent="";
+ document.getElementById("emailCount").textContent="0 / 40–50";
+ document.getElementById("emailFill").style.width="0%";
 }
-document.getElementById('emailAnswer').addEventListener('input',updateEmailMeter);
-document.getElementById('emailCheck').onclick=()=>{
- const t=document.getElementById('emailAnswer').value,n=emailWords(t),qs=(t.match(/\?/g)||[]).length,ok=n>=40&&n<=50&&qs>=2;
- document.getElementById('emailCheckMsg').textContent=ok?'✓ 40〜50語・質問2つを確認できました。STEP 5へ進めます。':'△ 40〜50語と、質問が2つ入っているか確認してください。';
- if(ok){document.getElementById('emailStep').textContent='STEP 5 / 5　クリア！';document.getElementById('emailCheck').classList.remove('guidePulse');document.getElementById('emailNext').classList.add('guidePulse')}
+document.getElementById("emailBuild").onclick=()=>{
+ if(emailSelected.length!==2){toast("質問を2つ選んでください");return}
+ if(emailSelected.includes("Is the service free?")){toast("それは本文に答えが書いてあります");return}
+ const t=`I would like to ask you two questions about the weekend bus service. ${emailSelected[0]} ${emailSelected[1]} About your question, I think more cities will have services like this. This is because they can help many older people.`;
+ document.getElementById("emailAnswer").textContent=t;
+ const n=words(t);
+ document.getElementById("emailCount").textContent=n+" / 40–50";
+ document.getElementById("emailFill").style.width=Math.min(100,n/50*100)+"%";
+ document.getElementById("emailFill").style.background=n>=40&&n<=50?"var(--good)":"var(--warn)";
 };
-document.getElementById('emailNext').onclick=()=>renderEmail();
 
 updateHome();
 </script>
